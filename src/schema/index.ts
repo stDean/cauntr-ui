@@ -1,0 +1,26 @@
+import { z } from "zod";
+
+export const AuthSchema = z.object({
+  company_email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "password must be at least 8 characters long." }),
+  confirmPassword: z.optional(
+    z
+      .string()
+      .min(8, { message: "password must be at least 8 characters long." })
+  ),
+  company_name: z.string().optional(),
+  country: z.string().optional(),
+});
+
+export const ResetSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "password must be at least 8 characters long." }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "password must be at least 8 characters long." }),
+});
+
