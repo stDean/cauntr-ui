@@ -1,17 +1,50 @@
 "use client";
 
+import { ForgetPassword } from "@/actions/auth.a";
+import { ResetSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-import { CustomInput } from "./ui/CustomInput";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
-import { ResetSchema } from "@/schema";
-import { toast } from "sonner";
-import { ForgetPassword } from "@/actions/auth.a";
+import { CustomInput } from "./ui/CustomInput";
 
+/**
+ * ResetPasswordForm Component
+ *
+ * This component renders a form for resetting a user's password. It includes fields for email, 
+ * new password, and confirmation of the new password. The form uses `react-hook-form` for 
+ * form state management and validation, and `zod` for schema validation.
+ *
+ * Features:
+ * - Validates that the new password and confirmation password match.
+ * - Displays error or success messages using a toast notification system.
+ * - Stores user credentials in localStorage upon successful submission.
+ * - Redirects the user to the `/update_password` page after a successful password reset.
+ *
+ * @returns {JSX.Element} The ResetPasswordForm component.
+ *
+ * @dependencies
+ * - `useRouter` from `next/router` for navigation.
+ * - `useTransition` from React for managing asynchronous state transitions.
+ * - `useForm` from `react-hook-form` for form handling.
+ * - `zod` and `zodResolver` for schema-based form validation.
+ * - `CustomInput` for rendering input fields with optional password visibility toggles.
+ * - `Button` for rendering a submit button with loading state.
+ * - `toast` for displaying notifications.
+ *
+ * @example
+ * ```tsx
+ * import { ResetPasswordForm } from './ResetPasswordForm';
+ *
+ * const App = () => {
+ *   return <ResetPasswordForm />;
+ * };
+ * ```
+ */
 export const ResetPasswordForm = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

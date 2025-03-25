@@ -1,5 +1,5 @@
 // import { ShowPolicyModal } from "@/components/modals/ShowPolicyModal";
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface AuthLayoutProps {
   children: ReactNode;

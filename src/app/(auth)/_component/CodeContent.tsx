@@ -1,14 +1,14 @@
 "use client";
 
-import { VerifyOTP, ResendOTP } from "@/actions/auth.a";
-import { OtpInput } from "../_component/OtpInput";
+import { ResendOTP, VerifyOTP } from "@/actions/auth.a";
+import { useAppDispatch } from "@/app/redux";
 import { Button } from "@/components/ui/button";
+import { useReduxState } from "@/hooks/useRedux";
 import { SET_TOKEN } from "@/state";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { useReduxState } from "@/hooks/useRedux";
+import { OtpInput } from "../_component/OtpInput";
 import { ResendLink } from "./ResendLink";
 
 export const CodeContent = () => {

@@ -15,7 +15,7 @@ export const useReduxState = () => {
   const {
     email,
     isSidebarCollapsed,
-    // loggedInUser,
+    loggedInUser,
     token,
     // previewProducts,
     // singleData,
@@ -27,7 +27,7 @@ export const useReduxState = () => {
     email,
     isSidebarCollapsed,
     token,
-    // loggedInUser,
+    loggedInUser,
     // previewProducts,
     // singleData,
     // user,

@@ -24,6 +24,25 @@ interface CustomInputProps {
   profile?: boolean;
 }
 
+/**
+ * CustomInput is a reusable form input component that integrates with a form control system.
+ * It supports various configurations such as password visibility toggling, custom labels, 
+ * and conditional styling based on props.
+ *
+ * @param {object} props - The properties for the CustomInput component.
+ * @param {any} props.control - The control object used for managing form state.
+ * @param {string} props.name - The name of the input field, used for form state management.
+ * @param {string} props.label - The label text displayed above the input field.
+ * @param {string} props.placeholder - The placeholder text displayed inside the input field.
+ * @param {boolean} props.show - Determines whether the password is visible (for password fields).
+ * @param {() => void} props.handleShow - Function to toggle the visibility of the password.
+ * @param {boolean} props.disabled - Disables the input field when set to true.
+ * @param {boolean} props.withSpan - Displays a red asterisk (*) next to the label when true.
+ * @param {boolean} props.add - Applies additional styling for specific use cases.
+ * @param {boolean} props.profile - Applies profile-specific styling to the input field.
+ *
+ * @returns {JSX.Element} A styled input field with optional password visibility toggle and validation message.
+ */
 export const CustomInput = ({
   control,
   name,

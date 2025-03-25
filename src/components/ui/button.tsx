@@ -58,12 +58,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      >
+    const content = (
+      <span className="flex items-center">
         {isLoading && loadingText ? loadingText : children}
         {isLoading ? (
           <span className="ml-1.5 flex items-center gap-1">
@@ -71,7 +67,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <span className="animate-bounce delay-100 w-1 h-1 bg-white rounded-full inline-block" />
             <span className="animate-bounce delay-200 w-1 h-1 bg-white rounded-full inline-block" />
           </span>
-        ) : null}
+        ): null}
+      </span>
+    );
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      >
+        {content}
       </Comp>
     );
   }

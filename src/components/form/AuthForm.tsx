@@ -1,19 +1,19 @@
 "use client";
 
+import { Login, Register } from "@/actions/auth.a";
+import { useAppDispatch } from "@/app/redux";
 import { Form } from "@/components/ui/form";
 import { AuthSchema } from "@/schema";
+import { SET_EMAIL, SET_TOKEN } from "@/state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { CustomInput } from "./ui/CustomInput";
-import { Login, Register } from "@/actions/auth.a";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/app/redux";
-import { SET_EMAIL, SET_TOKEN } from "@/state";
 
 const LinkText = ({
   href,
@@ -37,6 +37,42 @@ const LinkText = ({
   );
 };
 
+/**
+ * AuthForm Component
+ *
+ * This component renders an authentication form that supports both login and registration flows.
+ * The form dynamically adjusts its fields and behavior based on the `type` prop.
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props.type - The type of the form, either "login" or "register".
+ *
+ * @returns {JSX.Element} The rendered authentication form.
+ *
+ * @remarks
+ * - For "login", the form includes fields for email and password.
+ * - For "register", the form includes additional fields for company name, country, and password confirmation.
+ * - The form uses `react-hook-form` for form state management and validation.
+ * - The `zod` library is used for schema validation.
+ *
+ * @example
+ * ```tsx
+ * <AuthForm type="login" />
+ * <AuthForm type="register" />
+ * ```
+ *
+ * @dependencies
+ * - `useRouter` from `next/router` for navigation.
+ * - `useAppDispatch` for dispatching Redux actions.
+ * - `useForm` from `react-hook-form` for form handling.
+ * - `zod` and `zodResolver` for schema validation.
+ * - `CustomInput`, `Button`, and `LinkText` components for UI elements.
+ * - `toast` for displaying success and error messages.
+ *
+ * @features
+ * - Password visibility toggle for password fields.
+ * - Displays error messages for validation and API errors.
+ * - Redirects users to appropriate pages upon successful login or registration.
+ */
 export const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();

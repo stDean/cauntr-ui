@@ -1,4 +1,3 @@
-import React from "react";
 
 export const ResendLink = ({ handleClick }: { handleClick: () => void }) => {
   return (
