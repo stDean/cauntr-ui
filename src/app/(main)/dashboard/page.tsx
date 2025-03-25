@@ -15,14 +15,13 @@ export default function DashboardPage() {
   const dispatch = useAppDispatch();
 
   const fetchUser = async () => {
-    const { success, error } = await GetUser({ token });
+    const res = await GetUser({ token });
 
-    if (error) {
+    if (res?.error) {
       return;
     }
 
-    dispatch(SET_LOGGED_IN_USER(success.data));
-    console.log({ success });
+    dispatch(SET_LOGGED_IN_USER(res?.success.data));
   };
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex items-center justify-center px-4 overflow-y-scroll mb-4">
+    <div className="flex items-center justify-center px-4 overflow-y-scroll mb-4 scrollbar-thin">
       <p>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci
         nesciunt quae hic, in repellendus repudiandae molestias harum nisi

@@ -4,7 +4,6 @@ import {
   Archive,
   FileText,
   LayoutDashboard,
-  LogOut,
   LucideIcon,
   PanelRight,
   Settings,
@@ -30,9 +29,8 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
   return (
     <Link href={href}>
       <div
-        className={`cursor-pointer flex items-center justify-between  px-8 py-3
-        hover:text-blue-500 hover:bg-[#f3f1eb] gap-3 transition-colors ${
-          isActive ? "bg-[#FEEDCD] text-white" : ""
+        className={`cursor-pointer flex items-center justify-between  px-8 py-3 gap-3 transition-colors ${
+          isActive ? "bg-[#FEEDCD] text-white" : "hover:bg-[#f3f1eb]"
         }
       }`}
       >
@@ -72,7 +70,7 @@ export const SideBar = () => {
 
         {"ADMIN" === "ADMIN" && (
           <>
-            <SidebarLink href="/sold" icon={Truck} label="Sales History" />
+            <SidebarLink href="/sales" icon={Truck} label="Sales History" />
 
             <SidebarLink href="/users" icon={Users} label="Users" />
           </>
@@ -82,27 +80,6 @@ export const SideBar = () => {
 
         <SidebarLink href="/settings" icon={Settings} label="Settings" />
       </div>
-
-      {/* FOOTER */}
-      {/* <div className="mb-10">
-        <div className="flex justify-between gap-2 items-center px-6 mb-4">
-          <div>
-            <p className="font-semibold text-base truncate w-44">
-              The Company Name
-            </p>
-            <p className="text-sm">deans@dean.com</p>
-          </div>
-          <LogOut
-            className="text-red-500 cursor-pointer"
-            onClick={() => {
-              console.log("Logged Out");
-            }}
-          />
-        </div>
-        <p className={`text-center text-xs text-gray-500`}>
-          &copy; {year} Cauntr
-        </p>
-      </div> */}
     </div>
   );
 };
