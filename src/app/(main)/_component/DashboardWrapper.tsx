@@ -12,7 +12,9 @@ const DashBoardLayout = ({ children }: { children: ReactNode }) => {
       <main className="flex flex-col w-full h-screen bg-gray-50">
         <NavBar />
 
-        {children}
+        <div className="overflow-y-scroll scrollbar-thin">
+          {children}
+        </div>
       </main>
       <MobileTab />
     </div>

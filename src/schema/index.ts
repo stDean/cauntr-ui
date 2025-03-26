@@ -24,3 +24,11 @@ export const ResetSchema = z.object({
     .min(8, { message: "password must be at least 8 characters long." }),
 });
 
+export const AccountSettingsSchema = z.object({
+  businessName: z.optional(z.string()),
+  category: z.optional(z.string()),
+  email: z.string().email(),
+  phone: z.optional(z.string()),
+  address: z.optional(z.string()),
+  tin: z.optional(z.string()),
+});

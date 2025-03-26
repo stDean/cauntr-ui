@@ -1,9 +1,5 @@
-import React from "react";
+import { SettingsContent } from "./SettingsContent";
 
 export default function SettingsPage() {
-  return (
-    <div>
-      <p>This is the settings page</p>
-    </div>
-  );
+  return <SettingsContent />;
 }

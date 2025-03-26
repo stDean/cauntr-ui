@@ -38,7 +38,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex items-center justify-center px-4 overflow-y-scroll mb-4 scrollbar-thin">
+    <div className="flex items-center justify-center mb-4 px-4">
       <p>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci
         nesciunt quae hic, in repellendus repudiandae molestias harum nisi

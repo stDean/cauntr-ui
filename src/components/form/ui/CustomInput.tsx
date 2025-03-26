@@ -15,7 +15,7 @@ interface CustomInputProps {
   control: Control<any>;
   name: FieldPath<any>;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   show?: boolean;
   handleShow?: () => void;
   disabled?: boolean;
