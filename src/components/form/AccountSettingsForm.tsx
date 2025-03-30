@@ -6,11 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { CustomInput } from "./ui/CustomInput";
 import { Button } from "../ui/button";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, X } from "lucide-react";
+import useAddBankModal from "@/hooks/useAddBankModal";
+import { Input } from "../ui/input";
 
 export const AccountSettingsForm = () => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
+  const addBankModal = useAddBankModal();
 
   const form = useForm<z.infer<typeof AccountSettingsSchema>>({
     resolver: zodResolver(AccountSettingsSchema),
@@ -24,7 +27,34 @@ export const AccountSettingsForm = () => {
     },
   });
 
-  const banks: Array<any> = [];
+  interface Bank {
+    bankName: string;
+    acctNo: string;
+  }
+
+  const banksFromBackEnd: Bank[] = [{ bankName: "Hello", acctNo: "4444" }];
+  /**
+   * Merges two arrays of banks (`banksFromBackEnd` and `addBankModal.banks`) into a single array
+   * while ensuring that there are no duplicate entries based on the `acctNo` property.
+   * 
+   * The merging process involves:
+   * - Combining both arrays into a single array.
+   * - Using a `Map` to store each bank object with its `acctNo` as the key.
+   *   This ensures that only the last occurrence of a bank with a given `acctNo` is retained.
+   * - Extracting the unique bank objects from the `Map` using its `values()` method.
+   * 
+   * @constant
+   * @type {Bank[]}
+   * @returns {Bank[]} An array of unique bank objects, where duplicates are removed based on `acctNo`.
+   */
+  const banks: Bank[] = [
+    ...new Map(
+      [...banksFromBackEnd, ...addBankModal.banks].map((bank) => [
+        bank.acctNo,
+        bank,
+      ])
+    ).values(),
+  ];
 
   const handleSave = (values: z.infer<typeof AccountSettingsSchema>) => {
     startTransition(async () => {
@@ -98,26 +128,42 @@ export const AccountSettingsForm = () => {
           />
 
           {banks.length > 0 && (
-            <div className="flex gap-2">
-              {banks.map((bank) => (
-                <CustomInput
-                  key={bank.name}
-                  control={form.control}
-                  name="tin"
-                  label="Tax Identification Number"
-                  placeholder="enter a business TIN"
-                  disabled={!canEdit}
-                />
-              ))}
+            <div className="flex gap-1 flex-col max-h-[150px] overflow-y-scroll">
+              <p className="text-xs text-gray-700">Banks</p>
+              <div className="grid grid-cols-12 gap-2">
+                {banks.map((bank) => (
+                  <div
+                    key={`${bank.bankName} - ${bank.acctNo}`}
+                    className="relative flex items-center w-full px-3 border rounded-lg col-span-6"
+                  >
+                    <Input
+                      disabled
+                      value={`${bank.acctNo} - ${bank.bankName}`}
+                      className="w-full border-hidden"
+                    />
+
+                    {addBankModal.banks.some(
+                      (b) =>
+                        b.bankName === bank.bankName && b.acctNo === bank.acctNo
+                    ) && (
+                      <X
+                        className="size-4 cursor-pointer justify-end"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent the click event from propagating
+                          addBankModal.removeBank(bank);
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {canEdit && (
             <div
-              className="bg-[#f4f4f4] py-3 w-full flex items-center justify-center gap-3 cursor-pointer"
-              onClick={() => {
-                console.log("Pop Up Modal");
-              }}
+              className="bg-[#f4f4f4] py-3 w-full flex items-center justify-center gap-3 cursor-pointer hover:bg-gray-200"
+              onClick={addBankModal.onOpen}
             >
               <p className="text-sm">Add Bank</p> <Plus className="size-4" />
             </div>
