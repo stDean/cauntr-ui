@@ -4,6 +4,7 @@ import { BankProps } from "@/hooks/useAddBankModal";
 import {
   CACHE_TAGS,
   dbCache,
+  getGlobalTag,
   getUserTag,
   revalidateDbCache,
 } from "@/lib/cache";
@@ -136,4 +137,66 @@ export const RemoveBank = async ({
 
     return { error: "Something went wrong." };
   }
-}
+};
+
+export const UpdateUserProfile = async ({
+  id,
+  token,
+}: {
+  id: string;
+  token: string;
+}) => {
+  try {
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.status === 200) {
+      revalidateDbCache({ tag: CACHE_TAGS.user });
+    }
+
+    return { success: res.data };
+  } catch (e: any) {
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    return { error: "Something went wrong." };
+  }
+};
+
+export const GetUsers = async ({ token }: { token: string }) => {
+  const cachedFn = dbCache(getUsersInternals, {
+    tags: [getGlobalTag(CACHE_TAGS.users)],
+  });
+
+  return cachedFn({ token });
+};
+
+const getUsersInternals = async ({ token }: { token: string }) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/all`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return { success: res.data };
+  } catch (e: any) {
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    return { error: "Something went wrong." };
+  }
+};

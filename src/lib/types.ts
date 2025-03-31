@@ -12,3 +12,19 @@ export interface UserProps {
     status: string;
   };
 }
+
+export interface UrlQueryParams {
+  params: string;
+  key: string;
+  value: string;
+}
+
+export interface TeamTableProps {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+  phone?: string;
+  Role: string;
+  createdAt: Date;
+}

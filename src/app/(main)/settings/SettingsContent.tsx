@@ -1,13 +1,31 @@
 "use client";
 
+import { GetUsers } from "@/actions/settings.a";
 import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
+import { TeamTable } from "@/components/table/TeamTable";
+import { useReduxState } from "@/hooks/useRedux";
+import { TeamTableProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const SettingsContent = () => {
+  const { token } = useReduxState();
+  const [teamData, setTeamData] = useState<TeamTableProps[]>([]);
   const searchParams = useSearchParams();
   const tab = searchParams.get("q");
+
+  const getTeamData = async () => {
+    const res = await GetUsers({ token });
+    setTeamData(res.success.data);
+  };
+
+  useEffect(() => {
+    getTeamData();
+  }, []);
+
+  console.log({ teamData });
 
   return (
     <div className="">
@@ -58,7 +76,7 @@ export const SettingsContent = () => {
       <div className="my-4 px-6">
         {tab === "account" && <AccountSettingsForm />}
         {tab === "profile" && <p>Profile Settings</p>}
-        {tab === "team" && <p>Team Settings</p>}
+        {tab === "team" && <TeamTable data={teamData} />}
         {tab === "billing" && <p>Billing Settings</p>}
       </div>
     </div>
