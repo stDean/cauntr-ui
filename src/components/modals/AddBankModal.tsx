@@ -33,9 +33,14 @@ const BankInput = ({
   );
 };
 export const AddBankModal = () => {
-  const [bank, setBank] = useState<{ bankName: string; acctNo: string }>({
+  const [bank, setBank] = useState<{
+    bankName: string;
+    acctNo: string;
+    acctName?: "";
+  }>({
     bankName: "",
     acctNo: "",
+    acctName: "",
   });
   const addBankModal = useAddBankModal();
 
@@ -68,13 +73,20 @@ export const AddBankModal = () => {
         name="acctNo"
         value={bank.acctNo}
       />
+      <BankInput
+        title="Account Name"
+        placeholder="enter account name."
+        handleChange={handleChange}
+        name="acctName"
+        value={bank.acctName || ""}
+      />
 
       <div className="pt-2 flex justify-end gap-4">
         <Button
           className="cursor-pointer"
           onClick={() => {
             addBankModal.addBank(bank!);
-            setBank({ bankName: "", acctNo: "" });
+            setBank({ bankName: "", acctNo: "", acctName: "" });
             addBankModal.onClose();
           }}
         >

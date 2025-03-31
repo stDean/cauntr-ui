@@ -1,8 +1,9 @@
 import { create } from "zustand";
 
-interface BankProps {
+export interface BankProps {
   bankName: string;
   acctNo: string;
+  acctName?: string;
 }
 interface AddBankStore {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface AddBankStore {
   banks: BankProps[] | [];
   addBank: (bank: BankProps) => void;
   removeBank: (bank: BankProps) => void;
+  clearBank: () => void;
 }
 
 const useAddBankModal = create<AddBankStore>((set, get) => ({
@@ -38,6 +40,7 @@ const useAddBankModal = create<AddBankStore>((set, get) => ({
           bankInStore.bankName !== bank.bankName
       ),
     }),
+  clearBank: () => set({ isOpen: false, banks: [] }),
 }));
 
 export default useAddBankModal;

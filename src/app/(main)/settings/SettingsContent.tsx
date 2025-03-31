@@ -4,7 +4,6 @@ import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
 
 export const SettingsContent = () => {
   const searchParams = useSearchParams();
