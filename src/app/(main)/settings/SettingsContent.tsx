@@ -1,5 +1,6 @@
 import { GetCompanyAccount, GetUsers } from "@/actions/settings.a";
 import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
+import { ProfileSettingsForm } from "@/components/form/ProfileSettingsForm";
 import { TeamTable } from "@/components/table/TeamTable";
 import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -57,7 +58,7 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
         {tab === "account" && (
           <AccountSettingsForm companyAcct={companyAcct.success.data} />
         )}
-        {tab === "profile" && <p>Profile Settings</p>}
+         {tab === "profile" && <ProfileSettingsForm />}
         {tab === "team" && <TeamTable data={team.success.data} />}
         {tab === "billing" && <p>Billing Settings</p>}
       </div>

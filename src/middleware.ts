@@ -8,15 +8,15 @@ export function middleware(request: NextRequest) {
   const isAdmin = cookies.get("role")?.value === "ADMIN";
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  if (isLoggedIn && isAuthRoute) {
-    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-  }
+  // if (isLoggedIn && isAuthRoute) {
+   // return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  // }
 
-  if (!isLoggedIn && !isAuthRoute) {
-    return Response.redirect(new URL(DEFAULT_REDIRECT, nextUrl));
-  }
+   // if (!isLoggedIn && !isAuthRoute) {
+   // return Response.redirect(new URL(DEFAULT_REDIRECT, nextUrl));
+ // }
 
-  return;
+  // return;
 }
 
 export const config = {
