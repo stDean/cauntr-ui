@@ -32,3 +32,11 @@ export const AccountSettingsSchema = z.object({
   address: z.optional(z.string()),
   tin: z.optional(z.string()),
 });
+
+export const ProfileSettingSchema = z.object({
+  firstName : z.optional(z.string()),
+  lastName : z.optional(z.string()),
+  email: z.string().email(),
+  role : z.optional(z.string()),
+  password :z.optional(z.string()),
+})

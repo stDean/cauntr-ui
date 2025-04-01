@@ -1,6 +1,7 @@
 "use client";
 
 import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
+import { ProfileSettingsForm } from "@/components/form/ProfileSettingsForm";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -17,8 +18,8 @@ export const SettingsContent = () => {
         <div className="my-2 px-10 flex gap-4 text-xs">
           <Link href="/settings?q=account" className="m-0">
             <div className="">
-              <p className={cn({ "font-bold": tab === "account" })}>Account</p>
-              {tab === "account" && (
+              <p className={cn({ "font-bold": (tab === "account" || tab === null) })}>Account</p>
+              {(tab === "account" || tab === null) && (
                 <hr className="bg-red-500 h-[3px] mt-1 -mb-3 rounded-lg" />
               )}
             </div>
@@ -57,8 +58,8 @@ export const SettingsContent = () => {
 
       {/* Main Content */}
       <div className="my-4 px-6">
-        {tab === "account" && <AccountSettingsForm />}
-        {tab === "profile" && <p>Profile Settings</p>}
+        {(tab === "account" || tab === null) && <AccountSettingsForm />}
+        {tab === "profile" && <ProfileSettingsForm />}
         {tab === "team" && <p>Team Settings</p>}
         {tab === "billing" && <p>Billing Settings</p>}
       </div>

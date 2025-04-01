@@ -48,7 +48,7 @@ export const SideBar = () => {
   const year = new Date().getFullYear();
 
   return (
-    <div className="md:flex flex-col w-64 bg-white overflow-hidden max-h-screen shadow-md z-40 hidden border-r">
+    <div className="lg:flex flex-col w-64 bg-white overflow-hidden max-h-screen shadow-md z-40 hidden border-r">
       {/* TOP LOGO */}
       <div className={`flex gap-3 justify-between items-center pt-2 px-5`}>
         <img src="/logo.png" alt="logo" className="w-20 h-10 lg:w-28 lg:h-16" />

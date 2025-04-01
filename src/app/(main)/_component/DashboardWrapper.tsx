@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 
 const DashBoardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50 text-gray-900 w-full min-h-screen">
+    <div className="flex flex-col lg:flex-row bg-gray-50 text-gray-900 w-full min-h-screen">
       <SideBar />
       <main className="flex flex-col w-full h-screen bg-gray-50">
         <NavBar />
