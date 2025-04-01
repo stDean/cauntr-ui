@@ -15,12 +15,15 @@ const buttonVariants = cva(
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        outline_red:
+          "border border-red-500 bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        cauntr_blue: "bg-[#0c049b] text-primary-foreground shadow-xs hover:bg-[#0c049b]/90"
+        cauntr_blue:
+          "bg-[#0c049b] text-primary-foreground shadow-xs hover:bg-[#0c049b]/90",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -68,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <span className="animate-bounce delay-100 w-1 h-1 bg-white rounded-full inline-block" />
             <span className="animate-bounce delay-200 w-1 h-1 bg-white rounded-full inline-block" />
           </span>
-        ): null}
+        ) : null}
       </span>
     );
     return (

@@ -10,7 +10,6 @@ export const NavBar = () => {
   const { loggedInUser: user } = useReduxState();
   const a = path.split("/")[1].toUpperCase();
 
-  console.log({ user });
   return (
     <div className="flex justify-between items-center w-full mb-4 border-b p-4 lg:p-6">
       {/* LEFT SIDE */}

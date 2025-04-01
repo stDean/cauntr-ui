@@ -1,32 +1,14 @@
 "use client";
 
 import { Logout } from "@/actions/auth.a";
-import { GetUser } from "@/actions/users.s";
 import { useAppDispatch } from "@/app/redux";
 import { Button } from "@/components/ui/button";
-import { useReduxState } from "@/hooks/useRedux";
 import { SET_EMAIL, SET_LOGGED_IN_USER, SET_TOKEN } from "@/state";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { token } = useReduxState();
   const dispatch = useAppDispatch();
-
-  const fetchUser = async () => {
-    const res = await GetUser({ token });
-
-    if (res?.error) {
-      return;
-    }
-
-    dispatch(SET_LOGGED_IN_USER(res?.success.data));
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, [token]);
 
   const logOut = async () => {
     await Logout();
