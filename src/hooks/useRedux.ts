@@ -1,3 +1,5 @@
+"use client";
+
 import { useAppSelector } from "@/app/redux";
 
 /**
@@ -12,25 +14,14 @@ import { useAppSelector } from "@/app/redux";
  * - `token`: The authentication token from the global state.
  */
 export const useReduxState = () => {
-  const {
-    email,
-    isSidebarCollapsed,
-    loggedInUser,
-    token,
-    // previewProducts,
-    // singleData,
-    // user,
-  } = useAppSelector(({ global }) => global);
-  // const companyDetails = user?.Company;
+  const { email, isSidebarCollapsed, loggedInUser, token } = useAppSelector(
+    ({ global }) => global
+  );
 
   return {
     email,
     isSidebarCollapsed,
     token,
     loggedInUser,
-    // previewProducts,
-    // singleData,
-    // user,
-    // companyDetails,
   };
 };

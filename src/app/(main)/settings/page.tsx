@@ -1,5 +1,10 @@
 import { SettingsContent } from "./SettingsContent";
 
-export default function SettingsPage() {
-  return <SettingsContent />;
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: { q?: string };
+}) {
+  const search = await searchParams;
+  return <SettingsContent tab={search.q || "account"} />;
 }

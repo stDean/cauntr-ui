@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,11 +23,16 @@ import {
 } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { TeamColumns } from "./TeamColumn";
+import { createTeamColumns } from "./TeamColumn";
+import useCreateUserModal from "@/hooks/useCreateUserModal";
+import { useReduxState } from "@/hooks/useRedux";
 
 export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
+  const createUserModal = useCreateUserModal();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const columns = TeamColumns as ColumnDef<TData, TValue>[];
+  const { token } = useReduxState();
+  // const columns = TeamColumns as ColumnDef<TData, TValue>[];
+  const columns = createTeamColumns(token) as ColumnDef<TData, TValue>[];
   const table = useReactTable({
     data,
     columns,
@@ -68,9 +75,7 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             className="text-sm cursor-pointer"
             size={"sm"}
-            onClick={() => {
-              console.log("Show Modal to Add User");
-            }}
+            onClick={() => createUserModal.onOpen("create", null)}
           >
             Add User <Plus className="ml-1" />
           </Button>

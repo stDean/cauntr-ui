@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { Form } from "../ui/form";
 import { z } from "zod";
@@ -31,32 +33,36 @@ interface Banks extends BankProps {
   id?: string;
 }
 
-export const AccountSettingsForm = () => {
+export const AccountSettingsForm = ({
+  companyAcct,
+}: {
+  companyAcct: AcctDetailsProps | null;
+}) => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const addBankModal = useAddBankModal();
   const { token, loggedInUser } = useReduxState();
-  const [companyAcct, setCompanyAcct] = useState<AcctDetailsProps | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [companyAcct, setCompanyAcct] = useState<AcctDetailsProps | null>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getCompanyAcct = async () => {
-    try {
-      const data = await GetCompanyAccount({
-        token,
-        userId: loggedInUser!.id!,
-      });
-      setCompanyAcct(data.success.data);
-    } catch (error) {
-      console.error("Failed to fetch company account:", error);
-    } finally {
-      setIsLoading(false); // Update loading state when done
-    }
-  };
+  // const getCompanyAcct = async () => {
+  //   try {
+  //     const data = await GetCompanyAccount({
+  //       token,
+  //       userId: loggedInUser!.id!,
+  //     });
+  //     setCompanyAcct(data.success.data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch company account:", error);
+  //   } finally {
+  //     setIsLoading(false); // Update loading state when done
+  //   }
+  // };
 
-  // Fetch company account details on component mount
-  useEffect(() => {
-    getCompanyAcct();
-  }, []);
+  // // Fetch company account details on component mount
+  // useEffect(() => {
+  //   getCompanyAcct();
+  // }, []);
 
   const form = useForm<z.infer<typeof AccountSettingsSchema>>({
     resolver: zodResolver(AccountSettingsSchema),
@@ -107,22 +113,22 @@ export const AccountSettingsForm = () => {
     ).values(),
   ];
 
-  const optimisticallyUpdateBank = () => {
-    // Optimistically update local state with new banks
-    setCompanyAcct((prev) =>
-      prev
-        ? {
-            ...prev,
-            banks: [...(prev.banks || []), ...addBankModal.banks],
-          }
-        : null
-    );
+  // const optimisticallyUpdateBank = () => {
+  //   // Optimistically update local state with new banks
+  //   setCompanyAcct((prev) =>
+  //     prev
+  //       ? {
+  //           ...prev,
+  //           banks: [...(prev.banks || []), ...addBankModal.banks],
+  //         }
+  //       : null
+  //   );
 
-    // Wait for cache revalidation
-    setTimeout(() => {
-      getCompanyAcct(); // Secondary fetch to ensure consistency
-    }, 500);
-  };
+  //   // Wait for cache revalidation
+  //   setTimeout(() => {
+  //     getCompanyAcct(); // Secondary fetch to ensure consistency
+  //   }, 500);
+  // };
 
   const handleSave = (values: z.infer<typeof AccountSettingsSchema>) => {
     startTransition(async () => {
@@ -139,7 +145,6 @@ export const AccountSettingsForm = () => {
       const res = await UpdateAccount({
         acctDetails: allData,
         token,
-        userId: loggedInUser!.id!,
       });
       if (res.error) {
         toast.error("Error", { description: res.error });
@@ -150,7 +155,7 @@ export const AccountSettingsForm = () => {
       addBankModal.clearBank();
 
       // Optimistically update the bank list
-      optimisticallyUpdateBank();
+      // optimisticallyUpdateBank();
 
       toast.success("Success", { description: res.success.msg });
       setCanEdit(false);
@@ -160,7 +165,6 @@ export const AccountSettingsForm = () => {
   const handleRemoveBank = async ({ id }: { id: string }) => {
     const res = await RemoveBank({
       token,
-      userId: loggedInUser!.id!,
       bankId: id,
     });
     if (res.error) {
@@ -169,14 +173,14 @@ export const AccountSettingsForm = () => {
     }
 
     // Optimistically update the bank list
-    optimisticallyUpdateBank();
+    // optimisticallyUpdateBank();
 
     toast.success("Success", { description: res.success.msg });
   };
 
-  if (isLoading) {
-    return <FormSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <FormSkeleton />;
+  // }
 
   return (
     <Form {...form}>
