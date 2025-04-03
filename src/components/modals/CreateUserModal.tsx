@@ -162,6 +162,9 @@ export const CreateUserModal = () => {
           <CustomSelect
             label="Role"
             control={form.control}
+            placeholder={
+              createUserModal.user ? createUserModal.user.role : "EMPLOYEE"
+            }
             name="role"
             items={
               <>
