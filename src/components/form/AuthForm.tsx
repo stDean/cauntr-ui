@@ -4,7 +4,7 @@ import { Login, Register } from "@/actions/auth.a";
 import { useAppDispatch } from "@/app/redux";
 import { Form } from "@/components/ui/form";
 import { AuthSchema } from "@/schema";
-import { SET_EMAIL, SET_TOKEN } from "@/state";
+import { SET_EMAIL, SET_LOGGED_IN_USER, SET_TOKEN } from "@/state";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -112,6 +112,7 @@ export const AuthForm = ({ type }: { type: string }) => {
 
         // set the token into the context.
         dispatch(SET_TOKEN(success.token));
+        dispatch(SET_LOGGED_IN_USER(success.user))
         toast.success("Success", { description: success.message });
         router.push("/dashboard");
         return;

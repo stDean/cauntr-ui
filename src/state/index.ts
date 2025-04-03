@@ -3,7 +3,6 @@ import { UserProps } from "@/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface InitialStateTypes {
-  isSidebarCollapsed: boolean;
   token: "";
   email: "";
   loggedInUser: UserProps | null;
@@ -12,7 +11,6 @@ export interface InitialStateTypes {
 }
 
 const initialState: InitialStateTypes = {
-  isSidebarCollapsed: false,
   token: "",
   email: "",
   loggedInUser: null,
@@ -25,9 +23,6 @@ export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
-    SET_IS_SIDEBAR_COLLAPSE: (state, action: PayloadAction<boolean>) => {
-      state.isSidebarCollapsed = action.payload;
-    },
     SET_TOKEN: (state, action: PayloadAction<any>) => {
       state.token = action.payload;
     },
@@ -47,7 +42,6 @@ export const globalSlice = createSlice({
 });
 
 export const {
-  SET_IS_SIDEBAR_COLLAPSE,
   SET_LOGGED_IN_USER,
   SET_TOKEN,
   SET_EMAIL,

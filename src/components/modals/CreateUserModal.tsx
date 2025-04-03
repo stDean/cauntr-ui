@@ -34,24 +34,41 @@ export const CreateUserModal = () => {
     },
   });
 
-  // Reset form when companyAcct changes
+  // Reset form when createUserModal.user changes
   useEffect(() => {
+    console.log("Hello");
+
     if (createUserModal.user) {
+      const userRole = createUserModal.user.role?.toUpperCase();
+      const validatedRole = userRole === "ADMIN" ? "ADMIN" : "EMPLOYEE";
+      console.log({ validatedRole });
+
       form.reset({
-        email: createUserModal.user?.email,
-        firstName: createUserModal.user?.firstName || "undefined",
-        lastName: createUserModal.user?.lastName || "undefined",
-        phone: createUserModal.user?.phone || "undefined",
-        role: (createUserModal.user?.role || "EMPLOYEE") as
-          | "EMPLOYEE"
-          | "ADMIN",
+        email: createUserModal.user.email,
+        firstName: createUserModal.user.firstName || "",
+        lastName: createUserModal.user.lastName || "",
+        phone: createUserModal.user.phone || "",
+        role: validatedRole,
         password: "Password1#",
       });
+    } else {
+      // Reset to default values when creating a new user
+      form.reset({
+        email: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        role: "EMPLOYEE",
+        password: "",
+      });
     }
-  }, [createUserModal.user, form]); // Add form and companyAcct as dependencies
+  }, [createUserModal.user, form]);
+
+  console.log({ a: createUserModal.user });
+  console.log("User role:", createUserModal.user?.role);
+  console.log("Form role:", form.watch("role"));
 
   const handleUserAction = (values: z.infer<typeof createUserSchema>) => {
-    console.log({ values });
     startTransition(async () => {
       if (createUserModal.type === "create") {
         const res = await CreateUser({
@@ -81,6 +98,7 @@ export const CreateUserModal = () => {
 
         toast.success("Success", { description: res.success.msg });
         createUserModal.onClose();
+        form.reset();
       }
     });
   };
@@ -133,7 +151,9 @@ export const CreateUserModal = () => {
             control={form.control}
             name="password"
             label="Password"
-            placeholder="**********"
+            placeholder={
+              createUserModal.user ? "**********" : "enter user password"
+            }
             show={show.password}
             handleShow={() => setShow({ password: !show.password })}
             disabled={!!createUserModal.user}
@@ -143,9 +163,6 @@ export const CreateUserModal = () => {
             label="Role"
             control={form.control}
             name="role"
-            placeholder={
-              createUserModal.user ? createUserModal.user.role : "EMPLOYEE"
-            }
             items={
               <>
                 <SelectItem value="EMPLOYEE">Employee</SelectItem>

@@ -25,6 +25,7 @@ export const NavBar = () => {
           <p
             className="cursor-pointer"
             onClick={() => {
+              // TODO:Make this like a simple dropdown to see all notifications
               console.log("Hello");
             }}
           >

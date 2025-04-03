@@ -1,45 +1,19 @@
-import { GetCompanyAccount, GetUsers } from "@/actions/settings.a";
+import { GetCompanyAccount, GetUser, GetUsers } from "@/actions/settings.a";
 import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
 import { ProfileSettingsForm } from "@/components/form/ProfileSettingsForm";
 import { TeamTable } from "@/components/table/TeamTable";
-import { cn } from "@/lib/utils";
+import { TabNavigation } from "@/components/TabNavigation";
 import { cookies } from "next/headers";
-import Link from "next/link";
-
-const TabNavigation = ({
-  activeTab,
-  tabs,
-  basePath,
-}: {
-  activeTab: string;
-  tabs: { label: string; query: string }[];
-  basePath: string;
-}) => {
-  return (
-    <div className="border-b">
-      <div className="my-2 px-10 flex gap-4 text-xs">
-        {tabs.map(({ label, query }) => (
-          <Link key={query} href={`${basePath}?q=${query}`} className="m-0">
-            <div>
-              <p className={cn({ "font-bold": activeTab === query })}>
-                {label}
-              </p>
-              {activeTab === query && (
-                <hr className="bg-red-500 h-[3px] mt-1 -mb-3 rounded-lg" />
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-};
+import { BillingAndSubscriptions } from "./_component/BillingAndSubscriptions";
 
 export const SettingsContent = async ({ tab }: { tab: string }) => {
   const cookieStore = await cookies();
   const token = JSON.parse(cookieStore.get("token")?.value as string);
+  const userId = cookieStore.get("userId")?.value as string;
+
   const team = await GetUsers({ token: token! });
   const companyAcct = await GetCompanyAccount({ token });
+  const user = await GetUser({ token, userId });
 
   const tabs = [
     { label: "Account", query: "account" },
@@ -54,13 +28,13 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
       <TabNavigation activeTab={tab} basePath="/settings" tabs={tabs} />
 
       {/* Main Content */}
-      <div className="my-4 px-6">
+      <div className="mt-4 px-6 mb-18 lg:my-4">
         {tab === "account" && (
           <AccountSettingsForm companyAcct={companyAcct.success.data} />
         )}
-         {tab === "profile" && <ProfileSettingsForm />}
+        {tab === "profile" && <ProfileSettingsForm user={user.success.data} />}
         {tab === "team" && <TeamTable data={team.success.data} />}
-        {tab === "billing" && <p>Billing Settings</p>}
+        {tab === "billing" && <BillingAndSubscriptions />}
       </div>
     </div>
   );

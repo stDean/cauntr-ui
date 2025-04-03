@@ -1,6 +1,4 @@
 import { UserProps } from "@/lib/types";
-import { createUserSchema } from "@/schema";
-import { z } from "zod";
 import { create } from "zustand";
 
 type TypeProp = "create" | "edit";
@@ -19,7 +17,7 @@ const useCreateUserModal = create<CreateUserModalProps>((set) => ({
   user: null,
   type: "create" as TypeProp,
   onOpen: (type: TypeProp, user: UserProps | null) =>
-    set({ isOpen: true, type, user: type === "edit" ? user : null }),
+    set({ isOpen: true, type, user }),
   onClose: () => set({ isOpen: false, type: "create", user: null }),
 }));
 

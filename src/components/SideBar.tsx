@@ -45,8 +45,6 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
 };
 
 export const SideBar = () => {
-  const year = new Date().getFullYear();
-
   return (
     <div className="lg:flex flex-col w-64 bg-white overflow-hidden max-h-screen shadow-md z-40 hidden border-r">
       {/* TOP LOGO */}

@@ -34,19 +34,18 @@ export const AccountSettingsSchema = z.object({
 });
 
 export const ProfileSettingSchema = z.object({
-  firstName : z.optional(z.string()),
-  lastName : z.optional(z.string()),
+  firstName: z.optional(z.string()),
+  lastName: z.optional(z.string()),
   email: z.string().email(),
-  role : z.optional(z.string()),
-  password :z.optional(z.string()),
-})
+  role: z.enum(["EMPLOYEE", "ADMIN"], {
+    errorMap: () => ({ message: "Role is required" }),
+  }),
+  password: z.optional(z.string()),
+});
 
 export const createUserSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: "First name is required" })
-    .optional(),
-  lastName: z.string().min(1, { message: "Last name is required" }).optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   email: z.string().email({ message: "Invalid email address" }),
   phone: z.string().optional().optional(),
   role: z.enum(["EMPLOYEE", "ADMIN"], {

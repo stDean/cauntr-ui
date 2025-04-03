@@ -7,7 +7,7 @@ import {
   getGlobalTag,
   revalidateDbCache,
 } from "@/lib/cache";
-import { createUserSchema } from "@/schema";
+import { createUserSchema, ProfileSettingSchema } from "@/schema";
 import axios from "axios";
 import { z } from "zod";
 
@@ -127,13 +127,22 @@ export const RemoveBank = async ({
 export const UpdateUserProfile = async ({
   id,
   token,
+  values,
 }: {
   id: string;
   token: string;
+  values: z.infer<typeof ProfileSettingSchema>;
 }) => {
+  const validatedFields = ProfileSettingSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
+  }
+
   try {
-    const res = await axios.delete(
+    const { email, role, firstName, lastName, password } = validatedFields.data;
+    const res = await axios.patch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`,
+      { first_name: firstName, last_name: lastName, role, email, password },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -205,16 +214,16 @@ export const CreateUser = async ({
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/create`,
       {
         email,
-        first_name: firstName,
-        last_name: lastName,
-        phone,
+        first_name: firstName!.trim() !== "" ? firstName : null,
+        last_name: lastName!.trim() !== "" ? lastName : null,
+        phone: phone!.trim() !== "" ? phone : null,
         role,
         password,
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    if (res.status === 200) {
+    if (res.status === 201) {
       revalidateDbCache({ tag: CACHE_TAGS.users });
     }
 
@@ -294,6 +303,40 @@ export const GetUserInternal = async ({
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const DeleteUser = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.status === 200) {
+      revalidateDbCache({ tag: CACHE_TAGS.users });
+    }
 
     return { success: res.data };
   } catch (e: any) {

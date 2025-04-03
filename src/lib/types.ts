@@ -19,6 +19,6 @@ export interface TeamTableProps {
   lastName?: string;
   email: string;
   phone?: string;
-  Role: string;
+  role: string;
   createdAt: Date;
 }

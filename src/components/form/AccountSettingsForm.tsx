@@ -1,33 +1,23 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { Form } from "../ui/form";
-import { z } from "zod";
-import { AccountSettingsSchema } from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useTransition } from "react";
-import { CustomInput } from "./ui/CustomInput";
-import { Button } from "../ui/button";
-import { Pencil, Plus, X } from "lucide-react";
-import useAddBankModal, { BankProps } from "@/hooks/useAddBankModal";
-import { Input } from "../ui/input";
 import {
   AcctDetailsProps,
-  GetCompanyAccount,
   RemoveBank,
   UpdateAccount,
 } from "@/actions/settings.a";
+import useAddBankModal, { BankProps } from "@/hooks/useAddBankModal";
 import { useReduxState } from "@/hooks/useRedux";
+import { AccountSettingsSchema } from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Pencil, Plus, X } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-const FormSkeleton = () => (
-  <div className="space-y-4 p-6">
-    <div className="h-10 bg-gray-200 rounded w-1/3 animate-pulse"></div>
-    {[...Array(6)].map((_, i) => (
-      <div key={i} className="h-12 bg-gray-100 rounded animate-pulse"></div>
-    ))}
-  </div>
-);
+import { z } from "zod";
+import { Button } from "../ui/button";
+import { Form } from "../ui/form";
+import { Input } from "../ui/input";
+import { CustomInput } from "./ui/CustomInput";
 
 interface Banks extends BankProps {
   id?: string;
@@ -41,28 +31,7 @@ export const AccountSettingsForm = ({
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const addBankModal = useAddBankModal();
-  const { token, loggedInUser } = useReduxState();
-  // const [companyAcct, setCompanyAcct] = useState<AcctDetailsProps | null>(null);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // const getCompanyAcct = async () => {
-  //   try {
-  //     const data = await GetCompanyAccount({
-  //       token,
-  //       userId: loggedInUser!.id!,
-  //     });
-  //     setCompanyAcct(data.success.data);
-  //   } catch (error) {
-  //     console.error("Failed to fetch company account:", error);
-  //   } finally {
-  //     setIsLoading(false); // Update loading state when done
-  //   }
-  // };
-
-  // // Fetch company account details on component mount
-  // useEffect(() => {
-  //   getCompanyAcct();
-  // }, []);
+  const { token } = useReduxState();
 
   const form = useForm<z.infer<typeof AccountSettingsSchema>>({
     resolver: zodResolver(AccountSettingsSchema),
@@ -88,7 +57,7 @@ export const AccountSettingsForm = ({
         tin: companyAcct.taxID || "",
       });
     }
-  }, [companyAcct, form]); // Add form and companyAcct as dependencies
+  }, [companyAcct, form]);
 
   /**
    * Merges two arrays of banks (`banksFromBackEnd` and `addBankModal.banks`) into a single array
@@ -113,23 +82,6 @@ export const AccountSettingsForm = ({
     ).values(),
   ];
 
-  // const optimisticallyUpdateBank = () => {
-  //   // Optimistically update local state with new banks
-  //   setCompanyAcct((prev) =>
-  //     prev
-  //       ? {
-  //           ...prev,
-  //           banks: [...(prev.banks || []), ...addBankModal.banks],
-  //         }
-  //       : null
-  //   );
-
-  //   // Wait for cache revalidation
-  //   setTimeout(() => {
-  //     getCompanyAcct(); // Secondary fetch to ensure consistency
-  //   }, 500);
-  // };
-
   const handleSave = (values: z.infer<typeof AccountSettingsSchema>) => {
     startTransition(async () => {
       const allData = {
@@ -151,12 +103,7 @@ export const AccountSettingsForm = ({
         return;
       }
 
-      // Clear temporary banks immediately
       addBankModal.clearBank();
-
-      // Optimistically update the bank list
-      // optimisticallyUpdateBank();
-
       toast.success("Success", { description: res.success.msg });
       setCanEdit(false);
     });
@@ -172,15 +119,8 @@ export const AccountSettingsForm = ({
       return;
     }
 
-    // Optimistically update the bank list
-    // optimisticallyUpdateBank();
-
     toast.success("Success", { description: res.success.msg });
   };
-
-  // if (isLoading) {
-  //   return <FormSkeleton />;
-  // }
 
   return (
     <Form {...form}>

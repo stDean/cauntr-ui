@@ -31,7 +31,7 @@ const LinkTab = ({ Icon, href }: { Icon: LucideIcon; href: string }) => {
 
 export const MobileTab = () => {
   return (
-    <div className="lg:hidden sticky bottom-0 bg-white h-14 flex items-center justify-around border-t ">
+    <div className="lg:hidden sticky bottom-0 bg-white h-14 flex items-center justify-around border-t">
       <LinkTab href="/dashboard" Icon={LayoutDashboard} />
       <LinkTab href="/inventory" Icon={Archive} />
       <LinkTab href="/sales" Icon={Truck} />

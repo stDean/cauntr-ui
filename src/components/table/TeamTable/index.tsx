@@ -21,11 +21,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useCreateUserModal from "@/hooks/useCreateUserModal";
+import { useReduxState } from "@/hooks/useRedux";
 import { Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { createTeamColumns } from "./TeamColumn";
-import useCreateUserModal from "@/hooks/useCreateUserModal";
-import { useReduxState } from "@/hooks/useRedux";
 
 export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
   const createUserModal = useCreateUserModal();
