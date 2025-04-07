@@ -9,7 +9,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-
 import { Pagination } from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +30,6 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
   const createUserModal = useCreateUserModal();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const { token } = useReduxState();
-  // const columns = TeamColumns as ColumnDef<TData, TValue>[];
   const columns = createTeamColumns(token) as ColumnDef<TData, TValue>[];
   const table = useReactTable({
     data,
@@ -59,7 +57,7 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
     <div className="border rounded-lg p-4 space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-        <h1 className="text-xl md:text-2xl">Team Members</h1>
+        <h1 className="text-xl">Team Members</h1>
         <div className="flex items-center gap-3">
           <Input
             placeholder="Filter name..."

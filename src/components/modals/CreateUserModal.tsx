@@ -36,12 +36,9 @@ export const CreateUserModal = () => {
 
   // Reset form when createUserModal.user changes
   useEffect(() => {
-    console.log("Hello");
-
     if (createUserModal.user) {
       const userRole = createUserModal.user.role?.toUpperCase();
       const validatedRole = userRole === "ADMIN" ? "ADMIN" : "EMPLOYEE";
-      console.log({ validatedRole });
 
       form.reset({
         email: createUserModal.user.email,
@@ -63,10 +60,6 @@ export const CreateUserModal = () => {
       });
     }
   }, [createUserModal.user, form]);
-
-  console.log({ a: createUserModal.user });
-  console.log("User role:", createUserModal.user?.role);
-  console.log("Form role:", form.watch("role"));
 
   const handleUserAction = (values: z.infer<typeof createUserSchema>) => {
     startTransition(async () => {

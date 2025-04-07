@@ -22,3 +22,19 @@ export interface TeamTableProps {
   role: string;
   createdAt: Date;
 }
+
+export interface BillingHistoryProps {
+  planName: string;
+  startDate: Date;
+  endDate: Date;
+  amount: number;
+  status: "Pending" | "Awaiting Payment" | "Successful" | "Canceled" | "Failed";
+}
+
+export interface CardDetailsProps {
+  last4: string;
+  card_type: string;
+  exp_month: number;
+  exp_year: number;
+  company: { company_email: string; subscriptionStatus: string };
+}

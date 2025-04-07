@@ -1,4 +1,9 @@
-import { GetCompanyAccount, GetUser, GetUsers } from "@/actions/settings.a";
+import {
+  GetCompanyAccount,
+  GetSubHistory,
+  GetUser,
+  GetUsers,
+} from "@/actions/settings.a";
 import { AccountSettingsForm } from "@/components/form/AccountSettingsForm";
 import { ProfileSettingsForm } from "@/components/form/ProfileSettingsForm";
 import { TeamTable } from "@/components/table/TeamTable";
@@ -14,6 +19,7 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
   const team = await GetUsers({ token: token! });
   const companyAcct = await GetCompanyAccount({ token });
   const user = await GetUser({ token, userId });
+  const subHistory = await GetSubHistory({ token });
 
   const tabs = [
     { label: "Account", query: "account" },
@@ -34,7 +40,12 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
         )}
         {tab === "profile" && <ProfileSettingsForm user={user.success.data} />}
         {tab === "team" && <TeamTable data={team.success.data} />}
-        {tab === "billing" && <BillingAndSubscriptions />}
+        {tab === "billing" && (
+          <BillingAndSubscriptions
+            billingHistory={subHistory.success.billingHistory}
+            cardDetails={subHistory.success.cardDetails}
+          />
+        )}
       </div>
     </div>
   );
