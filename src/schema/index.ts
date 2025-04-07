@@ -65,3 +65,24 @@ export const createUserSchema = z.object({
       message: "Password must contain at least one special character",
     }),
 });
+
+function toISOLocal(date: Date) {
+  const offset = date.getTimezoneOffset() * 60000; // offset in milliseconds
+  return new Date(date.getTime() - offset).toISOString().slice(0, -1);
+}
+
+export const AddProductSchema = z.object({
+  product_name: z.string(),
+  type: z.string(),
+  brand: z.string(),
+  status: z.string(),
+  purchaseDate: z.date().transform((date) => toISOLocal(date)),
+  quantity: z.string(),
+  serial_no: z.string().optional(),
+  description: z.string().optional(),
+  costPrice: z.string(),
+  sellingPrice: z.string(),
+  supplier_name: z.string(),
+  supplier_phone_no: z.string(),
+  supplier_email: z.string().optional(),
+});

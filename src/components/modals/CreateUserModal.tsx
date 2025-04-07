@@ -97,7 +97,7 @@ export const CreateUserModal = () => {
   };
 
   const headerContent = (
-    <h1 className="text-xl md:text-2xl font-semibold">
+    <h1 className="text-xl font-semibold">
       {createUserModal.type === "create" ? "Add User" : "Edit User"}
     </h1>
   );
@@ -105,7 +105,7 @@ export const CreateUserModal = () => {
   const bodyContent = (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleUserAction)}>
-        <div className="space-y-4 p-6">
+        <div className="space-y-4 p-4">
           <CustomInput
             control={form.control}
             label="First Name"

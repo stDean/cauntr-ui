@@ -48,7 +48,7 @@ export function BillingTable<TData, TValue>({ data }: { data: TData[] }) {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="border rounded-lg">
       {paginatedRows.length > 0 && (
         <Table className="border rounded-2xl">
           <TableHeader>
@@ -93,7 +93,7 @@ export function BillingTable<TData, TValue>({ data }: { data: TData[] }) {
         </Table>
       )}
 
-      {paginatedRows.length === 0 && (
+      {paginatedRows.length > 0 && (
         <Pagination currentPage={currentPage} totalPages={totalPages} />
       )}
     </div>

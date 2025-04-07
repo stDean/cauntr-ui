@@ -38,3 +38,10 @@ export interface CardDetailsProps {
   exp_year: number;
   company: { company_email: string; subscriptionStatus: string };
 }
+
+export interface InventoryProps {
+  productType: string;
+  stockCount: number;
+  brand: string;
+  inventoryValue: number;
+}

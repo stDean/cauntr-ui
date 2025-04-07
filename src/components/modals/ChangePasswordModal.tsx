@@ -20,11 +20,11 @@ export const ChangePasswordModal = () => {
   });
 
   const headerContent = (
-    <h1 className="text-xl md:text-2xl font-semibold">Change Password</h1>
+    <h1 className="text-xl font-semibold">Change Password</h1>
   );
 
   const bodyContent = (
-    <div className="p-6 space-y-4">
+    <div className="p-4 space-y-4">
       <div className={cn("flex justify-between items-center relative")}>
         <Input
           name="password"

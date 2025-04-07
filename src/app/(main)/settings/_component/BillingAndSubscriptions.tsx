@@ -1,6 +1,7 @@
 "use client";
 
 import { CancelSubscription, ManageSubscription } from "@/actions/settings.a";
+import { Empty } from "@/components/Empty";
 import { BillingTable } from "@/components/table/BillingTable";
 import { Button } from "@/components/ui/button";
 import { useReduxState } from "@/hooks/useRedux";
@@ -293,12 +294,7 @@ export const BillingAndSubscriptions = ({
         {billingHistory.length > 0 ? (
           <BillingTable data={billingHistory} />
         ) : (
-          <div className="flex flex-col items-center justify-center h-[200px] gap-2">
-            <img src="/empty.png" className="w-20 h-20" />
-            <p className="text-sm text-[#636363]">
-              Oops seems like you currently don’t have an active billing cycle
-            </p>
-          </div>
+          <Empty text="Oops seems like you currently don’t have an active billing cycle" />
         )}
       </div>
     </div>

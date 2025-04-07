@@ -54,11 +54,11 @@ export const AddBankModal = () => {
   };
 
   const headerContent = (
-    <h1 className="text-xl md:text-2xl font-semibold">Add Bank</h1>
+    <h1 className="text-xl font-semibold">Add Bank</h1>
   );
 
   const bodyContent = (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4 p-4">
       <BankInput
         title="Bank Name"
         placeholder="enter bank name."

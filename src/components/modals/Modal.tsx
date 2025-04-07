@@ -57,7 +57,7 @@ export const Modal = ({
           >
             {/* Header */}
             <div
-              className={`flex items-center p-6 rounded-t relative border-b-[1px] ${lessPadd} ${
+              className={`flex items-center py-3 px-4 rounded-t relative border-b-[1px] ${lessPadd} ${
                 addStyle2 && "sticky top-0 bg-white z-10"
               }`}
             >

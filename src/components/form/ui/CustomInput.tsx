@@ -22,11 +22,12 @@ interface CustomInputProps {
   withSpan?: boolean;
   add?: boolean;
   profile?: boolean;
+  type?: string;
 }
 
 /**
  * CustomInput is a reusable form input component that integrates with a form control system.
- * It supports various configurations such as password visibility toggling, custom labels, 
+ * It supports various configurations such as password visibility toggling, custom labels,
  * and conditional styling based on props.
  *
  * @param {object} props - The properties for the CustomInput component.
@@ -54,6 +55,7 @@ export const CustomInput = ({
   withSpan,
   add,
   profile,
+  type,
 }: CustomInputProps) => {
   return (
     <FormField
@@ -128,7 +130,7 @@ export const CustomInput = ({
                   className={cn(
                     "input-text-16 placeholder:text-16 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 py-5"
                   )}
-                  type="text"
+                  type={type || "text"}
                   {...field}
                   disabled={disabled}
                 />
