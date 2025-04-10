@@ -169,3 +169,39 @@ export const CreateProducts = async ({
     return { error: "Something went wrong." };
   }
 };
+
+export const GetProductByName = async ({
+  token,
+  userId,
+  brand,
+  type,
+  name,
+}: {
+  token: string;
+  userId: string;
+  brand: string;
+  type: string;
+  name: string;
+}) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/related/${type}/${brand}/${name}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};

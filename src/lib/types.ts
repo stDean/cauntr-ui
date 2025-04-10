@@ -40,8 +40,19 @@ export interface CardDetailsProps {
 }
 
 export interface InventoryProps {
+  productName: string;
   productType: string;
   stockCount: number;
   brand: string;
   inventoryValue: number;
+}
+
+export interface ProductType {
+  productName:string;
+  brand: string;
+  type: string;
+  quantity: number;
+  sellingPrice: string;
+  sku: string;
+  serialNo: string;
 }

@@ -1,19 +1,33 @@
 "use client";
 
 import { useReduxState } from "@/hooks/useRedux";
-import { Bell, Settings } from "lucide-react";
+import { Bell, ChevronRight, Settings } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const NavBar = () => {
+  const searchParams = useSearchParams();
   const path = usePathname();
   const { loggedInUser: user } = useReduxState();
   const a = path.split("/")[1].toUpperCase();
 
+  const getName = searchParams.has("name") && searchParams.get("name");
+
   return (
     <div className="flex justify-between items-center w-full mb-4 border-b p-4 lg:p-6">
       {/* LEFT SIDE */}
-      <h1 className="lg:text-xl font-semibold">{a}</h1>
+      <h1
+        className={`text-sm lg:text-xl font-semibold ${
+          getName && "font-normal! flex! gap-1 items-center "
+        }`}
+      >
+        {a}{" "}
+        {getName && (
+          <span className="font-semibold inline-flex items-center">
+            <ChevronRight className="size-4 md:size-6" /> <span>{getName}</span>
+          </span>
+        )}
+      </h1>
 
       {/* RIGHT SIDE */}
       <div className="flex justify-between items-center gap-5">
