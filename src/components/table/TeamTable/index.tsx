@@ -136,7 +136,11 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
       </div>
 
       {/* Pagination */}
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
+      {totalPages > 1 && (
+        <div className="my-4 w-full">
+          <Pagination totalPages={totalPages} currentPage={1} />
+        </div>
+      )}
     </div>
   );
 }

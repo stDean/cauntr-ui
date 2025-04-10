@@ -13,13 +13,13 @@ export const InventoryColumn: ColumnDef<InventoryProps>[] = [
   {
     accessorKey: "stockCount",
     header: () => (
-      <span className="text-xs md:text-sm hidden md:block">Quantity</span>
+      <span className="text-xs md:text-sm">Quantity</span>
     ),
   },
   {
     accessorKey: "inventoryValue",
     header: () => (
-      <span className="text-xs md:text-sm hidden md:block">Value(₦)</span>
+      <span className="text-xs md:text-sm">Value(₦)</span>
     ),
   },
 ];

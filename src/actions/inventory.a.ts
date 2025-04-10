@@ -127,3 +127,45 @@ export const CreateProduct = async ({
     return { error: "Something went wrong." };
   }
 };
+
+export const CreateProducts = async ({
+  token,
+  products,
+  userId,
+}: {
+  token: string;
+  products: Array<unknown>;
+  userId: string;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/create/bulk`,
+      products,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.status === 201) {
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+    }
+
+    return { success: res.data.data.length > 0, error: res.data.errors };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};

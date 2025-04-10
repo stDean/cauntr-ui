@@ -90,7 +90,7 @@ export const BillingAndSubscriptions = ({
   cardDetails: CardDetailsProps;
 }) => {
   const [type, setType] = useState<"monthly" | "yearly">("monthly");
-  const [isPending, startTransaction] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const { token } = useReduxState();
   const router = useRouter();
   const classStyle = "border rounded-md p-4 md:p-6 bg-white border-[#EEEEEE]";
@@ -101,7 +101,7 @@ export const BillingAndSubscriptions = ({
   )}`;
 
   const manageSubscription = () => {
-    startTransaction(async () => {
+    startTransition(async () => {
       const res = await ManageSubscription({ token });
       if (res.error) {
         toast.error("Error", { description: res.error });
@@ -113,7 +113,7 @@ export const BillingAndSubscriptions = ({
   };
 
   const cancelSubscription = () => {
-    startTransaction(async () => {
+    startTransition(async () => {
       const res = await CancelSubscription({ token });
       if (res.error) {
         toast.error("Error", { description: res.error });

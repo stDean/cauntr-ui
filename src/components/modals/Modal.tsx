@@ -43,7 +43,9 @@ export const Modal = ({
 
   return (
     <div className="justify-center items-center flex overflow-x-hidden overflow-y-hidden fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800/70">
-      <div className="relative w-[350px] md:w-[550px] my-6 mx-auto h-fit lg:h-auto md:h-auto">
+      <div
+        className={`relative w-[350px] md:w-[550px] my-6 mx-auto h-fit lg:h-auto md:h-auto ${addStyle}`}
+      >
         <div
           className={`translate duration-300 h-full ${
             showModal ? "translate-y-0" : "translate-y-full"

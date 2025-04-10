@@ -12,7 +12,7 @@ export const TabNavigation = ({
 }) => {
   return (
     <div className="border-b">
-      <div className="my-2 px-10 flex gap-4 text-xs">
+      <div className="my-2 px-6 flex gap-4 text-xs">
         {tabs.map(({ label, query }) => (
           <Link key={query} href={`${basePath}?q=${query}`} className="m-0">
             <div>

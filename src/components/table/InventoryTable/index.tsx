@@ -46,7 +46,7 @@ export function InventoryTable<TData, TValue>({
   });
 
   const searchParams = useSearchParams();
-  const rowsPerPage = 6;
+  const rowsPerPage = 10;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -58,40 +58,43 @@ export function InventoryTable<TData, TValue>({
 
   return (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div>
           <p className="text-xl">Inventory</p>
           <p className="text-sm text-[#636363]">
             Monitor, review and manage stock levels
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex md:items-center gap-3 flex-col md:flex-row">
           <Input
             placeholder="search brand..."
             value={(table.getColumn("brand")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("brand")?.setFilterValue(event.target.value)
             }
-            className="w-[250px] lg:w-[350px] text-xs md:text-sm"
+            className="w-full lg:w-[350px] text-xs md:text-sm"
           />
-          <Button
-            variant={"outline_blue"}
-            className="text-sm cursor-pointer"
-            size={"sm"}
-            onClick={() => {
-              console.log("Sell products");
-            }}
-          >
-            Sell Product(s)
-          </Button>
-          <Button
-            variant={"cauntr_blue"}
-            className="text-sm cursor-pointer"
-            size={"sm"}
-            onClick={() => addProductModal.onOpen("click", suppliers)} 
-          >
-            Add Product(s)
-          </Button>
+
+          <div className="space-x-3 space-y-3">
+            <Button
+              variant={"outline_blue"}
+              className="text-sm cursor-pointer"
+              size={"sm"}
+              onClick={() => {
+                console.log("Sell products");
+              }}
+            >
+              Sell Product(s)
+            </Button>
+            <Button
+              variant={"cauntr_blue"}
+              className="text-sm cursor-pointer"
+              size={"sm"}
+              onClick={() => addProductModal.onOpen("click", suppliers)}
+            >
+              Add Product(s)
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -143,8 +146,10 @@ export function InventoryTable<TData, TValue>({
         <Empty text="No products found in your inventory." />
       )}
 
-      {paginatedRows.length > 0 && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      {paginatedRows.length > 0 && totalPages > 1 && (
+        <div className="my-4 w-full">
+          <Pagination totalPages={totalPages} currentPage={1} />
+        </div>
       )}
     </div>
   );
