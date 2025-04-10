@@ -9,7 +9,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-
 import { Pagination } from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,17 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useCreateUserModal from "@/hooks/useCreateUserModal";
+import { useReduxState } from "@/hooks/useRedux";
 import { Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { createTeamColumns } from "./TeamColumn";
-import useCreateUserModal from "@/hooks/useCreateUserModal";
-import { useReduxState } from "@/hooks/useRedux";
 
 export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
   const createUserModal = useCreateUserModal();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const { token } = useReduxState();
-  // const columns = TeamColumns as ColumnDef<TData, TValue>[];
   const columns = createTeamColumns(token) as ColumnDef<TData, TValue>[];
   const table = useReactTable({
     data,
@@ -59,7 +57,7 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
     <div className="border rounded-lg p-4 space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-        <h1 className="text-xl md:text-2xl">Team Members</h1>
+        <h1 className="text-xl">Team Members</h1>
         <div className="flex items-center gap-3">
           <Input
             placeholder="Filter name..."
@@ -83,54 +81,66 @@ export function TeamTable<TData, TValue>({ data }: { data: TData[] }) {
       </div>
 
       {/* Main Table */}
-      <Table className="border rounded-2xl">
-        <TableHeader>
-          {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : (
-                      <div className="flex items-center gap-2">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                      </div>
-                    )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-
-        <TableBody>
-          {paginatedRows.length ? (
-            paginatedRows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="text-xs">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+      <div className="border rounded-lg">
+        <Table>
+          <TableHeader>
+            {table?.getHeaderGroups()?.map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <div className="flex items-center gap-2">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
+                      )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {paginatedRows.length ? (
+              paginatedRows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-xs">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Pagination */}
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
+      {totalPages > 1 && (
+        <div className="my-4 w-full">
+          <Pagination totalPages={totalPages} currentPage={1} />
+        </div>
+      )}
     </div>
   );
 }

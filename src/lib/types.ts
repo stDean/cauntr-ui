@@ -19,6 +19,40 @@ export interface TeamTableProps {
   lastName?: string;
   email: string;
   phone?: string;
-  Role: string;
+  role: string;
   createdAt: Date;
+}
+
+export interface BillingHistoryProps {
+  planName: string;
+  startDate: Date;
+  endDate: Date;
+  amount: number;
+  status: "Pending" | "Awaiting Payment" | "Successful" | "Canceled" | "Failed";
+}
+
+export interface CardDetailsProps {
+  last4: string;
+  card_type: string;
+  exp_month: number;
+  exp_year: number;
+  company: { company_email: string; subscriptionStatus: string };
+}
+
+export interface InventoryProps {
+  productName: string;
+  productType: string;
+  stockCount: number;
+  brand: string;
+  inventoryValue: number;
+}
+
+export interface ProductType {
+  productName:string;
+  brand: string;
+  type: string;
+  quantity: number;
+  sellingPrice: string;
+  sku: string;
+  serialNo: string;
 }

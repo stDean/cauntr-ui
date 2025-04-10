@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -8,12 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  FormField,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { Control, FieldPath } from "react-hook-form";
@@ -27,7 +27,7 @@ interface CustomSelectProps {
   disabled?: boolean;
 }
 
-export const CustomSelect = <T,>({
+export const CustomSelect = ({
   control,
   name,
   label,

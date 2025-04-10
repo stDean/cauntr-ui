@@ -12,6 +12,10 @@ export const CACHE_TAGS = {
   user: "user",
   users: "users",
   companyAccount: "companyAccount",
+  subscriptionHistory: "subscriptionHistory",
+  inventoryProducts: "inventoryProducts",
+  inventoryStats: "inventoryStats",
+  suppliers: "suppliers",
 } as const;
 
 /**

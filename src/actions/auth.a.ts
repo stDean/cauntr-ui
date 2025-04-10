@@ -71,6 +71,12 @@ export const VerifyOTP = async ({
         httpOnly: true,
         secure: true,
       });
+
+      cookieStore.set("userId", res.data.user.id, {
+        maxAge: 60 * 60 * 24 * 7,
+        httpOnly: true,
+        secure: true,
+      });
     }
 
     return { success: res.data };
@@ -142,6 +148,12 @@ export const Login = async ({
       });
 
       cookieStore.set("role", res.data.role, {
+        maxAge: 60 * 60 * 24 * 7,
+        httpOnly: true,
+        secure: true,
+      });
+
+      cookieStore.set("userId", res.data.user.id, {
         maxAge: 60 * 60 * 24 * 7,
         httpOnly: true,
         secure: true,

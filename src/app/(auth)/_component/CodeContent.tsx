@@ -4,7 +4,7 @@ import { ResendOTP, VerifyOTP } from "@/actions/auth.a";
 import { useAppDispatch } from "@/app/redux";
 import { Button } from "@/components/ui/button";
 import { useReduxState } from "@/hooks/useRedux";
-import { SET_TOKEN } from "@/state";
+import { SET_LOGGED_IN_USER, SET_TOKEN } from "@/state";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -27,7 +27,8 @@ export const CodeContent = () => {
         otp: value,
       });
       if (success) {
-        dispatch(SET_TOKEN(success.jwtToken));
+        dispatch(SET_TOKEN(success.token));
+        dispatch(SET_LOGGED_IN_USER(success.user));
 
         router.push("/dashboard");
         toast.success("Success", {

@@ -34,19 +34,18 @@ export const AccountSettingsSchema = z.object({
 });
 
 export const ProfileSettingSchema = z.object({
-  firstName : z.optional(z.string()),
-  lastName : z.optional(z.string()),
+  firstName: z.optional(z.string()),
+  lastName: z.optional(z.string()),
   email: z.string().email(),
-  role : z.optional(z.string()),
-  password :z.optional(z.string()),
-})
+  role: z.enum(["EMPLOYEE", "ADMIN"], {
+    errorMap: () => ({ message: "Role is required" }),
+  }),
+  password: z.optional(z.string()),
+});
 
 export const createUserSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: "First name is required" })
-    .optional(),
-  lastName: z.string().min(1, { message: "Last name is required" }).optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   email: z.string().email({ message: "Invalid email address" }),
   phone: z.string().optional().optional(),
   role: z.enum(["EMPLOYEE", "ADMIN"], {
@@ -65,4 +64,25 @@ export const createUserSchema = z.object({
     .regex(/[@$!%*?&#]/, {
       message: "Password must contain at least one special character",
     }),
+});
+
+function toISOLocal(date: Date) {
+  const offset = date.getTimezoneOffset() * 60000; // offset in milliseconds
+  return new Date(date.getTime() - offset).toISOString().slice(0, -1);
+}
+
+export const AddProductSchema = z.object({
+  product_name: z.string(),
+  type: z.string(),
+  brand: z.string(),
+  status: z.string(),
+  purchaseDate: z.date().transform((date) => toISOLocal(date)),
+  quantity: z.string(),
+  serial_no: z.string().optional(),
+  description: z.string().optional(),
+  costPrice: z.string(),
+  sellingPrice: z.string(),
+  supplier_name: z.string(),
+  supplier_phone_no: z.string(),
+  supplier_email: z.string().optional(),
 });
