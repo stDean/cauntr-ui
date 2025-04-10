@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Form } from '../ui/form'
@@ -8,8 +10,9 @@ import { Button } from '../ui/button'
 import { ProfileSettingSchema } from '@/schema'
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useReduxState } from '@/hooks/useRedux'
 
-export const ProfileSettingsForm = () => {
+export const ProfileSettingsForm = () => {  
     const [canEdit, setCanEdit] = useState<boolean>(false)
 
      const form = useForm<z.infer<typeof ProfileSettingSchema>>({
