@@ -70,12 +70,13 @@ export const CustomInput = ({
         >
           <FormLabel
             className={cn(
-              "text-xs w-full max-w-[280px] font-medium text-gray-700 relative",
-              { "w-28": profile }
+              "text-xs w-full max-w-[280px] font-medium text-[#636363] relative",
+              { "w-28": profile },
+              { "flex items-center": withSpan }
             )}
           >
-            {label}
-            {withSpan && <span className="text-red-500 absolute">*</span>}
+            <p>{label}</p>
+            {withSpan && <p className="text-red-500 -ml-1 ">*</p>}
           </FormLabel>
           <div
             className={cn("flex w-full flex-col", {

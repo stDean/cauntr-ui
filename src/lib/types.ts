@@ -48,11 +48,26 @@ export interface InventoryProps {
 }
 
 export interface ProductType {
-  productName:string;
+  productName: string;
   brand: string;
   type: string;
   quantity: number;
   sellingPrice: string;
   sku: string;
   serialNo: string;
+}
+
+export interface SellProductProps {
+  id: string;
+  productName: string;
+  qty: number;
+  price: string;
+}
+
+export interface CustomerProps {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  transactionCount: number;
 }

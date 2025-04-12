@@ -20,7 +20,7 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { InventoryColumn } from "./InventoryColumn";
 import useAddProductModal from "@/hooks/useAddProductModal";
@@ -32,6 +32,7 @@ export function InventoryTable<TData, TValue>({
   data: TData[];
   suppliers: any[];
 }) {
+  const router = useRouter();
   const addProductModal = useAddProductModal();
   const columns = InventoryColumn as ColumnDef<TData, TValue>[];
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -80,9 +81,7 @@ export function InventoryTable<TData, TValue>({
               variant={"outline_blue"}
               className="text-sm cursor-pointer"
               size={"sm"}
-              onClick={() => {
-                console.log("Sell products");
-              }}
+              onClick={() => router.push("/sell")}
             >
               Sell Product(s)
             </Button>

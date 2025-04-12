@@ -57,7 +57,7 @@ export default async function InventoryPage() {
   });
 
   return (
-    <div className="px-4 mb-18 lg:my-4">
+    <div className="px-4 mb-18 lg:my-2">
       <Card cardData={cardDetails} />
 
       <InventoryTable
