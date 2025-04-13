@@ -2,23 +2,28 @@
 import { UserProps } from "@/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface CartItem {
+  productName: string;
+  price: string;
+  qty: string;
+}
+
 export interface InitialStateTypes {
   token: "";
   email: "";
   loggedInUser: UserProps | null;
-  previewProducts: any[] | []
-  // previewProducts: [];
-  // singleData: ProductProps | null;
+  previewProducts: any[];
+  buyer: { name: string; email?: string; phone: string } | null;
+  cartItems: CartItem[];
 }
 
 const initialState: InitialStateTypes = {
   token: "",
   email: "",
   loggedInUser: null,
-  previewProducts: []
-  // previewProducts: [],
-  // singleData: null,
-  // user: null,
+  previewProducts: [],
+  buyer: null,
+  cartItems: [],
 };
 
 export const globalSlice = createSlice({
@@ -34,15 +39,18 @@ export const globalSlice = createSlice({
     SET_LOGGED_IN_USER: (state, action: PayloadAction<any>) => {
       state.loggedInUser = action.payload;
     },
-    SET_PREVIEW_DATA: (state, action: PayloadAction<any> ) => {
-      state.previewProducts = action.payload
-    }
-    // setPreviewProducts: (state, action: PayloadAction<any>) => {
-    //   state.previewProducts = action.payload;
-    // },
-    // setSingleData: (state, action: PayloadAction<any>) => {
-    //   state.singleData = action.payload;
-    // },
+    SET_PREVIEW_DATA: (state, action: PayloadAction<any>) => {
+      state.previewProducts = action.payload;
+    },
+    SET_BUYER: (state, action: PayloadAction<any>) => {
+      state.buyer = action.payload;
+    },
+    SET_CART: (state, action: PayloadAction<any>) => {
+      console.log("Previous cartItems:", state.cartItems); // Debug log
+      state.cartItems = Array.isArray(state.cartItems)
+        ? [...state.cartItems, action.payload]
+        : [action.payload];
+    },
   },
 });
 
@@ -50,9 +58,9 @@ export const {
   SET_LOGGED_IN_USER,
   SET_TOKEN,
   SET_EMAIL,
-  SET_PREVIEW_DATA
-  // setPreviewProducts,
-  // setSingleData,
+  SET_PREVIEW_DATA,
+  SET_BUYER,
+  SET_CART,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
