@@ -25,7 +25,12 @@ import {
 import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import { useReduxState } from "@/hooks/useRedux";
 import { CustomerProps } from "@/lib/types";
-import { SET_BUYER } from "@/state";
+import {
+  ADD_TO_QUANTITY,
+  DELETE_CART_ITEM,
+  REMOVE_FROM_CART_QTY,
+  SET_BUYER,
+} from "@/state";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -38,13 +43,14 @@ import {
   Minus,
   MoveLeft,
   MoveRight,
+  Percent,
   Plus,
   Trash2,
   UserSearch,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { SellProductColumn } from "./SellColumn";
 
 export function SellProductsTable<TData, TValue>({
@@ -56,11 +62,15 @@ export function SellProductsTable<TData, TValue>({
 }) {
   const router = useRouter();
   const addCustomer = useAddCustomerModal();
+  const [isPending, startTransition] = useTransition();
   const [showCustomers, setShowCustomers] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [filteredCustomer, setFilteredCustomer] = useState(customers);
   const [customerSearch, setCustomerSearch] = useState("");
   const [payFull, setPayFull] = useState(false);
+  const [payTax, setPayTax] = useState(false);
+  const [amountPaid, setAmountPaid] = useState("");
+  const [taxFee, setTaxFee] = useState("");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
@@ -111,7 +121,31 @@ export function SellProductsTable<TData, TValue>({
   const first = nameSplit && nameSplit![0][0];
   const second = nameSplit && nameSplit![1][0];
 
-  console.log({});
+  const subTotal = payFull
+    ? cartItems.reduce((acc, i) => {
+        return acc + parseFloat(i.price);
+      }, 0)
+    : amountPaid;
+
+  const total = payTax
+    ? !isNaN(parseFloat(subTotal as string)) &&
+      !isNaN(parseFloat(taxFee || "0"))
+      ? parseFloat(subTotal as string) +
+        (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) / 100
+      : "0.00"
+    : !isNaN(parseFloat(subTotal as string))
+    ? subTotal
+    : "0.00";
+
+  const handleSellProduct = () => {
+    startTransition(async () => {
+      if (cartItems.length === 1) {
+        console.log("Use sell product route");
+      } else {
+        console.log("Use sell products route");
+      }
+    });
+  };
 
   return (
     <div className="max-w-7xl my-5 lg:mx-auto space-y-4 mx-2">
@@ -323,14 +357,16 @@ export function SellProductsTable<TData, TValue>({
                 className="p-2 bg-[#F8F8F8] flex justify-between items-center mb-2"
                 key={`${c.productName} - ${c.price} - ${i}`}
               >
-                <p className="text-[#636363]">Hello</p>
+                <p className="text-[#636363] text-sm font-semibold">
+                  {c.productName}
+                </p>
                 <div className="flex flex-col justify-between items-center space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <p className="text-[#808080]">#1200.00</p>
+                    <p className="text-[#808080]">#{c.price}</p>
                     <Trash2
                       className="text-red-500 size-4 cursor-pointer"
                       onClick={() => {
-                        console.log("Clear from card");
+                        dispatch(DELETE_CART_ITEM({ id: c.id }));
                       }}
                     />
                   </div>
@@ -339,17 +375,15 @@ export function SellProductsTable<TData, TValue>({
                     <Plus
                       className="size-4 text-[#999999] cursor-pointer"
                       strokeWidth={4}
-                      onClick={() => {
-                        console.log("Add To Quantity");
-                      }}
+                      onClick={() => dispatch(ADD_TO_QUANTITY({ id: c.id }))}
                     />{" "}
-                    1
+                    {c.qty}
                     <Minus
                       className="size-4 text-[#999999] cursor-pointer"
                       strokeWidth={4}
-                      onClick={() => {
-                        console.log("Remove To Quantity");
-                      }}
+                      onClick={() =>
+                        dispatch(REMOVE_FROM_CART_QTY({ id: c.id }))
+                      }
                     />
                   </div>
                 </div>
@@ -394,11 +428,18 @@ export function SellProductsTable<TData, TValue>({
                     small
                     onClick={() => {
                       setPayFull((prev) => !prev);
+                      setAmountPaid("");
                     }}
                   />
                 </div>
               </div>
-              <Input placeholder="enter amount paid" disabled={payFull} />
+              <Input
+                placeholder="enter amount paid"
+                disabled={payFull}
+                name="amountPaid"
+                value={amountPaid}
+                onChange={(e) => setAmountPaid(e.target.value)}
+              />
             </div>
           </div>
 
@@ -407,7 +448,7 @@ export function SellProductsTable<TData, TValue>({
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <p className="text-sm font-semibold text-[#808080]">Sub-total</p>
-              <p className="text-sm font-semibold text-[#808080]">0.00</p>
+              <p className="text-sm font-semibold text-[#808080]">{subTotal}</p>
             </div>
 
             <hr />
@@ -417,15 +458,27 @@ export function SellProductsTable<TData, TValue>({
               <div className="flex items-center space-x-2">
                 <Switch
                   onClick={() => {
-                    setPayFull((prev) => !prev);
+                    setPayTax((prev) => !prev);
+                    setTaxFee("");
                   }}
                 />
               </div>
             </div>
+            {payTax && (
+              <div className="border rounded-lg flex justify-between items-center ">
+                <Input
+                  className="!border-0 !ring-0 focus:!border-0 focus:!ring-0"
+                  value={taxFee}
+                  name="taxFee"
+                  onChange={(e) => setTaxFee(e.target.value)}
+                />
+                <Percent className="size-5 text-[#999999] mr-2" />
+              </div>
+            )}
 
             <div className="flex items-center justify-between">
               <p>Total</p>
-              <p>0.00</p>
+              <p>{total}</p>
             </div>
           </div>
 
@@ -436,7 +489,10 @@ export function SellProductsTable<TData, TValue>({
               variant={"cauntr_blue"}
               size={"sm"}
               className="w-full cursor-pointer"
-              disabled={!buyer || cartItems.length <= 0}
+              disabled={!buyer || cartItems.length <= 0 || isPending}
+              isLoading={isPending}
+              loadingText="please wait"
+              onClick={handleSellProduct}
             >
               Sell Products <MoveRight className="ml-2" />
             </Button>

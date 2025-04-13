@@ -5,7 +5,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface CartItem {
   productName: string;
   price: string;
-  qty: string;
+  qty: number;
+  id: string;
+  totalQty: number;
 }
 
 export interface InitialStateTypes {
@@ -46,10 +48,53 @@ export const globalSlice = createSlice({
       state.buyer = action.payload;
     },
     SET_CART: (state, action: PayloadAction<any>) => {
-      console.log("Previous cartItems:", state.cartItems); // Debug log
-      state.cartItems = Array.isArray(state.cartItems)
-        ? [...state.cartItems, action.payload]
-        : [action.payload];
+      if (action.payload && action.payload.id) {
+        const exists = state.cartItems.some(
+          (item) => item.id === action.payload.id
+        );
+        if (!exists) {
+          state.cartItems = [...state.cartItems, action.payload];
+        }
+      }
+    },
+    DELETE_CART_ITEM: (state, action: PayloadAction<any>) => {
+      state.cartItems = state.cartItems.filter(
+        (item) => item.id !== action.payload.id
+      );
+    },
+    REMOVE_FROM_CART_QTY: (state, action: PayloadAction<{ id: string }>) => {
+      state.cartItems = state.cartItems
+        .map((item) => {
+          if (item.id === action.payload.id) {
+            const currentQty = item.qty;
+            const unitPrice = parseFloat(item.price) / currentQty;
+            const newQty = currentQty - 1;
+
+            return {
+              ...item,
+              qty: newQty,
+              price: (unitPrice * newQty).toFixed(2),
+            };
+          }
+          return item;
+        })
+        .filter((item) => item.qty > 0);
+    },
+    ADD_TO_QUANTITY: (state, action: PayloadAction<{ id: string }>) => {
+      state.cartItems = state.cartItems.map((item) => {
+        if (item.id === action.payload.id) {
+          const currentQty = item.qty;
+          const unitPrice = parseFloat(item.price) / currentQty;
+          const newQty = Math.min(currentQty + 1, item.totalQty);
+
+          return {
+            ...item,
+            qty: newQty,
+            price: (unitPrice * newQty).toFixed(2),
+          };
+        }
+        return item;
+      });
     },
   },
 });
@@ -61,6 +106,9 @@ export const {
   SET_PREVIEW_DATA,
   SET_BUYER,
   SET_CART,
+  ADD_TO_QUANTITY,
+  DELETE_CART_ITEM,
+  REMOVE_FROM_CART_QTY,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
