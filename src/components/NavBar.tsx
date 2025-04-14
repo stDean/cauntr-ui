@@ -5,7 +5,7 @@ import { Bell, ChevronRight, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export const NavBar = () => {
+export const NavBar = ({ title }: { title?: string }) => {
   const searchParams = useSearchParams();
   const path = usePathname();
   const { loggedInUser: user } = useReduxState();
@@ -14,14 +14,15 @@ export const NavBar = () => {
   const getName = searchParams.has("name") && searchParams.get("name");
 
   return (
-    <div className="flex justify-between items-center w-full mb-4 border-b p-4 lg:p-6">
+    <div className="flex justify-between items-center w-full mb-2 border-b p-4 bg-white">
       {/* LEFT SIDE */}
       <h1
         className={`text-sm lg:text-xl font-semibold ${
           getName && "font-normal! flex! gap-1 items-center "
         }`}
       >
-        {a}{" "}
+        {title ? title : a}
+        {/* {a}{" "} */}
         {getName && (
           <span className="font-semibold inline-flex items-center">
             <ChevronRight className="size-4 md:size-6" /> <span>{getName}</span>

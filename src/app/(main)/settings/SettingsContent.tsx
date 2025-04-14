@@ -52,8 +52,8 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
         {tab === "team" && <TeamTable data={team.success.data} />}
         {tab === "billing" && (
           <BillingAndSubscriptions
-            billingHistory={subHistory.success.billingHistory}
-            cardDetails={subHistory.success.cardDetails}
+            billingHistory={subHistory.success?.billingHistory}
+            cardDetails={subHistory.success?.cardDetails}
           />
         )}
       </div>

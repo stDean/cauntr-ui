@@ -5,6 +5,7 @@ export interface UserProps {
   lastName?: string | null;
   role: "EMPLOYEE" | "ADMIN";
   phone?: string | null;
+  companyStatus: string;
 }
 
 export interface UrlQueryParams {
@@ -48,7 +49,7 @@ export interface InventoryProps {
 }
 
 export interface ProductType {
-  productName:string;
+  productName: string;
   brand: string;
   type: string;
   quantity: number;
@@ -56,6 +57,7 @@ export interface ProductType {
   sku: string;
   serialNo: string;
 }
+
 
 export interface SalesType {
   salesId: number;
@@ -71,5 +73,31 @@ export interface PaymentHistoryType {
         paymentDate: string;  
         amount: number; 
         paymentMethod: string;
+}
+
+
+export interface SellProductProps {
+  id: string;
+  productName: string;
+  qty: number;
+  price: string;
+  productType: string;
+  brand: string;
+  sn: string;
+  costPrice: string;
+  sku: string;
+}
+
+export interface CustomerProps {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  transactionCount: number;
+}
+
+export interface GroupedCategory {
+  productType: string;
+  brands: string[];
 }
 

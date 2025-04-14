@@ -68,7 +68,7 @@ export const ConfirmationModal = ({
             {/* Footer */}
             <div className=" items-center justify-between gap-3 grid grid-cols-12">
               <Button
-                onClick={onClose}
+                onClick={handleClose}
                 variant={"outline"}
                 className="col-span-6 cursor-pointer"
                 disabled={isPending}

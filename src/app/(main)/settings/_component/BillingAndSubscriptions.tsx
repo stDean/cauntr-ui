@@ -1,6 +1,10 @@
 "use client";
 
-import { CancelSubscription, ManageSubscription } from "@/actions/settings.a";
+import {
+  CancelSubscription,
+  CreateSubscription,
+  ManageSubscription,
+} from "@/actions/settings.a";
 import { Empty } from "@/components/Empty";
 import { BillingTable } from "@/components/table/BillingTable";
 import { Button } from "@/components/ui/button";
@@ -19,18 +23,22 @@ const BillingCard = ({
   planDetails,
   managePlan,
   cancelPlan,
+  createPlan,
   type,
   price,
   daysLeft,
+  status,
 }: {
   planName: string;
   current?: boolean;
   planDetails: string[];
   managePlan?: () => void;
   cancelPlan?: () => void;
+  createPlan?: () => void;
   type: string;
   price: string;
   daysLeft: number;
+  status: string;
 }) => {
   return (
     <div
@@ -63,10 +71,20 @@ const BillingCard = ({
         <div className="mt-auto w-full">
           <Button
             className={cn("w-full cursor-pointer", {})}
-            onClick={current ? cancelPlan : managePlan}
+            onClick={
+              current
+                ? cancelPlan
+                : status !== "ACTIVE"
+                ? createPlan
+                : managePlan
+            }
             variant={current ? "outline_red" : "default"}
           >
-            {current ? "Cancel Plan" : "Change Plan"}
+            {current
+              ? "Cancel Plan"
+              : status !== "ACTIVE"
+              ? "Choose Plan"
+              : "Change Plan"}
           </Button>
         </div>
       </div>
@@ -91,14 +109,15 @@ export const BillingAndSubscriptions = ({
 }) => {
   const [type, setType] = useState<"monthly" | "yearly">("monthly");
   const [isPending, startTransition] = useTransition();
-  const { token } = useReduxState();
+  const { token, loggedInUser } = useReduxState();
   const router = useRouter();
   const classStyle = "border rounded-md p-4 md:p-6 bg-white border-[#EEEEEE]";
-  const card_type = cardDetails.card_type.split("");
-  const card = card_type[0].toUpperCase() + card_type.slice(1).join("");
-  const expiry = `${cardDetails.exp_month}/${String(cardDetails.exp_year).slice(
-    2
-  )}`;
+  const card_type = cardDetails && cardDetails.card_type.split("");
+  const card =
+    card_type && card_type[0].toUpperCase() + card_type.slice(1).join("");
+  const expiry =
+    cardDetails &&
+    `${cardDetails.exp_month}/${String(cardDetails.exp_year).slice(2)}`;
 
   const manageSubscription = () => {
     startTransition(async () => {
@@ -124,10 +143,31 @@ export const BillingAndSubscriptions = ({
     });
   };
 
-  const companyStatus = cardDetails.company.subscriptionStatus !== "ACTIVE";
+  const createSubscription = ({
+    tier,
+    tierType,
+  }: {
+    tier: string;
+    tierType: string;
+  }) => {
+    startTransition(async () => {
+      const res = await CreateSubscription({ token, tier, tierType });
+      if (res.error) {
+        toast.error("Error", { description: res.error });
+      }
+
+      const url = res.success.stripePaymentUrl;
+      router.push(url);
+    });
+  };
+
+  const companyStatus =
+    cardDetails && cardDetails.company.subscriptionStatus !== "ACTIVE";
   const currentPlan =
-    billingHistory.length > 0 && billingHistory[0].planName.split("(");
-  const planName = currentPlan && currentPlan[0].trim();
+    billingHistory &&
+    billingHistory.length > 0 &&
+    billingHistory[0].planName.split("(");
+  const planName = currentPlan ? currentPlan[0].trim() : "";
   const planType = currentPlan && currentPlan[1].split(")")[0];
 
   return (
@@ -206,7 +246,16 @@ export const BillingAndSubscriptions = ({
             current={planName === "Personal" && planType === type}
             managePlan={manageSubscription}
             cancelPlan={cancelSubscription}
-            daysLeft={getDateDifference(billingHistory[0].endDate)}
+            createPlan={() =>
+              createSubscription({
+                tier: "personal",
+                tierType: type,
+              })
+            }
+            daysLeft={
+              billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
+            }
+            status={loggedInUser!.companyStatus}
           />
           <BillingCard
             planName="Team Plan"
@@ -220,7 +269,16 @@ export const BillingAndSubscriptions = ({
             current={planName === "Team" && planType === type}
             managePlan={manageSubscription}
             cancelPlan={cancelSubscription}
-            daysLeft={getDateDifference(billingHistory[0].endDate)}
+            createPlan={() =>
+              createSubscription({
+                tier: "team",
+                tierType: type,
+              })
+            }
+            daysLeft={
+              billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
+            }
+            status={loggedInUser!.companyStatus}
           />
           <BillingCard
             planName="Enterprise Plan"
@@ -236,62 +294,75 @@ export const BillingAndSubscriptions = ({
             price={type === "monthly" ? "3000" : "30000"}
             managePlan={manageSubscription}
             cancelPlan={cancelSubscription}
-            daysLeft={getDateDifference(billingHistory[0].endDate)}
+            createPlan={() =>
+              createSubscription({
+                tier: "enterprise",
+                tierType: type,
+              })
+            }
+            daysLeft={
+              billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
+            }
+            status={loggedInUser!.companyStatus}
           />
         </div>
       </div>
 
-      <div className={classStyle}>
-        <div className="flex justify-between items-center">
-          <p className="text-xl">Card Details</p>
-          <Button
-            className="border border-[#0c049b] text-[#0c049b] cursor-pointer  hover:text-[#0c049b]/70"
-            variant={"outline"}
-            size={"sm"}
-            onClick={manageSubscription}
-            isLoading={isPending}
-            disabled={isPending}
-            loadingText="please wait"
-          >
-            Manage Card
-          </Button>
-        </div>
+      {cardDetails && (
+        <div className={classStyle}>
+          <div className="flex justify-between items-center">
+            <p className="text-xl">Card Details</p>
+            <Button
+              className="border border-[#0c049b] text-[#0c049b] cursor-pointer  hover:text-[#0c049b]/70"
+              variant={"outline"}
+              size={"sm"}
+              onClick={manageSubscription}
+              isLoading={isPending}
+              disabled={isPending}
+              loadingText="please wait"
+            >
+              Manage Card
+            </Button>
+          </div>
 
-        <div className="bg-[#f8f8f8] p-4 rounded-lg mt-2 flex gap-3 items-center">
-          <div className="rounded-lg bg-white">
-            {card === "Visa" ? (
-              <Image
-                width={50}
-                height={50}
-                src="/visamain.jpg"
-                alt="visa card"
-                priority
-              />
-            ) : (
-              <Image
-                width={50}
-                height={50}
-                src="/master2.webp"
-                alt="visa card"
-                priority
-              />
-            )}
-          </div>
-          <div>
-            <p className="text-sm font-semibold">
-              {card} ending {cardDetails.last4}
-            </p>
-            <p className="text-sm font-semibold">Expiry {expiry}</p>
-            <p className="text-sm mt-2">{cardDetails.company.company_email}</p>
+          <div className="bg-[#f8f8f8] p-4 rounded-lg mt-2 flex gap-3 items-center">
+            <div className="rounded-lg bg-white">
+              {card === "Visa" ? (
+                <Image
+                  width={50}
+                  height={50}
+                  src="/visamain.jpg"
+                  alt="visa card"
+                  priority
+                />
+              ) : (
+                <Image
+                  width={50}
+                  height={50}
+                  src="/master2.webp"
+                  alt="visa card"
+                  priority
+                />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-semibold">
+                {card} ending {cardDetails && cardDetails.last4}
+              </p>
+              <p className="text-sm font-semibold">Expiry {expiry}</p>
+              <p className="text-sm mt-2">
+                {cardDetails && cardDetails.company.company_email}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className={classStyle}>
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl">Billing History</p>
         </div>
-        {billingHistory.length > 0 ? (
+        {billingHistory && billingHistory.length > 0 ? (
           <BillingTable data={billingHistory} />
         ) : (
           <Empty text="Oops seems like you currently don’t have an active billing cycle" />

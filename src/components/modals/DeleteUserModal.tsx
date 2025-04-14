@@ -16,11 +16,11 @@ export const DeleteUserModal = () => {
   const subText = (
     <>
       Yow want to delete user{" "}
-      <span className="font-semibold">
+      <span className="text-xl">
         {confirmationModal.confirmationData?.firstData}
       </span>{" "}
       with role of{" "}
-      <span className="font-semibold">
+      <span className="text-xl">
         {confirmationModal.confirmationData?.secondData}
       </span>
     </>
