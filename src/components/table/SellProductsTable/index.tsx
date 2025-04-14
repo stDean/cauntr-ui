@@ -1,6 +1,6 @@
 "use client";
 
-import { SellProduct } from "@/actions/inventory.a";
+import { SellProduct, SellProducts } from "@/actions/inventory.a";
 import { useAppDispatch } from "@/app/redux";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -142,8 +142,9 @@ export function SellProductsTable<TData, TValue>({
   }, [customerSearch, customers]); // Add customers to dependencies
 
   const nameSplit = buyer && buyer?.name.split(" ");
+  console.log({ nameSplit });
   const first = nameSplit && nameSplit![0][0];
-  const second = nameSplit && nameSplit![1][0];
+  const second = (nameSplit && nameSplit![1] && nameSplit![1][0]) || "";
 
   const subTotal = payFull
     ? cartItems.reduce((acc, i) => {
@@ -177,6 +178,11 @@ export function SellProductsTable<TData, TValue>({
               paymentMethod: pay.paymentMethod,
               balanceOwed: Number(pay.balance),
             },
+            vat: payTax
+              ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) /
+                100
+              : 0,
+            totalPay: Number(total),
           };
         } else {
           product = {
@@ -193,6 +199,11 @@ export function SellProductsTable<TData, TValue>({
               paymentMethod: pay.paymentMethod,
               balanceOwed: Number(pay.balance),
             },
+            vat: payTax
+              ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) /
+                100
+              : 0,
+            totalPay: Number(total),
           };
         }
 
@@ -205,23 +216,84 @@ export function SellProductsTable<TData, TValue>({
 
         if (res?.error) {
           toast.error("Error", { description: res.error });
-          dispatch(CLEAR_CART());
           setPayFull(false);
           setPayTax(false);
+          setTaxFee("");
+          setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+          dispatch(CLEAR_CART());
+          dispatch(SET_BUYER(null));
           return;
         }
 
         toast.success("Success", { description: res.success.msg });
         setPayFull(false);
         setPayTax(false);
+        setTaxFee("");
+        setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
         dispatch(CLEAR_CART());
+        dispatch(SET_BUYER(null));
       } else {
-        console.log("Use sell products route");
+        let products: {
+          transactions: {
+            sku: string;
+            quantity: number;
+            sellingPrice: number;
+          }[];
+          payment: { paymentMethod: string; balanceOwed: number };
+          customerDetails?: { name: string; phone: string; email: string };
+          vat: number;
+          totalPay: number;
+        } = {
+          transactions: cartItems.map((c) => ({
+            sku: c.sku,
+            quantity: c.qty,
+            sellingPrice: parseFloat(c.price) / c.qty,
+          })),
+          payment: {
+            paymentMethod: pay.paymentMethod,
+            balanceOwed: Number(pay.balance),
+          },
+          vat: payTax
+            ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) / 100
+            : 0,
+          totalPay: Number(total),
+        };
+
+        if (tab === "customer") {
+          products.customerDetails = {
+            name: buyer?.name!,
+            phone: buyer?.phone!,
+            email: buyer?.email || "",
+          };
+        }
+
+        const res = await SellProducts({
+          token,
+          userId: loggedInUser!.id,
+          products,
+        });
+
+        if (res?.error) {
+          toast.error("Error", { description: res.error });
+          setPayFull(false);
+          setPayTax(false);
+          setTaxFee("");
+          setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+          dispatch(CLEAR_CART());
+          dispatch(SET_BUYER(null));
+          return;
+        }
+
+        toast.success("Success", { description: res.success.msg });
+        setPayFull(false);
+        setPayTax(false);
+        setTaxFee("");
+        setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+        dispatch(CLEAR_CART());
+        dispatch(SET_BUYER(null));
       }
     });
   };
-
-  console.log({ cartItems });
 
   const filteredData = table.getRowModel().rows.filter((row) => {
     const uniqueProductTypes = Array.from(new Set(filterCat.productType));
@@ -556,13 +628,13 @@ export function SellProductsTable<TData, TValue>({
                 </p>
                 <div className="flex items-center space-x-2">
                   <Label
-                    htmlFor="paid-full-amount"
+                    htmlFor="payFull"
                     className="!text-[#636363] text-xs mb-1"
                   >
                     Paid Full Amount
                   </Label>
                   <Switch
-                    id="paid-full-amount"
+                    id="payFull"
                     className="!h-[1rem] !w-6"
                     small
                     onClick={() => {
@@ -615,6 +687,7 @@ export function SellProductsTable<TData, TValue>({
               <p className="text-sm text-[#808080]">Tax</p>
               <div className="flex items-center space-x-2">
                 <Switch
+                  id="payTax"
                   onClick={() => {
                     setPayTax((prev) => !prev);
                     setTaxFee("");

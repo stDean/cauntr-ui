@@ -109,6 +109,8 @@ export const CreateProduct = async ({
     if (res.status === 201) {
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
     }
 
     return { success: res.data };
@@ -151,6 +153,8 @@ export const CreateProducts = async ({
     if (res.status === 201) {
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -343,11 +347,31 @@ export const SellProduct = async ({
 export const SellProducts = async ({
   token,
   userId,
+  products,
 }: {
   token: string;
   userId: string;
+  products: any;
 }) => {
   try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/products/bulkSell`,
+      products,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+    }
+
+    return { success: res.data };
   } catch (e: any) {
     // Check if error response exists and handle different status codes
     if (e.response) {
