@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import { useReduxState } from "@/hooks/useRedux";
-import { CustomerProps } from "@/lib/types";
+import { CustomerProps, GroupedCategory } from "@/lib/types";
 import {
   ADD_TO_QUANTITY,
   DELETE_CART_ITEM,
@@ -32,11 +32,13 @@ import {
   SET_BUYER,
 } from "@/state";
 import {
+  Cell,
   ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -52,13 +54,17 @@ import {
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { SellProductColumn } from "./SellColumn";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export function SellProductsTable<TData, TValue>({
   data,
   customers,
+  categories,
 }: {
   data: TData[];
   customers: CustomerProps[];
+  categories: GroupedCategory[];
 }) {
   const router = useRouter();
   const addCustomer = useAddCustomerModal();
@@ -68,9 +74,23 @@ export function SellProductsTable<TData, TValue>({
   const [filteredCustomer, setFilteredCustomer] = useState(customers);
   const [customerSearch, setCustomerSearch] = useState("");
   const [payFull, setPayFull] = useState(false);
+  const [tab, setTab] = useState("customer");
   const [payTax, setPayTax] = useState(false);
-  const [amountPaid, setAmountPaid] = useState("");
+  const [pay, setPay] = useState<{
+    amountPaid: string;
+    balance: string;
+  }>({
+    amountPaid: "",
+    balance: "",
+  });
   const [taxFee, setTaxFee] = useState("");
+  const [filterCat, setFilterCat] = useState<{
+    productType: string[];
+    brand: string[];
+  }>({
+    productType: [],
+    brand: [],
+  });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
@@ -125,7 +145,7 @@ export function SellProductsTable<TData, TValue>({
     ? cartItems.reduce((acc, i) => {
         return acc + parseFloat(i.price);
       }, 0)
-    : amountPaid;
+    : pay.amountPaid;
 
   const total = payTax
     ? !isNaN(parseFloat(subTotal as string)) &&
@@ -146,6 +166,20 @@ export function SellProductsTable<TData, TValue>({
       }
     });
   };
+
+  const filteredData = table.getRowModel().rows.filter((row) => {
+    const matchesProductType = filterCat.productType.length
+      ? filterCat.productType.includes(
+          (row.original as { productType: string }).productType
+        )
+      : true;
+
+    const matchesBrand = filterCat.brand.length
+      ? filterCat.brand.includes((row.original as { brand: string }).brand)
+      : true;
+
+    return matchesProductType && matchesBrand;
+  });
 
   return (
     <div className="max-w-7xl my-5 lg:mx-auto space-y-4 mx-2">
@@ -172,30 +206,57 @@ export function SellProductsTable<TData, TValue>({
       </div>
 
       <div className="grid grid-cols-12 gap-4 overflow-y-scroll h-screen pb-[155px]">
-        <div className="col-span-3 bg-white rounded-lg p-4 sticky h-[580px] top-0 overflow-y-scroll hidden lg:block">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
-          exercitationem ipsa assumenda a alias saepe error voluptate soluta
-          animi? Explicabo id, pariatur at unde qui ipsam voluptate soluta,
-          molestias eligendi recusandae quaerat eos consectetur voluptates,
-          architecto error! Atque, illo odit tempora error sunt et itaque quod
-          aperiam dolorum ducimus commodi beatae dolorem deleniti expedita
-          facilis, eius corrupti! Officia impedit cumque eius nam saepe. Animi,
-          mollitia consectetur quis, officiis repudiandae, nobis accusantium
-          impedit molestias quo corporis ipsum consequatur ab rerum. Ab eius
-          cupiditate esse voluptatem nulla amet fuga ipsam, neque quia, eveniet
-          quod eligendi? Maiores consequuntur animi dolorum qui minima
-          aspernatur tenetur perferendis inventore! Hic nulla ipsum quo maiores
-          fugiat cumque officiis obcaecati dolorem, laboriosam quod libero
-          eveniet earum minima expedita et corporis iusto molestias illo nostrum
-          ipsam enim quis necessitatibus temporibus! Dolor itaque, hic nulla
-          architecto reiciendis, tempore nostrum rerum nesciunt corrupti sunt
-          ducimus voluptatum saepe commodi sed alias eius! Ullam alias, in omnis
-          soluta sapiente repudiandae. Doloremque minima ducimus officiis
-          nostrum atque id libero totam obcaecati amet incidunt suscipit labore
-          quos ut nihil rerum commodi, sunt reiciendis ea necessitatibus
-          corporis harum tempore debitis! Libero provident officiis unde
-          deserunt eius rerum reiciendis odio, ea neque a eveniet nulla.
-          Consequatur, consequuntur!
+        <div className="col-span-3 bg-white rounded-lg p-4 sticky h-[580px] top-0 overflow-y-scroll hidden lg:block space-y-3">
+          <div className="space-y-1">
+            <p className="text-[#636363] text-sm">Category</p>
+            {/* <Input className="focus:!ring-0 focus:!border-0" /> */}
+          </div>
+
+          <div>
+            {categories.map(({ brands, productType }) => (
+              <div key={productType} className="space-y-2 mb-3">
+                <p className="text-[#3B3B3B] text-sm font-semibold">
+                  {productType.toUpperCase()}
+                </p>
+
+                {brands.map((b) => (
+                  <div
+                    className="flex items-center justify-between indent-5"
+                    key={b}
+                  >
+                    <label
+                      htmlFor={b}
+                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[#3B3B3B]"
+                    >
+                      {b}
+                    </label>
+                    <Checkbox
+                      id={b}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setFilterCat((prev) => {
+                          const isChecked =
+                            prev.brand.includes(b) &&
+                            prev.productType.includes(productType);
+
+                          return {
+                            productType: isChecked
+                              ? prev.productType.filter(
+                                  (type) => type !== productType
+                                )
+                              : [...prev.productType, productType],
+                            brand: isChecked
+                              ? prev.brand.filter((brand) => brand !== b)
+                              : [...prev.brand, b],
+                          };
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="col-span-12 md:col-span-8 lg:col-span-6 bg-white rounded-lg p-4 space-y-4">
@@ -224,8 +285,8 @@ export function SellProductsTable<TData, TValue>({
               </TableHeader>
 
               <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
+                {filteredData.length ? (
+                  filteredData.map((row) => (
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
@@ -256,10 +317,29 @@ export function SellProductsTable<TData, TValue>({
         </div>
 
         <div className="lg:col-span-3 md:col-span-4  bg-white rounded-lg p-4 sticky h-fit  max-h-[630px] top-0 overflow-y-scroll hidden md:block space-y-3">
+          <div className="bg-white grid grid-cols-4 border rounded-lg text-sm cursor-pointer">
+            <p
+              className={cn("col-span-2 p-2 text-center  rounded-l-lg", {
+                "bg-black text-white": tab === "customer",
+              })}
+              onClick={() => setTab("customer")}
+            >
+              Customer Sale
+            </p>
+            <p
+              onClick={() => setTab("one_off")}
+              className={cn("col-span-2 p-2 text-center rounded-r-lg", {
+                "bg-black text-white": tab === "one_off",
+              })}
+            >
+              One Off
+            </p>
+          </div>
+
           <div className="space-y-1">
             <p className="text-[#636363] text-sm">Basket</p>
 
-            {!buyer ? (
+            {tab === "one_off" ? null :!buyer ? (
               <div className="">
                 <p className="text-[#636363] text-xs mb-1 font-semibold">
                   Select Customer
@@ -428,18 +508,37 @@ export function SellProductsTable<TData, TValue>({
                     small
                     onClick={() => {
                       setPayFull((prev) => !prev);
-                      setAmountPaid("");
+                      setPay({ amountPaid: "", balance: "" });
                     }}
                   />
                 </div>
               </div>
+
               <Input
                 placeholder="enter amount paid"
                 disabled={payFull}
                 name="amountPaid"
-                value={amountPaid}
-                onChange={(e) => setAmountPaid(e.target.value)}
+                value={pay.amountPaid}
+                onChange={(e) => setPay({ ...pay, amountPaid: e.target.value })}
               />
+
+              {!payFull && (
+                <div className="mt-1">
+                  <p className="text-[#636363] text-xs mb-1 font-semibold">
+                    Balance Owed
+                  </p>
+
+                  <Input
+                    placeholder="enter balance owed"
+                    disabled={payFull}
+                    name="balance"
+                    value={pay.balance}
+                    onChange={(e) =>
+                      setPay({ ...pay, balance: e.target.value })
+                    }
+                  />
+                </div>
+              )}
             </div>
           </div>
 

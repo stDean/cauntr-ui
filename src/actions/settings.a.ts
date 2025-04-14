@@ -5,6 +5,7 @@ import {
   CACHE_TAGS,
   dbCache,
   getGlobalTag,
+  getUserTag,
   revalidateDbCache,
 } from "@/lib/cache";
 import { createUserSchema, ProfileSettingSchema } from "@/schema";
@@ -439,4 +440,37 @@ export const CancelSubscription = async ({ token }: { token: string }) => {
     // Handle any other errors
     return { error: "Something went wrong." };
   }
-}
+};
+
+export const CreateSubscription = async ({
+  token,
+  tier,
+  tierType,
+}: {
+  token: string;
+  tier: string;
+  tierType: string;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/sub/create`,
+      { tier, tierType },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};

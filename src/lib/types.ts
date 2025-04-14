@@ -5,6 +5,7 @@ export interface UserProps {
   lastName?: string | null;
   role: "EMPLOYEE" | "ADMIN";
   phone?: string | null;
+  companyStatus: string;
 }
 
 export interface UrlQueryParams {
@@ -62,6 +63,10 @@ export interface SellProductProps {
   productName: string;
   qty: number;
   price: string;
+  productType: string;
+  brand: string;
+  sn: string;
+  costPrice: string;
 }
 
 export interface CustomerProps {
@@ -70,4 +75,9 @@ export interface CustomerProps {
   email: string;
   phone: string;
   transactionCount: number;
+}
+
+export interface GroupedCategory {
+  productType: string;
+  brands: string[];
 }
