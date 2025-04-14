@@ -5,6 +5,7 @@ import { CreateUserModal } from "@/components/modals/CreateUserModal";
 import { DeleteUserModal } from "@/components/modals/DeleteUserModal";
 import { ChangePasswordModal } from "@/components/modals/ChangePasswordModal";
 import { AddProductModal } from "@/components/modals/AddProductModal";
+import { RecieptModal } from "@/components/modals/RecieptModal";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <DeleteUserModal />
         <ChangePasswordModal />
         <AddProductModal />
+         <RecieptModal /> 
       </>
 
       <DashboardWrapper>{children}</DashboardWrapper>

@@ -58,6 +58,24 @@ export interface ProductType {
   serialNo: string;
 }
 
+
+export interface SalesType {
+  salesId: number;
+  itemsCount: number;
+  dateSold: string;
+  employer: string;
+  costOfSale: number;
+}
+
+
+export interface PaymentHistoryType {
+        paymentId: number;
+        paymentDate: string;  
+        amount: number; 
+        paymentMethod: string;
+}
+
+
 export interface SellProductProps {
   id: string;
   productName: string;
@@ -82,3 +100,4 @@ export interface GroupedCategory {
   productType: string;
   brands: string[];
 }
+
