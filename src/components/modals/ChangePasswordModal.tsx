@@ -20,7 +20,7 @@ export const ChangePasswordModal = () => {
   });
 
   const headerContent = (
-    <h1 className="text-xl font-semibold">Change Password</h1>
+    <h1 className="text-xl">Change Password</h1>
   );
 
   const bodyContent = (

@@ -1,4 +1,5 @@
 import { useAppDispatch } from "@/app/redux";
+import useAddSellingPriceModal from "@/hooks/useAddSellingPriceModal";
 import { SellProductProps } from "@/lib/types";
 import { SET_CART } from "@/state";
 import { ColumnDef } from "@tanstack/react-table";
@@ -37,10 +38,15 @@ export const SellProductColumn: ColumnDef<SellProductProps>[] = [
     cell: ({ row }) => <p className="hidden">{row.original.productType}</p>,
   },
   {
-    accessorKey: "costPrice",
+    accessorKey: "sku",
     header: () => (
-      <span className="text-xs md:text-sm hidden">Cost Price</span>
+      <span className="text-xs md:text-sm hidden">Product Type</span>
     ),
+    cell: ({ row }) => <p className="hidden">{row.original.sku}</p>,
+  },
+  {
+    accessorKey: "costPrice",
+    header: () => <span className="text-xs md:text-sm hidden">Cost Price</span>,
     cell: ({ row }) => <p className="hidden">{row.original.costPrice}</p>,
   },
   {
@@ -48,12 +54,24 @@ export const SellProductColumn: ColumnDef<SellProductProps>[] = [
     header: () => <span className="hidden">Action</span>,
     cell: ({ row }) => {
       const dispatch = useAppDispatch();
-      const { productName, price, id, qty, costPrice } = row.original;
+      const addSellingPrice = useAddSellingPriceModal();
+      const { productName, price, id, qty, costPrice, sn, sku } = row.original;
+
       const handleAddToCart = () => {
         if (price === "0") {
-          console.log("Price is 0 so open a modal!");
+          addSellingPrice.onOpen({
+            productName,
+            costPrice: costPrice || "0",
+            serialNo: sn,
+            id,
+            price,
+            qty: 1,
+            totalQty: qty,
+            sku
+          });
           return;
         }
+        
         dispatch(
           SET_CART({
             productName,
@@ -61,9 +79,11 @@ export const SellProductColumn: ColumnDef<SellProductProps>[] = [
             price,
             id,
             totalQty: qty,
+            sku
           })
         );
       };
+
       return (
         <ShoppingCart
           className="text-[#0C049B] size-4 cursor-pointer"

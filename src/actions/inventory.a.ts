@@ -4,7 +4,7 @@ import { CACHE_TAGS, dbCache, getGlobalTag, getUserTag } from "@/lib/cache";
 import { AddProductSchema } from "@/schema";
 import axios from "axios";
 import { revalidateTag } from "next/cache";
-import { string, z } from "zod";
+import { z } from "zod";
 
 export const GetInventoryItemsByType = async ({ token }: { token: string }) => {
   const cachedFn = dbCache(GetInventoryItemsByTypeInternals, {
@@ -278,6 +278,76 @@ const GetCategoriesIntervals = async ({
     );
 
     return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const SellProduct = async ({
+  token,
+  userId,
+  sku,
+  product,
+}: {
+  token: string;
+  userId: string;
+  sku: string;
+  product: any;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/products/${sku}/sell`,
+      product,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
+      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+    }
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const SellProducts = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
   } catch (e: any) {
     // Check if error response exists and handle different status codes
     if (e.response) {

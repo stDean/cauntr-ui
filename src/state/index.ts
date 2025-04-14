@@ -8,6 +8,7 @@ interface CartItem {
   qty: number;
   id: string;
   totalQty: number;
+  sku: string;
 }
 
 export interface InitialStateTypes {
@@ -96,6 +97,9 @@ export const globalSlice = createSlice({
         return item;
       });
     },
+    CLEAR_CART: (state) => {
+      state.cartItems = [];
+    },
   },
 });
 
@@ -109,6 +113,7 @@ export const {
   ADD_TO_QUANTITY,
   DELETE_CART_ITEM,
   REMOVE_FROM_CART_QTY,
+  CLEAR_CART
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

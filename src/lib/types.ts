@@ -67,6 +67,7 @@ export interface SellProductProps {
   brand: string;
   sn: string;
   costPrice: string;
+  sku: string;
 }
 
 export interface CustomerProps {

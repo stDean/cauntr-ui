@@ -97,7 +97,7 @@ export const CreateUserModal = () => {
   };
 
   const headerContent = (
-    <h1 className="text-xl font-semibold">
+    <h1 className="text-xl">
       {createUserModal.type === "create" ? "Add User" : "Edit User"}
     </h1>
   );

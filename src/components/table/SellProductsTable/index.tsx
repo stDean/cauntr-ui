@@ -1,7 +1,9 @@
 "use client";
 
+import { SellProduct } from "@/actions/inventory.a";
 import { useAppDispatch } from "@/app/redux";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -25,20 +27,21 @@ import {
 import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import { useReduxState } from "@/hooks/useRedux";
 import { CustomerProps, GroupedCategory } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import {
   ADD_TO_QUANTITY,
+  CLEAR_CART,
   DELETE_CART_ITEM,
   REMOVE_FROM_CART_QTY,
   SET_BUYER,
+  SET_CART,
 } from "@/state";
 import {
-  Cell,
   ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -53,9 +56,8 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { SellProductColumn } from "./SellColumn";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 
 export function SellProductsTable<TData, TValue>({
   data,
@@ -79,9 +81,11 @@ export function SellProductsTable<TData, TValue>({
   const [pay, setPay] = useState<{
     amountPaid: string;
     balance: string;
+    paymentMethod: string;
   }>({
     amountPaid: "",
     balance: "",
+    paymentMethod: "CASH",
   });
   const [taxFee, setTaxFee] = useState("");
   const [filterCat, setFilterCat] = useState<{
@@ -96,7 +100,7 @@ export function SellProductsTable<TData, TValue>({
   const inputRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
-  const { buyer, cartItems } = useReduxState();
+  const { buyer, cartItems, token, loggedInUser } = useReduxState();
 
   const columns = SellProductColumn as ColumnDef<TData, TValue>[];
   const table = useReactTable({
@@ -145,7 +149,9 @@ export function SellProductsTable<TData, TValue>({
     ? cartItems.reduce((acc, i) => {
         return acc + parseFloat(i.price);
       }, 0)
-    : pay.amountPaid;
+    : pay.amountPaid
+    ? pay.amountPaid
+    : "0.00";
 
   const total = payTax
     ? !isNaN(parseFloat(subTotal as string)) &&
@@ -157,19 +163,70 @@ export function SellProductsTable<TData, TValue>({
     ? subTotal
     : "0.00";
 
-  const handleSellProduct = () => {
+  const handleSellProduct = ({ sku }: { sku?: string }) => {
     startTransition(async () => {
       if (cartItems.length === 1) {
-        console.log("Use sell product route");
+        let product;
+        if (tab === "one_off") {
+          product = {
+            transaction: {
+              quantity: cartItems[0].qty,
+              price: parseFloat(cartItems[0].price) / cartItems[0].qty,
+            },
+            payment: {
+              paymentMethod: pay.paymentMethod,
+              balanceOwed: Number(pay.balance),
+            },
+          };
+        } else {
+          product = {
+            transaction: {
+              quantity: cartItems[0].qty,
+              price: parseFloat(cartItems[0].price) / cartItems[0].qty,
+            },
+            customerDetails: {
+              name: buyer?.name,
+              phone: buyer?.phone,
+              email: buyer?.email,
+            },
+            payment: {
+              paymentMethod: pay.paymentMethod,
+              balanceOwed: Number(pay.balance),
+            },
+          };
+        }
+
+        const res = await SellProduct({
+          token,
+          userId: loggedInUser!.id,
+          sku: sku!,
+          product,
+        });
+
+        if (res?.error) {
+          toast.error("Error", { description: res.error });
+          dispatch(CLEAR_CART());
+          setPayFull(false);
+          setPayTax(false);
+          return;
+        }
+
+        toast.success("Success", { description: res.success.msg });
+        setPayFull(false);
+        setPayTax(false);
+        dispatch(CLEAR_CART());
       } else {
         console.log("Use sell products route");
       }
     });
   };
 
+  console.log({ cartItems });
+
   const filteredData = table.getRowModel().rows.filter((row) => {
-    const matchesProductType = filterCat.productType.length
-      ? filterCat.productType.includes(
+    const uniqueProductTypes = Array.from(new Set(filterCat.productType));
+    const matchesProductType = uniqueProductTypes.length
+      ? uniqueProductTypes.includes(
           (row.original as { productType: string }).productType
         )
       : true;
@@ -183,7 +240,7 @@ export function SellProductsTable<TData, TValue>({
 
   return (
     <div className="max-w-7xl my-5 lg:mx-auto space-y-4 mx-2">
-      <div className="flex gap-4 lg:gap-[165px] flex-col md:flex-row">
+      <div className="flex gap-4 lg:gap-[110px] flex-col md:flex-row">
         <Button
           onClick={() => router.push("/inventory")}
           className="cursor-pointer w-fit"
@@ -206,16 +263,16 @@ export function SellProductsTable<TData, TValue>({
       </div>
 
       <div className="grid grid-cols-12 gap-4 overflow-y-scroll h-screen pb-[155px]">
-        <div className="col-span-3 bg-white rounded-lg p-4 sticky h-[580px] top-0 overflow-y-scroll hidden lg:block space-y-3">
+        <div className="col-span-2 bg-white rounded-lg p-4 sticky h-[580px] top-0 overflow-y-scroll hidden lg:block space-y-3">
           <div className="space-y-1">
-            <p className="text-[#636363] text-sm">Category</p>
+            <p className="text-[#636363] text-sm font-semibold">Category</p>
             {/* <Input className="focus:!ring-0 focus:!border-0" /> */}
           </div>
 
           <div>
             {categories.map(({ brands, productType }) => (
               <div key={productType} className="space-y-2 mb-3">
-                <p className="text-[#3B3B3B] text-sm font-semibold">
+                <p className="text-[#3B3B3B] !text-sm font-medium">
                   {productType.toUpperCase()}
                 </p>
 
@@ -226,30 +283,24 @@ export function SellProductsTable<TData, TValue>({
                   >
                     <label
                       htmlFor={b}
-                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[#3B3B3B]"
+                      className="text-xs leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[#3B3B3B]"
                     >
                       {b}
                     </label>
                     <Checkbox
                       id={b}
                       className="cursor-pointer"
-                      onClick={() => {
-                        setFilterCat((prev) => {
-                          const isChecked =
-                            prev.brand.includes(b) &&
-                            prev.productType.includes(productType);
-
-                          return {
-                            productType: isChecked
-                              ? prev.productType.filter(
-                                  (type) => type !== productType
-                                )
-                              : [...prev.productType, productType],
-                            brand: isChecked
-                              ? prev.brand.filter((brand) => brand !== b)
-                              : [...prev.brand, b],
-                          };
-                        });
+                      onCheckedChange={(checked) => {
+                        setFilterCat((prev) => ({
+                          productType: checked
+                            ? [...prev.productType, productType]
+                            : prev.productType.filter(
+                                (type) => type !== productType
+                              ),
+                          brand: checked
+                            ? [...prev.brand, b]
+                            : prev.brand.filter((brand) => brand !== b),
+                        }));
                       }}
                     />
                   </div>
@@ -259,7 +310,7 @@ export function SellProductsTable<TData, TValue>({
           </div>
         </div>
 
-        <div className="col-span-12 md:col-span-8 lg:col-span-6 bg-white rounded-lg p-4 space-y-4">
+        <div className="col-span-12 md:col-span-8 lg:col-span-7 bg-white rounded-lg p-4 space-y-4">
           <p className="text-xl">Products</p>
           <div className="border rounded-lg">
             <Table>
@@ -339,7 +390,7 @@ export function SellProductsTable<TData, TValue>({
           <div className="space-y-1">
             <p className="text-[#636363] text-sm">Basket</p>
 
-            {tab === "one_off" ? null :!buyer ? (
+            {tab === "one_off" ? null : !buyer ? (
               <div className="">
                 <p className="text-[#636363] text-xs mb-1 font-semibold">
                   Select Customer
@@ -442,7 +493,7 @@ export function SellProductsTable<TData, TValue>({
                 </p>
                 <div className="flex flex-col justify-between items-center space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <p className="text-[#808080]">#{c.price}</p>
+                    <p className="text-[#808080]">₦{c.price}</p>
                     <Trash2
                       className="text-red-500 size-4 cursor-pointer"
                       onClick={() => {
@@ -476,7 +527,15 @@ export function SellProductsTable<TData, TValue>({
               <p className="text-[#636363] text-xs mb-1 font-semibold">
                 Mode of Payment
               </p>
-              <Select>
+              <Select
+                onValueChange={(value) => {
+                  setPay((prev) => ({
+                    ...prev,
+                    paymentMethod: value,
+                  }));
+                }}
+                value={pay.paymentMethod}
+              >
                 <SelectTrigger className="w-full focus:!ring-0">
                   <SelectValue placeholder="Select Payment Method" />
                 </SelectTrigger>
@@ -508,7 +567,11 @@ export function SellProductsTable<TData, TValue>({
                     small
                     onClick={() => {
                       setPayFull((prev) => !prev);
-                      setPay({ amountPaid: "", balance: "" });
+                      setPay({
+                        amountPaid: "",
+                        balance: "",
+                        paymentMethod: "CASH",
+                      });
                     }}
                   />
                 </div>
@@ -522,23 +585,19 @@ export function SellProductsTable<TData, TValue>({
                 onChange={(e) => setPay({ ...pay, amountPaid: e.target.value })}
               />
 
-              {!payFull && (
-                <div className="mt-1">
-                  <p className="text-[#636363] text-xs mb-1 font-semibold">
-                    Balance Owed
-                  </p>
+              <div className="mt-1">
+                <p className="text-[#636363] text-xs mb-1 font-semibold">
+                  Balance Owed
+                </p>
 
-                  <Input
-                    placeholder="enter balance owed"
-                    disabled={payFull}
-                    name="balance"
-                    value={pay.balance}
-                    onChange={(e) =>
-                      setPay({ ...pay, balance: e.target.value })
-                    }
-                  />
-                </div>
-              )}
+                <Input
+                  placeholder="enter balance owed"
+                  disabled={payFull}
+                  name="balance"
+                  value={pay.balance}
+                  onChange={(e) => setPay({ ...pay, balance: e.target.value })}
+                />
+              </div>
             </div>
           </div>
 
@@ -588,10 +647,17 @@ export function SellProductsTable<TData, TValue>({
               variant={"cauntr_blue"}
               size={"sm"}
               className="w-full cursor-pointer"
-              disabled={!buyer || cartItems.length <= 0 || isPending}
+              disabled={
+                tab === "customer"
+                  ? !buyer ||
+                    cartItems.length <= 0 ||
+                    isPending ||
+                    total === "0.00"
+                  : cartItems.length <= 0 || isPending || total === "0.00"
+              }
               isLoading={isPending}
               loadingText="please wait"
-              onClick={handleSellProduct}
+              onClick={() => handleSellProduct({ sku: cartItems[0].sku })}
             >
               Sell Products <MoveRight className="ml-2" />
             </Button>

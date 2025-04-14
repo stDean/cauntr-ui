@@ -1,6 +1,7 @@
 import { GetAllProducts, GetCategories } from "@/actions/inventory.a";
 import { GetCustomers } from "@/actions/users.a";
 import { AddCustomerModal } from "@/components/modals/AddCustomerModal";
+import { AddSellingPriceModal } from "@/components/modals/AddSellingPriceModal";
 import { NavBar } from "@/components/NavBar";
 import { SellProductsTable } from "@/components/table/SellProductsTable";
 import { cookies } from "next/headers";
@@ -17,6 +18,7 @@ export default async function SellPage() {
     <div className="bg-[#f8f8f8] min-h-screen">
       <>
         <AddCustomerModal />
+        <AddSellingPriceModal />
       </>
       <NavBar title="Sell Products" />
 

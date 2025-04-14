@@ -48,7 +48,7 @@ export const AddCustomerModal = () => {
     });
   };
 
-  const headerContent = <p>Add New Customer</p>;
+  const headerContent = <p className="text-xl">Add New Customer</p>;
 
   const bodyContent = (
     <Form {...form}>

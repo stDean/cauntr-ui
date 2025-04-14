@@ -54,7 +54,7 @@ export const AddBankModal = () => {
   };
 
   const headerContent = (
-    <h1 className="text-xl font-semibold">Add Bank</h1>
+    <h1 className="text-xl">Add Bank</h1>
   );
 
   const bodyContent = (
