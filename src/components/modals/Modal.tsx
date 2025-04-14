@@ -58,19 +58,21 @@ export const Modal = ({
             }`}
           >
             {/* Header */}
-            <div
-              className={`flex items-center py-3 px-4 rounded-t relative border-b-[1px] ${lessPadd} ${
-                addStyle2 && "sticky top-0 bg-white z-10"
-              }`}
-            >
-              {headerContent}
-              <button
-                className="cursor-pointer p-1 border-0 hover:opacity-70 transition absolute right-4"
-                onClick={handleClose}
+            {headerContent && (
+              <div
+                className={`flex items-center py-3 px-4 rounded-t relative border-b-[1px] ${lessPadd} ${
+                  addStyle2 && "sticky top-0 bg-white z-10"
+                }`}
               >
-                <X size={18} />
-              </button>
-            </div>
+                {headerContent}
+                <button
+                  className="cursor-pointer p-1 border-0 hover:opacity-70 transition absolute right-4"
+                  onClick={handleClose}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            )}
 
             {/* Body */}
             <div

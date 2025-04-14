@@ -56,3 +56,20 @@ export interface ProductType {
   sku: string;
   serialNo: string;
 }
+
+export interface SalesType {
+  salesId: number;
+  itemsCount: number;
+  dateSold: string;
+  employer: string;
+  costOfSale: number;
+}
+
+
+export interface PaymentHistoryType {
+        paymentId: number;
+        paymentDate: string;  
+        amount: number; 
+        paymentMethod: string;
+}
+
