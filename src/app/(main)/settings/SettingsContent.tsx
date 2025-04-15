@@ -46,9 +46,9 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
       {/* Main Content */}
       <div className="mt-4 px-4 mb-18 lg:my-4">
         {tab === "account" && (
-          <AccountSettingsForm companyAcct={fakecompanyAcct} />
+          <AccountSettingsForm companyAcct={fakecompanyAcct} />)}
 
-        {tab === "profile" && <ProfileSettingsForm user={user.success.data} />}
+          {tab === "profile" && <ProfileSettingsForm user={user.success.data} />}
         {tab === "team" && <TeamTable data={team.success.data} />}
         {tab === "billing" && (
           <BillingAndSubscriptions
