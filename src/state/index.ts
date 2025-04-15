@@ -2,7 +2,7 @@
 import { UserProps } from "@/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CartItem {
+export interface CartItem {
   productName: string;
   price: string;
   qty: number;

@@ -361,7 +361,7 @@ export function SellProductsTable<TData, TValue>({
       }
     });
   };
-  [];
+  
 
   const filteredData = table.getRowModel().rows.filter((row) => {
     const uniqueProductTypes = Array.from(new Set(filterCat.productType));
@@ -748,7 +748,7 @@ export function SellProductsTable<TData, TValue>({
 
                     {filteredBank.length > 0 ? (
                       filteredBank.map((c, i) => (
-                        <Fragment key={`${c.bankName} - ${c.acctName}`}>
+                        <Fragment key={`${c.bankName} - ${c.acctName} ${i}`}>
                           <div
                             className="p-3 flex gap-2 text-sm cursor-pointer hover:text-[#0C049B]/80 hover:bg-[#F6F5FF]/80 flex-col"
                             onClick={() => {
