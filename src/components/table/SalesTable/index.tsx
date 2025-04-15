@@ -1,19 +1,7 @@
 "use client";
 
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from "react";
-import { SalesColumn } from "./SalesColumn";
 import { Pagination } from "@/components/Pagination";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,6 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { SalesColumn } from "./SalesColumn";
 
 export function SalesTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -49,22 +48,19 @@ export function SalesTable<TData, TValue>({ data }: { data: TData[] }) {
   return (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
-        <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full" >
+        <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
-            placeholder="search by employer..."
+            placeholder="search by employee..."
             value={
-              (table.getColumn("employer")?.getFilterValue() as string) ?? ""
+              (table.getColumn("employee")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("employer")?.setFilterValue(event.target.value)
+              table.getColumn("employee")?.setFilterValue(event.target.value)
             }
             className="w-full lg:w-[500px] text-xs md:text-sm"
           />
-            
         </div>
       </div>
-
-    
 
       <div className="border rounded-lg!">
         <Table>
@@ -90,7 +86,7 @@ export function SalesTable<TData, TValue>({ data }: { data: TData[] }) {
           </TableHeader>
 
           <TableBody>
-            {paginatedRows.length > 0 &&
+            {paginatedRows.length > 0 ? (
               paginatedRows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -105,14 +101,24 @@ export function SalesTable<TData, TValue>({ data }: { data: TData[] }) {
                     </TableCell>
                   ))}
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No transactions found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
 
       {paginatedRows.length > 0 && totalPages > 1 && (
         <div className="my-4 w-full">
-          <Pagination totalPages={totalPages} currentPage={1} />
+          <Pagination totalPages={totalPages} currentPage={currentPage} />
         </div>
       )}
     </div>

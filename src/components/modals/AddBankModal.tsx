@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Modal } from "./Modal";
 
-const BankInput = ({
+export const BankInput = ({
   title,
   placeholder,
   handleChange,

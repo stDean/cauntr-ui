@@ -2,14 +2,16 @@ import { create } from "zustand";
 
 interface AddCustomerModalProps {
   isOpen: boolean;
-  onOpen: () => void;
+  type: string;
+  onOpen: ({ type }: { type: string }) => void;
   onClose: () => void;
 }
 
 const useAddCustomerModal = create<AddCustomerModalProps>((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false })
+  type: "customer",
+  onOpen: ({ type }: { type: string }) => set({ isOpen: true, type }),
+  onClose: () => set({ isOpen: false, type: "customer" }),
 }));
 
 export default useAddCustomerModal;

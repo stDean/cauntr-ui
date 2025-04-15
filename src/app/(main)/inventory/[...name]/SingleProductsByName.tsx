@@ -18,8 +18,6 @@ export const SingleProductsByName = ({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  console.log({ products });
-
   const name = searchParams.get("name");
   const qty = products.reduce((accu, p) => {
     return accu + p.quantity;

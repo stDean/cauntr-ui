@@ -66,6 +66,7 @@ export function InventoryTable<TData, TValue>({
             Monitor, review and manage stock levels
           </p>
         </div>
+
         <div className="flex md:items-center gap-3 flex-col md:flex-row">
           <Input
             placeholder="search brand..."
@@ -147,7 +148,7 @@ export function InventoryTable<TData, TValue>({
 
       {paginatedRows.length > 0 && totalPages > 1 && (
         <div className="my-4 w-full">
-          <Pagination totalPages={totalPages} currentPage={1} />
+          <Pagination totalPages={totalPages} currentPage={currentPage} />
         </div>
       )}
     </div>

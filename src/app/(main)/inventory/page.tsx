@@ -1,45 +1,12 @@
 import {
   GetInventoryItemsByType,
-  GetInventoryStats,
+  GetInventoryStats
 } from "@/actions/inventory.a";
 import { GetSuppliers } from "@/actions/users.a";
 import { Card } from "@/components/MiniCard";
 import { InventoryTable } from "@/components/table/InventoryTable";
 import { cookies } from "next/headers";
-
-const cardData = ({
-  text1,
-  text2,
-  text3,
-}: {
-  text1: string;
-  text2: string;
-  text3: string;
-}): any[] => {
-  return [
-    {
-      title: "Inventory Value",
-      subText: `${text1}`,
-    },
-    {
-      title: "Total Stock Count",
-      subText: (
-        <p className="text-xl mt-3 md:mt-5 font-semibold">
-          {text2}
-          <span className="font-normal! text-base! ml-1">items</span>
-        </p>
-      ),
-    },
-    {
-      title: "Categories",
-      subText: `${text3}`,
-    },
-    {
-      title: "Top Selling Product",
-      subText: "MacBook Pro",
-    },
-  ];
-};
+import { cardData } from "../sales/page";
 
 export default async function InventoryPage() {
   const cookieStore = await cookies();
@@ -51,6 +18,8 @@ export default async function InventoryPage() {
   const suppliersRes = await GetSuppliers({ token, userId });
 
   const cardDetails = cardData({
+    title1: "Inventory Value",
+    title2: "Total Stock Count",
     text1: statsRes.success.data.totalSellingPrice,
     text2: statsRes.success.data.totalStockQuantity,
     text3: statsRes.success.data.categories,

@@ -1,3 +1,5 @@
+import { number } from "zod";
+
 export interface UserProps {
   id: string;
   email: string;
@@ -58,23 +60,20 @@ export interface ProductType {
   serialNo: string;
 }
 
-
 export interface SalesType {
-  salesId: number;
-  itemsCount: number;
-  dateSold: string;
-  employer: string;
-  costOfSale: number;
+  email: string;
+  employee: string;
+  itemCount: number;
+  salesType: string;
+  transactionDate: Date;
+  transactionId: string;
 }
-
 
 export interface PaymentHistoryType {
-        paymentId: number;
-        paymentDate: string;  
-        amount: number; 
-        paymentMethod: string;
+  date: string;
+  amount: number;
+  modeOfPay: string;
 }
-
 
 export interface SellProductProps {
   id: string;
@@ -101,6 +100,7 @@ export interface GroupedCategory {
   brands: string[];
 }
 
+
 export interface SuppliersProps {
     supplierName: string;
     email: string;
@@ -123,4 +123,37 @@ export interface DebtorsProps {
   phone: string;
   amountOwed: number;
   dateOverdue: string;
+}
+
+export interface TransactionSummaryProps {
+  totalSales: number;
+  categories: number;
+  totalStockSold: number;
+  topSellingProduct: { name: string; quantity: number };
+}
+
+export interface SingleSalesProps {
+  soldBy: { name: string; type: string };
+  customer: { name?: string; email?: string; phone?: string };
+  salesSummary: { productName: string; qty: number; price: number }[];
+  paymentHistory: { date: Date; amount: string; modeOfPay: string }[];
+  totalPay: number;
+}
+
+export interface SearchableDropdownProps<T> {
+  items: T[];
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  onSelect: (item: T) => void;
+  onAddNew: () => void;
+  placeholder: string;
+  type: "customer" | "bank";
+  renderItem: (item: T) => React.ReactNode;
+  searchKey: keyof T;
+}
+
+export interface CartItemProps {
+  item: any;
+  onDelete: () => void;
+  onAdjustQty: (type: "add" | "remove") => void;
 }

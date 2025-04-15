@@ -2,7 +2,7 @@
 import { UserProps } from "@/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CartItem {
+export interface CartItem {
   productName: string;
   price: string;
   qty: number;
@@ -17,6 +17,12 @@ export interface InitialStateTypes {
   loggedInUser: UserProps | null;
   previewProducts: any[];
   buyer: { name: string; email?: string; phone: string } | null;
+  bank: {
+    id: string;
+    bankName: string;
+    acctNo: string;
+    acctName: string;
+  } | null;
   cartItems: CartItem[];
 }
 
@@ -26,6 +32,7 @@ const initialState: InitialStateTypes = {
   loggedInUser: null,
   previewProducts: [],
   buyer: null,
+  bank: null,
   cartItems: [],
 };
 
@@ -47,6 +54,9 @@ export const globalSlice = createSlice({
     },
     SET_BUYER: (state, action: PayloadAction<any>) => {
       state.buyer = action.payload;
+    },
+    SET_BANK: (state, action: PayloadAction<any>) => {
+      state.bank = action.payload;
     },
     SET_CART: (state, action: PayloadAction<any>) => {
       if (action.payload && action.payload.id) {
@@ -113,7 +123,8 @@ export const {
   ADD_TO_QUANTITY,
   DELETE_CART_ITEM,
   REMOVE_FROM_CART_QTY,
-  CLEAR_CART
+  CLEAR_CART,
+  SET_BANK,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

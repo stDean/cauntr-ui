@@ -13,8 +13,23 @@ import { useAppSelector } from "@/app/redux";
  * - `token`: The authentication token from the global state.
  */
 export const useReduxState = () => {
-  const { email, loggedInUser, token, previewProducts, buyer, cartItems } =
-    useAppSelector(({ global }) => global);
+  const {
+    email,
+    loggedInUser,
+    token,
+    previewProducts,
+    buyer,
+    cartItems,
+    bank,
+  } = useAppSelector(({ global }) => global);
 
-  return { email, token, loggedInUser, previewProducts, buyer, cartItems };
+  return {
+    email,
+    token,
+    loggedInUser,
+    previewProducts,
+    buyer,
+    cartItems,
+    bank,
+  };
 };
