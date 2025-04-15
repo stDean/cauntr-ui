@@ -1,14 +1,16 @@
 "use client";
 
 import { useReduxState } from "@/hooks/useRedux";
-import { Bell, ChevronRight, Settings } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Bell, ChevronRight, Settings, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export const NavBar = ({ title }: { title?: string }) => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const path = usePathname();
-  const { loggedInUser: user } = useReduxState();
+  const { loggedInUser: user, cartItems } = useReduxState();
   const a = path.split("/")[1].toUpperCase();
 
   const getName = searchParams.has("name") && searchParams.get("name");
@@ -46,6 +48,33 @@ export const NavBar = ({ title }: { title?: string }) => {
           >
             <Bell className="size-5 lg:size-6" />
           </p>
+
+          <div
+            className="cursor-pointer md:hidden relative"
+            onClick={() => {
+              // TODO:Make this like a simple dropdown to see all notifications
+              console.log("Hello");
+            }}
+          >
+            <p
+              className={cn(
+                "absolute text-[10px] left-[14px] top-2 font-bold",
+                {
+                  "text-green-500": cartItems.length > 0,
+                }
+              )}
+              onClick={() => {
+                router.push("/cart");
+              }}
+            >
+              {cartItems.length}
+            </p>
+            <ShoppingCart
+              className={cn("size-8", {
+                "text-green-500": cartItems.length > 0,
+              })}
+            />
+          </div>
 
           <hr className="w-0 h-7 border border-solid border-l border-gray-300 mx-2" />
 

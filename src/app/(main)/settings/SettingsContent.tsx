@@ -28,16 +28,6 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
     { label: "Billing", query: "billing" },
   ];
 
-  const fakecompanyAcct = {
-    businessName: "The Best Company",
-    businessEmail: "email@email.com",
-    phoneNumber: "1234567",
-    category: "The Best Category",
-    businessAddress: "The Best Address",
-    taxID: "78901234",
-    banks: []
-  }
-
   return (
     <div className="">
       {/* Tab */}
@@ -46,8 +36,8 @@ export const SettingsContent = async ({ tab }: { tab: string }) => {
       {/* Main Content */}
       <div className="mt-4 px-4 mb-18 lg:my-4">
         {tab === "account" && (
-          <AccountSettingsForm companyAcct={fakecompanyAcct} />
-
+          <AccountSettingsForm companyAcct={companyAcct.success.data} />
+        )}
         {tab === "profile" && <ProfileSettingsForm user={user.success.data} />}
         {tab === "team" && <TeamTable data={team.success.data} />}
         {tab === "billing" && (

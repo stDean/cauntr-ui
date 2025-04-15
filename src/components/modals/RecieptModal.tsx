@@ -1,6 +1,6 @@
 "use client";
 
-import useRecieptModal from "@/hooks/useRecieptModal";
+import useRecieptModal from "@/hooks/useReceiptModal";
 import { Modal } from "./Modal";
 import Image from "next/image";
 import { X } from "lucide-react";
@@ -39,7 +39,14 @@ export const RecieptModal = () => {
 
         <div className="flex flex-col items-end gap-3">
           <X className="size-4 cursor-pointer" onClick={recieptModal.onClose} />
-          <Image width={70} height={70} priority src={"/logo.png"} alt="" className="" />
+          <Image
+            width={70}
+            height={70}
+            priority
+            src={"/logo.png"}
+            alt=""
+            className=""
+          />
         </div>
       </div>
 
@@ -111,7 +118,9 @@ export const RecieptModal = () => {
                 </td>
               </tr>
               <tr>
-                <td className="pt-2 font-bold text-[#121212] text-xs md:text-sm">VAT</td>
+                <td className="pt-2 font-bold text-[#121212] text-xs md:text-sm">
+                  VAT
+                </td>
                 <td colSpan={2}></td>
                 <td className="text-right pt-2 text-xs md:text-sm ">$0.00</td>
               </tr>
@@ -132,7 +141,9 @@ export const RecieptModal = () => {
               <div className="font-bold text-[#121212] text-xs md:text-sm">
                 Amount Paid:
               </div>
-              <div className="font-bold text-[#121212] text-xs md:text-sm">Balance:</div>
+              <div className="font-bold text-[#121212] text-xs md:text-sm">
+                Balance:
+              </div>
             </div>
             <div className="space-y-2 text-right">
               <div className="text-xs md:text-sm">${amountPaid.toFixed(2)}</div>
@@ -142,38 +153,56 @@ export const RecieptModal = () => {
         </div>
       </div>
 
+      {balance > 0 ? (
+        <div className="border-b border-[#eeeeee] py-4">
+          <p className="font-bold text-sm md:text-md text-[#121212] ">
+            <span className="font-medium text-xs md:text-sm ">balance - </span>$
+            {balance}{" "}
+          </p>
+        </div>
+      ) : (
+        ""
+      )}
 
-      {balance > 0 ? (  <div className="border-b border-[#eeeeee] py-4">
-        <p className="font-bold text-sm md:text-md text-[#121212] ">
-        <span className="font-medium text-xs md:text-sm ">balance - </span>
-          ${balance}{" "}
-        </p>
-      </div>) : ""}
-    
       <div className="space-y-2">
-        <p className="font-bold text-[#121212] text-xs md:text-sm">Paid with bank Transfer to:</p>
+        <p className="font-bold text-[#121212] text-xs md:text-sm">
+          Paid with bank Transfer to:
+        </p>
         <div className="flex space-x-5">
-            <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">Account Name:</p>
-            <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">OMITAOMU, Basit</p>
+          <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">
+            Account Name:
+          </p>
+          <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">
+            OMITAOMU, Basit
+          </p>
         </div>
         <div className="flex space-x-5">
-            <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">Bank Name:</p>
-            <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">GT Bank </p>
+          <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">
+            Bank Name:
+          </p>
+          <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">
+            GT Bank{" "}
+          </p>
         </div>
         <div className="flex space-x-5">
-            <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">Bank Account:</p>
-            <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">0242510812</p>
+          <p className="text-[#A3A3A3] font-medium text-xs md:text-sm">
+            Bank Account:
+          </p>
+          <p className="text-[#3B3B3B] text-xs md:text-sm font-medium">
+            0242510812
+          </p>
         </div>
       </div>
     </div>
   );
+
+  // TODO:Check how we can add a bank acct to transfer to!!
 
   return (
     <Modal
       isOpen={recieptModal.isOpen}
       onClose={recieptModal.onClose}
       body={bodyContent}
-      addStyle="md:!w-[750px]"
       addStyle2
     />
   );

@@ -19,6 +19,9 @@ export const CACHE_TAGS = {
   allProducts: "allProducts",
   customers: "customers",
   categories: "categories",
+  transaction: "transaction",
+  singleTransaction: "singleTransaction",
+  banks: "banks",
 } as const;
 
 /**

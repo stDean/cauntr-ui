@@ -19,7 +19,7 @@ import { Form } from "../ui/form";
 import { Input } from "../ui/input";
 import { CustomInput } from "./ui/CustomInput";
 
-interface Banks extends BankProps {
+export interface Banks extends BankProps {
   id?: string;
 }
 

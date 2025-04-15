@@ -70,3 +70,23 @@ export const AddProductsType = {
     },
   ],
 } as const;
+
+export const calculateTotals = (
+  payFull: boolean,
+  payAmount: string,
+  taxFee: string,
+  cartItems: any[],
+  payTax: boolean
+) => {
+  const subTotal = payFull
+    ? cartItems.reduce((acc, i) => acc + parseFloat(i.price), 0)
+    : Number(payAmount) || 0;
+
+  const taxAmount = payTax ? (subTotal * (Number(taxFee) || 0)) / 100 : 0;
+
+  return {
+    subTotal: subTotal.toFixed(2),
+    total: (subTotal + taxAmount).toFixed(2),
+    taxAmount: taxAmount.toFixed(2),
+  };
+};

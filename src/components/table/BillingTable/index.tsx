@@ -95,7 +95,7 @@ export function BillingTable<TData, TValue>({ data }: { data: TData[] }) {
 
       {paginatedRows.length > 0 && totalPages > 1 && (
         <div className="my-4 w-full">
-          <Pagination totalPages={totalPages} currentPage={1} />
+          <Pagination totalPages={totalPages} currentPage={currentPage} />
         </div>
       )}
     </div>

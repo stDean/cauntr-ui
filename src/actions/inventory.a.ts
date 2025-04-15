@@ -1,5 +1,6 @@
 "use server";
 
+import { BankProps } from "@/hooks/useAddBankModal";
 import { CACHE_TAGS, dbCache, getGlobalTag, getUserTag } from "@/lib/cache";
 import { AddProductSchema } from "@/schema";
 import axios from "axios";
@@ -109,8 +110,6 @@ export const CreateProduct = async ({
     if (res.status === 201) {
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
     }
 
     return { success: res.data };
@@ -153,8 +152,6 @@ export const CreateProducts = async ({
     if (res.status === 201) {
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -325,6 +322,8 @@ export const SellProduct = async ({
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
       revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.transaction));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.singleTransaction));
     }
 
     return { success: res.data };
@@ -357,11 +356,7 @@ export const SellProducts = async ({
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/products/bulkSell`,
       products,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     if (res.status === 200) {
@@ -369,6 +364,90 @@ export const SellProducts = async ({
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
       revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
       revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.transaction));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.singleTransaction));
+    }
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const GetBanks = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  const cachedFn = dbCache(GetBanksInternals, {
+    tags: [getUserTag(userId, CACHE_TAGS.banks)],
+  });
+
+  return cachedFn({ token, userId });
+};
+
+const GetBanksInternals = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/banks`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const CreateBank = async ({
+  token,
+  userId,
+  bank,
+}: {
+  token: string;
+  userId: string;
+  bank: BankProps;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/banks`,
+      bank,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.status === 201) {
+      revalidateTag(getGlobalTag(CACHE_TAGS.companyAccount));
+      revalidateTag(getUserTag(userId, CACHE_TAGS.banks));
     }
 
     return { success: res.data };

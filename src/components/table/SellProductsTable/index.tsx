@@ -2,6 +2,7 @@
 
 import { SellProduct, SellProducts } from "@/actions/inventory.a";
 import { useAppDispatch } from "@/app/redux";
+import { Banks } from "@/components/form/AccountSettingsForm";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -33,8 +34,8 @@ import {
   CLEAR_CART,
   DELETE_CART_ITEM,
   REMOVE_FROM_CART_QTY,
+  SET_BANK,
   SET_BUYER,
-  SET_CART,
 } from "@/state";
 import {
   ColumnDef,
@@ -45,6 +46,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {
+  Landmark,
   Minus,
   MoveLeft,
   MoveRight,
@@ -54,27 +56,33 @@ import {
   UserSearch,
   X,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { SellProductColumn } from "./SellColumn";
+import { Pagination } from "@/components/Pagination";
 
 export function SellProductsTable<TData, TValue>({
   data,
   customers,
   categories,
+  banks,
 }: {
   data: TData[];
   customers: CustomerProps[];
   categories: GroupedCategory[];
+  banks: Banks[];
 }) {
   const router = useRouter();
   const addCustomer = useAddCustomerModal();
   const [isPending, startTransition] = useTransition();
   const [showCustomers, setShowCustomers] = useState(false);
+  const [showBanks, setShowBanks] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [filteredCustomer, setFilteredCustomer] = useState(customers);
+  const [filteredBank, setFilteredBank] = useState(banks);
   const [customerSearch, setCustomerSearch] = useState("");
+  const [bankSearch, setBankSearch] = useState("");
   const [payFull, setPayFull] = useState(false);
   const [tab, setTab] = useState("customer");
   const [payTax, setPayTax] = useState(false);
@@ -97,10 +105,12 @@ export function SellProductsTable<TData, TValue>({
   });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownBankRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
+  const bankInputRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
-  const { buyer, cartItems, token, loggedInUser } = useReduxState();
+  const { buyer, cartItems, token, loggedInUser, bank } = useReduxState();
 
   const columns = SellProductColumn as ColumnDef<TData, TValue>[];
   const table = useReactTable({
@@ -129,6 +139,21 @@ export function SellProductsTable<TData, TValue>({
   }, [showCustomers]);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showBanks &&
+        !bankInputRef.current?.contains(event.target as Node) &&
+        !dropdownBankRef.current?.contains(event.target as Node)
+      ) {
+        setShowBanks(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showBanks]);
+
+  useEffect(() => {
     if (customerSearch.trim()) {
       const searchTerm = customerSearch.trim().toLowerCase();
       const filtered = customers.filter((c) =>
@@ -139,10 +164,22 @@ export function SellProductsTable<TData, TValue>({
       // Reset to original list when search is empty
       setFilteredCustomer(customers);
     }
-  }, [customerSearch, customers]); // Add customers to dependencies
+  }, [customerSearch, customers]);
+
+  useEffect(() => {
+    if (bankSearch.trim()) {
+      const searchTerm = bankSearch.trim().toLowerCase();
+      const filtered = banks?.filter((c) =>
+        c!.acctName!.trim().toLowerCase().includes(searchTerm)
+      );
+      setFilteredBank(filtered);
+    } else {
+      // Reset to original list when search is empty
+      setFilteredBank(banks);
+    }
+  }, [bankSearch, banks]); // Add customers to dependencies
 
   const nameSplit = buyer && buyer?.name.split(" ");
-  console.log({ nameSplit });
   const first = nameSplit && nameSplit![0][0];
   const second = (nameSplit && nameSplit![1] && nameSplit![1][0]) || "";
 
@@ -167,43 +204,50 @@ export function SellProductsTable<TData, TValue>({
   const handleSellProduct = ({ sku }: { sku?: string }) => {
     startTransition(async () => {
       if (cartItems.length === 1) {
-        let product;
-        if (tab === "one_off") {
-          product = {
-            transaction: {
-              quantity: cartItems[0].qty,
-              price: parseFloat(cartItems[0].price) / cartItems[0].qty,
-            },
-            payment: {
-              paymentMethod: pay.paymentMethod,
-              balanceOwed: Number(pay.balance),
-            },
-            vat: payTax
-              ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) /
-                100
-              : 0,
-            totalPay: Number(total),
+        let product: {
+          transaction: {
+            quantity: number;
+            price: number;
           };
-        } else {
-          product = {
-            transaction: {
-              quantity: cartItems[0].qty,
-              price: parseFloat(cartItems[0].price) / cartItems[0].qty,
-            },
-            customerDetails: {
-              name: buyer?.name,
-              phone: buyer?.phone,
-              email: buyer?.email,
-            },
-            payment: {
-              paymentMethod: pay.paymentMethod,
-              balanceOwed: Number(pay.balance),
-            },
-            vat: payTax
-              ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) /
-                100
-              : 0,
-            totalPay: Number(total),
+          payment: { paymentMethod: string; balanceOwed: number };
+          customerDetails?: { name: string; phone: string; email: string };
+          vat: number;
+          totalPay: number;
+          acctPaidTo?: {
+            bankName: string;
+            acctNo: string;
+            acctName: string;
+            userBankId: string;
+          };
+        } = {
+          transaction: {
+            quantity: cartItems[0].qty,
+            price: parseFloat(cartItems[0].price) / cartItems[0].qty,
+          },
+          payment: {
+            paymentMethod: pay.paymentMethod,
+            balanceOwed: Number(pay.balance),
+          },
+          vat: payTax
+            ? (parseFloat(subTotal as string) * parseFloat(taxFee || "0")) / 100
+            : 0,
+          totalPay: Number(total),
+        };
+
+        if (pay.paymentMethod === "BANK_TRANSFER") {
+          product.acctPaidTo = {
+            bankName: bank?.bankName!,
+            acctNo: bank?.acctNo!,
+            acctName: bank?.acctName!,
+            userBankId: bank?.id!,
+          };
+        }
+
+        if (tab === "customer") {
+          product.customerDetails = {
+            name: buyer?.name!,
+            phone: buyer?.phone!,
+            email: buyer?.email!,
           };
         }
 
@@ -216,22 +260,26 @@ export function SellProductsTable<TData, TValue>({
 
         if (res?.error) {
           toast.error("Error", { description: res.error });
-          setPayFull(false);
-          setPayTax(false);
+
           setTaxFee("");
           setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
           dispatch(CLEAR_CART());
           dispatch(SET_BUYER(null));
+          dispatch(SET_BANK(null));
+          setPayFull(false);
+          setPayTax(false);
           return;
         }
 
         toast.success("Success", { description: res.success.msg });
-        setPayFull(false);
-        setPayTax(false);
+
         setTaxFee("");
         setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
         dispatch(CLEAR_CART());
         dispatch(SET_BUYER(null));
+        dispatch(SET_BANK(null));
+        setPayFull(false);
+        setPayTax(false);
       } else {
         let products: {
           transactions: {
@@ -243,6 +291,12 @@ export function SellProductsTable<TData, TValue>({
           customerDetails?: { name: string; phone: string; email: string };
           vat: number;
           totalPay: number;
+          acctPaidTo?: {
+            bankName: string;
+            acctNo: string;
+            acctName: string;
+            userBankId: string;
+          };
         } = {
           transactions: cartItems.map((c) => ({
             sku: c.sku,
@@ -258,6 +312,15 @@ export function SellProductsTable<TData, TValue>({
             : 0,
           totalPay: Number(total),
         };
+
+        if (pay.paymentMethod === "BANK_TRANSFER") {
+          products.acctPaidTo = {
+            bankName: bank?.bankName!,
+            acctNo: bank?.acctNo!,
+            acctName: bank?.acctName!,
+            userBankId: bank?.id!,
+          };
+        }
 
         if (tab === "customer") {
           products.customerDetails = {
@@ -275,25 +338,30 @@ export function SellProductsTable<TData, TValue>({
 
         if (res?.error) {
           toast.error("Error", { description: res.error });
-          setPayFull(false);
-          setPayTax(false);
+
           setTaxFee("");
           setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
           dispatch(CLEAR_CART());
           dispatch(SET_BUYER(null));
+          dispatch(SET_BANK(null));
+          setPayFull(false);
+          setPayTax(false);
           return;
         }
 
         toast.success("Success", { description: res.success.msg });
-        setPayFull(false);
-        setPayTax(false);
+
         setTaxFee("");
         setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
         dispatch(CLEAR_CART());
         dispatch(SET_BUYER(null));
+        dispatch(SET_BANK(null));
+        setPayFull(false);
+        setPayTax(false);
       }
     });
   };
+  [];
 
   const filteredData = table.getRowModel().rows.filter((row) => {
     const uniqueProductTypes = Array.from(new Set(filterCat.productType));
@@ -309,6 +377,17 @@ export function SellProductsTable<TData, TValue>({
 
     return matchesProductType && matchesBrand;
   });
+
+  const searchParams = useSearchParams();
+  const rowsPerPage = 20;
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  // Slice the filtered rows to display only the current page's rows
+  const paginatedRows = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   return (
     <div className="max-w-7xl my-5 lg:mx-auto space-y-4 mx-2">
@@ -408,8 +487,8 @@ export function SellProductsTable<TData, TValue>({
               </TableHeader>
 
               <TableBody>
-                {filteredData.length ? (
-                  filteredData.map((row) => (
+                {paginatedRows.length ? (
+                  paginatedRows.map((row) => (
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
@@ -436,6 +515,12 @@ export function SellProductsTable<TData, TValue>({
                 )}
               </TableBody>
             </Table>
+
+            {paginatedRows.length > 0 && totalPages > 1 && (
+              <div className="my-4 w-full">
+                <Pagination totalPages={totalPages} currentPage={currentPage} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -480,6 +565,7 @@ export function SellProductsTable<TData, TValue>({
                     onChange={(e) => {
                       setCustomerSearch(e.target.value);
                     }}
+                    placeholder="search customer"
                   />
                   <UserSearch className="size-5 absolute top-2 right-2 text-[#808080]" />
                 </div>
@@ -492,7 +578,7 @@ export function SellProductsTable<TData, TValue>({
                     <p
                       className="p-3 bg-[#F6F5FF] text-[#0C049B] flex items-center gap-2 text-sm cursor-pointer hover:text-[#0C049B]/80 hover:bg-[#F6F5FF]/80"
                       onClick={() => {
-                        addCustomer.onOpen();
+                        addCustomer.onOpen({ type: "customer" });
                         setShowCustomers(false);
                       }}
                     >
@@ -621,6 +707,95 @@ export function SellProductsTable<TData, TValue>({
               </Select>
             </div>
 
+            {pay.paymentMethod === "BANK_TRANSFER" && !bank ? (
+              <div className="">
+                <p className="text-[#636363] text-xs mb-1 font-semibold">
+                  Select Bank
+                </p>
+                <div
+                  className="border relative rounded-lg"
+                  onClick={() => {
+                    setShowBanks(true);
+                  }}
+                  ref={bankInputRef}
+                >
+                  <Input
+                    className="!border-0 !ring-0 focus:!border-0 focus:!ring-0 pr-9"
+                    value={bankSearch}
+                    onChange={(e) => {
+                      setBankSearch(e.target.value);
+                    }}
+                    placeholder="search bank"
+                  />
+                  <Landmark className="size-5 absolute top-2 right-2 text-[#808080]" />
+                </div>
+
+                {showBanks && (
+                  <div
+                    className="bg-white z-50 rounded-lg border mt-1 max-h-[250px] overflow-y-scroll"
+                    ref={dropdownBankRef}
+                  >
+                    <p
+                      className="p-3 bg-[#F6F5FF] text-[#0C049B] flex items-center gap-2 text-sm cursor-pointer hover:text-[#0C049B]/80 hover:bg-[#F6F5FF]/80"
+                      onClick={() => {
+                        addCustomer.onOpen({ type: "bank" });
+                        setShowCustomers(false);
+                      }}
+                    >
+                      <Plus className="size-4" />
+                      Add New Bank
+                    </p>
+
+                    {filteredBank.length > 0 ? (
+                      filteredBank.map((c, i) => (
+                        <Fragment key={`${c.bankName} - ${c.acctName}`}>
+                          <div
+                            className="p-3 flex gap-2 text-sm cursor-pointer hover:text-[#0C049B]/80 hover:bg-[#F6F5FF]/80 flex-col"
+                            onClick={() => {
+                              dispatch(
+                                SET_BANK({
+                                  id: c.id,
+                                  bankName: c.bankName,
+                                  acctNo: c.acctNo,
+                                  acctName: c.acctName,
+                                })
+                              );
+                            }}
+                          >
+                            <p> {c.acctName}</p>
+                            <p className="text-[#3F3B3B] !text-xs">
+                              {c.acctNo} | {c.bankName}
+                            </p>
+                          </div>
+
+                          {i !== banks.length - 1 && <hr />}
+                        </Fragment>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center font-semibold">
+                        No Banks
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : pay.paymentMethod === "BANK_TRANSFER" && bank ? (
+              <div className="border rounded-lg p-2 bg-white flex justify-between items-center gap-4">
+                <div className="space-y-1">
+                  <p className="font-semibold text-sm">{bank.acctName}</p>
+                  <p className="text-xs text-[#A3A3A3]">
+                    {bank.bankName} | {bank.acctNo}
+                  </p>
+                </div>
+                <X
+                  className="text-[#A3A3A3] size-4 ml-auto self-start cursor-pointer"
+                  onClick={() => {
+                    dispatch(SET_BANK(null));
+                  }}
+                />
+              </div>
+            ) : null}
+
             <div className="space-y-1">
               <div className="flex justify-between">
                 <p className="text-[#636363] text-xs mb-1 font-semibold">
@@ -640,9 +815,9 @@ export function SellProductsTable<TData, TValue>({
                     onClick={() => {
                       setPayFull((prev) => !prev);
                       setPay({
+                        ...pay,
                         amountPaid: "",
                         balance: "",
-                        paymentMethod: "CASH",
                       });
                     }}
                   />
@@ -730,7 +905,9 @@ export function SellProductsTable<TData, TValue>({
               }
               isLoading={isPending}
               loadingText="please wait"
-              onClick={() => handleSellProduct({ sku: cartItems[0].sku })}
+              onClick={() => {
+                handleSellProduct({ sku: cartItems[0].sku });
+              }}
             >
               Sell Products <MoveRight className="ml-2" />
             </Button>

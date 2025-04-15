@@ -115,8 +115,6 @@ export const PreviewTable = () => {
         products: previewProducts,
       });
 
-      console.log({ res });
-
       if (res.error) {
         if (Array.isArray(res.error)) {
           if (res.error.length > 5) {
