@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import { Empty } from "@/components/Empty";
+import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 
 export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -38,6 +39,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
   });
 
   const searchParams = useSearchParams();
+  const addSupplier = useAddCustomerModal()
   const rowsPerPage = 10;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
@@ -136,7 +138,9 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
     <Empty
       text="Oops seems like you currently don’t have any suppliers"
       color
-      handleClick={() => {}}
+      handleClick={() => {
+        addSupplier.onOpen({type : 'supplier'});
+      }}
       buttonText="Add Supplier"
     />
   );

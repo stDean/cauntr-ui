@@ -60,18 +60,18 @@ export const NavBar = ({ title }: { title?: string }) => {
               className={cn(
                 "absolute text-[10px] left-[14px] top-2 font-bold",
                 {
-                  "text-green-500": cartItems.length > 0,
+                  "text-green-500": cartItems && cartItems.length > 0,
                 }
               )}
               onClick={() => {
                 router.push("/cart");
               }}
             >
-              {cartItems.length}
+              {cartItems && cartItems.length}
             </p>
             <ShoppingCart
               className={cn("size-8", {
-                "text-green-500": cartItems.length > 0,
+                "text-green-500": cartItems && cartItems.length > 0,
               })}
             />
           </div>

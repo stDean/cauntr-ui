@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import { Empty } from "@/components/Empty";
+import useAddCustomerModal from "@/hooks/useAddCustomerModal";
+import { Danfo } from "next/font/google";
 
 export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -38,6 +40,7 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
   });
 
   const searchParams = useSearchParams();
+  const addDebtor = useAddCustomerModal();
   const rowsPerPage = 10;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
@@ -48,7 +51,8 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
     currentPage * rowsPerPage
   );
 
-  const emptyData = [];
+  const emptyData = [
+  ];
 
   return data.length > 0 ? (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
@@ -66,9 +70,9 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer"
-          >
-            <Plus size={15} className="mr-2" /> Add Debtors
-          </Button>
+
+            onClick={() => addDebtor.onOpen({ type: "debtor" })}
+            ><Plus size={15} className="mr-2" /> Add Debtors</Button>
         </div>
       </div>
 
@@ -132,12 +136,14 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
         </div>
       )}
     </div>
-  ) : (
-    <Empty
-      text="Oops seems like you currently don’t have any customer, add some customers now."
-      customer
-      handleClick={() => {}}
-      buttonText="Add Debtors"
-    />
-  );
+
+  ) : (<Empty
+        text="Oops seems like you currently don’t have any customer, add some customers now."
+        customer
+        handleClick={() => {
+          addDebtor.onOpen({type : 'debtor'});
+        }}
+        buttonText="Add Debtors"
+      />);
+
 }

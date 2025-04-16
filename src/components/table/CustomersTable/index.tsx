@@ -140,6 +140,8 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
       customer
       handleClick={() => {
         console.log("add customer");
+
+        addCustomer.onOpen({ type: "customer" })
         // addCustomer.onOpen();
       }}
       buttonText="Add Customer"

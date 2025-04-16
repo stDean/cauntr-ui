@@ -3,7 +3,11 @@
 import { CreateCustomer } from "@/actions/users.a";
 import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import { useReduxState } from "@/hooks/useRedux";
-import { AddCustomerSchema } from "@/schema";
+import {
+  AddCustomerSchema,
+  AddDebtorSchema,
+  AddSupplierSchema,
+} from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -39,13 +43,33 @@ export const AddCustomerModal = () => {
     }));
   };
 
-  const form = useForm<z.infer<typeof AddCustomerSchema>>({
+  const customerForm = useForm<z.infer<typeof AddCustomerSchema>>({
     resolver: zodResolver(AddCustomerSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       phone: "",
       email: "",
+    },
+  });
+
+  const supplierForm = useForm<z.infer<typeof AddSupplierSchema>>({
+    resolver: zodResolver(AddSupplierSchema),
+    defaultValues: {
+      supplierName: "",
+      email: "",
+      phone: "",
+      address: "",
+    },
+  });
+
+  const debtorForm = useForm<z.infer<typeof AddDebtorSchema>>({
+    resolver: zodResolver(AddDebtorSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      amountOwed: 0,
     },
   });
 
@@ -93,17 +117,23 @@ export const AddCustomerModal = () => {
 
   const headerContent = (
     <p className="text-xl">
-      {addCustomer.type === "customer" ? "Add New Customer" : "Add New Bank"}
+      {addCustomer.type === "customer"
+        ? "Add New Customer"
+        : addCustomer.type === "supplier"
+        ? "Add New Supplier"
+        : addCustomer.type === "debtor"
+        ? "Add New Debtors"
+        : "Add New Bank"}
     </p>
   );
 
   const bodyContent =
     addCustomer.type === "customer" ? (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(createCustomer)}>
+      <Form {...customerForm}>
+        <form onSubmit={customerForm.handleSubmit(createCustomer)}>
           <div className="p-4 space-y-4">
             <CustomInput
-              control={form.control}
+              control={customerForm.control}
               label="First Name"
               name="firstName"
               placeholder="enter first name"
@@ -111,7 +141,7 @@ export const AddCustomerModal = () => {
             />
 
             <CustomInput
-              control={form.control}
+              control={customerForm.control}
               label="Last Name"
               name="lastName"
               placeholder="enter last name"
@@ -119,7 +149,7 @@ export const AddCustomerModal = () => {
             />
 
             <CustomInput
-              control={form.control}
+              control={customerForm.control}
               label="Phone Number"
               name="phone"
               placeholder="enter phone number"
@@ -127,7 +157,7 @@ export const AddCustomerModal = () => {
             />
 
             <CustomInput
-              control={form.control}
+              control={customerForm.control}
               label="Email (Optional)"
               name="email"
               placeholder="enter email"
@@ -144,6 +174,112 @@ export const AddCustomerModal = () => {
               isLoading={isPending}
             >
               Add Customer
+            </Button>
+          </div>
+        </form>
+      </Form>
+    ) : addCustomer.type === "supplier" ? (
+      <Form {...supplierForm}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <div className="p-4 space-y-4">
+            <CustomInput
+              control={supplierForm.control}
+              label="Supplier Name"
+              name="supplierName"
+              placeholder="enter supplier name"
+            />
+
+            <CustomInput
+              control={supplierForm.control}
+              label="Email"
+              name="email"
+              placeholder="enter email"
+            />
+
+            <CustomInput
+              control={supplierForm.control}
+              label="Phone Number"
+              name="phone"
+              placeholder="enter phone number"
+            />
+
+            <CustomInput
+              control={supplierForm.control}
+              label="Warehouse Address"
+              name="address"
+              placeholder="enter warehouse address"
+            />
+          </div>
+
+          <div className="px-4 pb-4 flex justify-end">
+            <Button
+              variant={"cauntr_blue"}
+              size={"sm"}
+              className="cursor-pointer"
+              disabled={isPending}
+              loadingText="creating"
+              isLoading={isPending}
+            >
+              Add Supplier
+            </Button>
+          </div>
+        </form>
+      </Form>
+    ) : addCustomer.type === "debtor" ? (
+      <Form {...debtorForm}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <div className="p-4 space-y-4">
+            <CustomInput
+              control={debtorForm.control}
+              label="First Name"
+              name="firstName"
+              placeholder="enter first name"
+              withSpan
+            />
+
+            <CustomInput
+              control={debtorForm.control}
+              label="Last Name"
+              name="lastName"
+              placeholder="enter last name"
+              withSpan
+            />
+
+            <CustomInput
+              control={debtorForm.control}
+              label="Phone Number"
+              name="phone"
+              placeholder="enter phone number"
+              withSpan
+            />
+
+            <CustomInput
+              control={debtorForm.control}
+              label="Amount Owed"
+              name="amountOwed"
+              placeholder="enter amount owed"
+              withSpan
+            />
+          </div>
+
+          <div className="px-4 pb-4 flex justify-end">
+            <Button
+              variant={"cauntr_blue"}
+              size={"sm"}
+              className="cursor-pointer"
+              disabled={isPending}
+              loadingText="creating"
+              isLoading={isPending}
+            >
+              Add Debtor
             </Button>
           </div>
         </form>
