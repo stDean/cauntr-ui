@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useState } from "react";
-import {  DebtorsColumn } from "./DebtorsColumn";
+import { DebtorsColumn } from "./DebtorsColumn";
 import { Pagination } from "@/components/Pagination";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -50,17 +50,15 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
 
   const emptyData = [];
 
-  return emptyData.length > 0 ? (
+  return data.length > 0 ? (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
-        <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full" >
+        <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
             placeholder="search by Name..."
-            value={
-              (table.getColumn("debtorName")?.getFilterValue() as string) ?? ""
-            }
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("debtorName")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="w-full lg:w-[500px] text-xs md:text-sm"
           />
@@ -68,11 +66,11 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer"
-            ><Plus size={15} className="mr-2" /> Add Debtors</Button>
+          >
+            <Plus size={15} className="mr-2" /> Add Debtors
+          </Button>
         </div>
       </div>
-
-    
 
       <div className="border rounded-lg!">
         <Table>
@@ -98,7 +96,7 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
           </TableHeader>
 
           <TableBody>
-            {paginatedRows.length > 0 &&
+            {paginatedRows.length > 0 ? (
               paginatedRows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -113,7 +111,17 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
                     </TableCell>
                   ))}
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No debtor with that name.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -124,10 +132,12 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
         </div>
       )}
     </div>
-  ) : (<Empty
-        text="Oops seems like you currently don’t have any customer, add some customers now."
-        customer
-        handleClick={() => {}}
-        buttonText="Add Debtors"
-      />);
+  ) : (
+    <Empty
+      text="Oops seems like you currently don’t have any customer, add some customers now."
+      customer
+      handleClick={() => {}}
+      buttonText="Add Debtors"
+    />
+  );
 }

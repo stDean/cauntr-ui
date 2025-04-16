@@ -1,36 +1,44 @@
-import { TabNavigation } from '@/components/TabNavigation';
-import { CustomersTable } from '@/components/table/CustomersTable';
-import { DebtorsTable } from '@/components/table/DebtorsTable';
-import {SuppliersTable} from '@/components/table/SuppliersTable'
-import {suppliersData , customersData , debtorsData} from './data'
-import React from 'react'
+import { GetCustomers, GetDebtors, GetSuppliers } from "@/actions/users.a";
+import { TabNavigation } from "@/components/TabNavigation";
+import { CustomersTable } from "@/components/table/CustomersTable";
+import { DebtorsTable } from "@/components/table/DebtorsTable";
+import { SuppliersTable } from "@/components/table/SuppliersTable";
+import { cookies } from "next/headers";
 
-const UsersContent = ( {tab} : {tab : string}) => {
+const UsersContent = async ({ tab }: { tab: string }) => {
+  const cookieStore = await cookies();
+  const token = JSON.parse(cookieStore.get("token")?.value as string);
+  const userId = cookieStore.get("userId")?.value as string;
 
-    const tabs = [
-        { label: "Suppliers", query: "suppliers" },
-        { label: "Customers", query: "customers" },
-        { label: "Debtors", query: "debtors" },
-      ];
+  const customerRes = await GetCustomers({ token, userId });
+  const supplierRes = await GetSuppliers({ token, userId });
+  const debtorsRes = await GetDebtors({ token, userId });
 
-      
+  const tabs = [
+    { label: "Suppliers", query: "suppliers" },
+    { label: "Customers", query: "customers" },
+    { label: "Debtors", query: "debtors" },
+  ];
 
   return (
-    <div className='px-4 mb-18 lg:mb-2 space-y-5'>
-        <p className='ml-5 mt-2 text-sm font-bold'>Manage Users</p>
+    <div className="px-4 mb-18 lg:mb-2 space-y-5">
+      <p className="ml-5 mt-2 text-sm font-bold">Manage Users</p>
+      <hr />
 
-         <TabNavigation activeTab={tab} basePath="/users" tabs={tabs} />
-         
-          <div className="mt-4 px-4 mb-18 lg:my-4">
-                 {tab === "suppliers" && (
-                   <SuppliersTable  data={suppliersData}/>)}
-         
-                   {tab === "customers" && <CustomersTable  data = {customersData} />}
-                 {tab === "debtors" && <DebtorsTable  data={debtorsData} />}
-               </div>
+      <TabNavigation activeTab={tab} basePath="/users" tabs={tabs} />
 
+      <div className="mt-4 px-4 mb-18 lg:my-4">
+        {tab === "suppliers" && (
+          <SuppliersTable data={supplierRes.success.data} />
+        )}
+
+        {tab === "customers" && (
+          <CustomersTable data={customerRes.success.data.customer} />
+        )}
+        {tab === "debtors" && <DebtorsTable data={debtorsRes.success.data} />}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default UsersContent
+export default UsersContent;

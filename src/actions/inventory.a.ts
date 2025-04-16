@@ -1,10 +1,15 @@
 "use server";
 
 import { BankProps } from "@/hooks/useAddBankModal";
-import { CACHE_TAGS, dbCache, getGlobalTag, getUserTag } from "@/lib/cache";
+import {
+  CACHE_TAGS,
+  dbCache,
+  getGlobalTag,
+  getUserTag,
+  revalidateDbCache,
+} from "@/lib/cache";
 import { AddProductSchema } from "@/schema";
 import axios from "axios";
-import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
 export const GetInventoryItemsByType = async ({ token }: { token: string }) => {
@@ -108,8 +113,9 @@ export const CreateProduct = async ({
     );
 
     if (res.status === 201) {
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
+      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
     }
 
     return { success: res.data };
@@ -150,8 +156,9 @@ export const CreateProducts = async ({
     );
 
     if (res.status === 201) {
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
+      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -318,12 +325,15 @@ export const SellProduct = async ({
     );
 
     if (res.status === 200) {
-      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.transaction));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.singleTransaction));
+      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.categories, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
     }
 
     return { success: res.data };
@@ -360,12 +370,15 @@ export const SellProducts = async ({
     );
 
     if (res.status === 200) {
-      revalidateTag(getUserTag(userId, CACHE_TAGS.allProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryProducts));
-      revalidateTag(getGlobalTag(CACHE_TAGS.inventoryStats));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.categories));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.transaction));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.singleTransaction));
+      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.categories, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
     }
 
     return { success: res.data };
@@ -446,8 +459,8 @@ export const CreateBank = async ({
     );
 
     if (res.status === 201) {
-      revalidateTag(getGlobalTag(CACHE_TAGS.companyAccount));
-      revalidateTag(getUserTag(userId, CACHE_TAGS.banks));
+      revalidateDbCache({ tag: CACHE_TAGS.companyAccount });
+      revalidateDbCache({ tag: CACHE_TAGS.banks, userId });
     }
 
     return { success: res.data };

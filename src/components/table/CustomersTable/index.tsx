@@ -50,24 +50,17 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
     currentPage * rowsPerPage
   );
 
-  console.log({ a: addCustomer.isOpen });
+  // const emptyData = [];
 
-  const emptydata = [];
-
-  return emptydata.length > 0 ? (
+  return data.length > 0 ? (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
             placeholder="search by Name..."
-            value={
-              (table.getColumn("customerName")?.getFilterValue() as string) ??
-              ""
-            }
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table
-                .getColumn("customerName")
-                ?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="w-full lg:w-[500px] text-xs md:text-sm"
           />
@@ -105,7 +98,7 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
           </TableHeader>
 
           <TableBody>
-            {paginatedRows.length > 0 &&
+            {paginatedRows.length > 0 ? (
               paginatedRows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -120,7 +113,17 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
                     </TableCell>
                   ))}
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No customer with that name.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -137,7 +140,7 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
       customer
       handleClick={() => {
         console.log("add customer");
-        addCustomer.onOpen();
+        // addCustomer.onOpen();
       }}
       buttonText="Add Customer"
     />
