@@ -100,29 +100,32 @@ export interface GroupedCategory {
   brands: string[];
 }
 
-
 export interface SuppliersProps {
-    supplierName: string;
-    email: string;
-    phone: string;
-    supplyCount: number;
-    dateAdded: string;
+  id: string;
+  name: string;
+  email?: string;
+  contact: string;
+  supplyCount: number;
+  dateAdded: Date;
+  productCount: number;
 }
 
 export interface CustomersProps {
-  customerName: string;
-  email: string;
+  id: string;
+  name: string;
+  email?: string;
   phone: string;
-  buyCount: number;
-  dateAdded: string;
+  transactionCount: number;
+  dateAdded: Date;
 }
 
 export interface DebtorsProps {
-  debtorName: string;
+  id: string;
+  name: string;
   email: string;
   phone: string;
-  amountOwed: number;
-  dateOverdue: string;
+  transactionCount: number;
+  dateAdded: Date;
 }
 
 export interface TransactionSummaryProps {

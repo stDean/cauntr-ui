@@ -5,8 +5,7 @@ import {
   CACHE_TAGS,
   dbCache,
   getGlobalTag,
-  getUserTag,
-  revalidateDbCache,
+  revalidateDbCache
 } from "@/lib/cache";
 import { createUserSchema, ProfileSettingSchema } from "@/schema";
 import axios from "axios";
