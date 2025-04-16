@@ -93,3 +93,18 @@ export const AddCustomerSchema = z.object({
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().optional(),
 });
+
+
+export const AddSupplierSchema = z.object({
+  supplierName: z.string().min(1, "Supplier name is required"),
+  email: z.string().email(),
+  phone: z.string().min(1, "Phone number is required"),
+  address: z.string().min(1, "address is required")
+});
+
+export const AddDebtorSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  amountOwed: z.number().positive(),
+});
