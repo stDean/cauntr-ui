@@ -1,19 +1,7 @@
 "use client";
 
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from "react";
-import { SuppliersColumn } from "./SuppliersColumn";
 import { Pagination } from "@/components/Pagination";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,13 +10,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
-import { Empty } from "@/components/Empty";
-import useAddCustomerModal from "@/hooks/useAddCustomerModal";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { CustomerColumn } from "./CustomerColumn";
+import { useReduxState } from "@/hooks/useRedux";
 
-export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
+export function CustomerTable<TData, TValue>({
+  data,
+  type,
+}: {
+  data: TData[];
+  type: string;
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const columns = SuppliersColumn as ColumnDef<TData, TValue>[];
+  const columns = CustomerColumn(type) as ColumnDef<TData, TValue>[];
   const table = useReactTable({
     data,
     columns,
@@ -38,44 +41,37 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
     state: { columnFilters },
   });
 
+  // Pagination Logics
   const searchParams = useSearchParams();
-  const addSupplier = useAddCustomerModal();
   const rowsPerPage = 10;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
   const currentPage = Number(searchParams.get("page")) || 1;
 
+  // Slice the filtered rows to display only the current page's rows
   const paginatedRows = filteredRows.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
 
-  // const emptyData = [];
-
-  return data?.length > 0 ? (
-    <div className="my-4 border rounded-lg px-4 py-3 space-y-4">
-      <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
-        <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
-          <Input
-            placeholder="search by Name..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="w-full lg:w-[500px] text-xs md:text-sm"
-          />
-          <Button
-            variant={"cauntr_blue"}
-            size={"sm"}
-            className="cursor-pointer"
-            onClick={() => addSupplier.onOpen({ type: "supplier" })}
-          >
-            <Plus size={15} className="mr-2" /> Add Supplier
-          </Button>
-        </div>
+  return (
+    <div className="border rounded-lg p-4 space-y-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+        <Input
+          placeholder="Filter product..."
+          value={
+            (table.getColumn("productName")?.getFilterValue() as string) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("productName")?.setFilterValue(event.target.value)
+          }
+          className="w-[250px] lg:w-[350px] text-xs md:text-sm"
+        />
       </div>
 
-      <div className="border rounded-lg!">
+      {/* Main Table */}
+      <div className="border rounded-lg">
         <Table>
           <TableHeader>
             {table?.getHeaderGroups()?.map((headerGroup) => (
@@ -99,14 +95,14 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
           </TableHeader>
 
           <TableBody>
-            {paginatedRows.length > 0 ? (
+            {paginatedRows.length ? (
               paginatedRows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-xs">
+                    <TableCell key={cell.id} className="text-xs py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -121,7 +117,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No supplier with that name.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -129,20 +125,12 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
         </Table>
       </div>
 
-      {paginatedRows.length > 0 && totalPages > 1 && (
+      {/* Pagination */}
+      {totalPages > 1 && (
         <div className="my-4 w-full">
           <Pagination totalPages={totalPages} currentPage={1} />
         </div>
       )}
     </div>
-  ) : (
-    <Empty
-      text="Oops seems like you currently don’t have any suppliers"
-      color
-      handleClick={() => {
-        addSupplier.onOpen({ type: "supplier" });
-      }}
-      buttonText="Add Supplier"
-    />
   );
 }

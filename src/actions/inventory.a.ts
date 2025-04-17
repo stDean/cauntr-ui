@@ -116,6 +116,7 @@ export const CreateProduct = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
     }
 
     return { success: res.data };
@@ -159,6 +160,7 @@ export const CreateProducts = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -334,6 +336,8 @@ export const SellProduct = async ({
       revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
+      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
     }
 
     return { success: res.data };
@@ -379,6 +383,8 @@ export const SellProducts = async ({
       revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
+      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
     }
 
     return { success: res.data };

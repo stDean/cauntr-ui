@@ -50,10 +50,8 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
     currentPage * rowsPerPage
   );
 
-  // const emptyData = [];
-
   return data.length > 0 ? (
-    <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
+    <div className="my-4 border rounded-lg px-4 py-3 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
@@ -68,6 +66,7 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer"
+            onClick={() => addCustomer.onOpen({ type: "customer" })}
           >
             <Plus size={15} className="mr-2" /> Add Customer
           </Button>
@@ -141,7 +140,7 @@ export function CustomersTable<TData, TValue>({ data }: { data: TData[] }) {
       handleClick={() => {
         console.log("add customer");
 
-        addCustomer.onOpen({ type: "customer" })
+        addCustomer.onOpen({ type: "customer" });
         // addCustomer.onOpen();
       }}
       buttonText="Add Customer"

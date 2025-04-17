@@ -21,8 +21,8 @@ const UsersContent = async ({ tab }: { tab: string }) => {
   ];
 
   return (
-    <div className="px-4 mb-18 lg:mb-2 space-y-5">
-      <p className="ml-5 mt-2 text-sm font-bold">Manage Users</p>
+    <div className="mb-18 lg:mb-2 space-y-4">
+      <p className="ml-5 mt-1 font-bold">Manage Users</p>
       <hr />
 
       <TabNavigation activeTab={tab} basePath="/users" tabs={tabs} />

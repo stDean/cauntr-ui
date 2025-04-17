@@ -51,11 +51,8 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
     currentPage * rowsPerPage
   );
 
-  const emptyData = [
-  ];
-
   return data.length > 0 ? (
-    <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
+    <div className="my-4 border rounded-lg px-4 py-3 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
@@ -70,9 +67,10 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer"
-
             onClick={() => addDebtor.onOpen({ type: "debtor" })}
-            ><Plus size={15} className="mr-2" /> Add Debtors</Button>
+          >
+            <Plus size={15} className="mr-2" /> Add Debtors
+          </Button>
         </div>
       </div>
 
@@ -136,14 +134,14 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
         </div>
       )}
     </div>
-
-  ) : (<Empty
-        text="Oops seems like you currently don’t have any customer, add some customers now."
-        customer
-        handleClick={() => {
-          addDebtor.onOpen({type : 'debtor'});
-        }}
-        buttonText="Add Debtors"
-      />);
-
+  ) : (
+    <Empty
+      text="Oops seems like you currently don’t have any customer, add some customers now."
+      customer
+      handleClick={() => {
+        addDebtor.onOpen({ type: "debtor" });
+      }}
+      buttonText="Add Debtors"
+    />
+  );
 }

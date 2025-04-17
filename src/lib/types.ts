@@ -160,3 +160,28 @@ export interface CartItemProps {
   onDelete: () => void;
   onAdjustQty: (type: "add" | "remove") => void;
 }
+
+export interface SupplierTable {
+  productName: string;
+  createdAt: Date;
+  pricePerUnit: string;
+  status: string;
+  serialNo: string;
+}
+
+export interface CustomerTable {
+  productName: string;
+  serialNo: string;
+  sku: string;
+  quantity: 3;
+  paymentMethod: string;
+  purchaseDate: Date;
+  totalPrice: string;
+  pricePerUnit: string;
+  transactionType: string;
+  paidPrice: string;
+  balanceOwed: string;
+  itemId: string;
+}
+
+export interface DebtorTable {}

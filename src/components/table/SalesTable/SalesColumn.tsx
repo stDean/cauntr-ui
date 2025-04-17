@@ -12,7 +12,7 @@ export const SalesColumn: ColumnDef<SalesType>[] = [
         <div className="space-y-1">
           <Link
             href={`/sales/${encodeURIComponent(id)}`}
-            className="text-blue-500 hover:underline hover:text-blue-400"
+            className="text-blue-500 hover:underline hover:text-blue-400 md:!text-sm"
           >
             {employee}
           </Link>

@@ -1,5 +1,6 @@
 "use server";
 
+import { clearFullCache } from "@/lib/cache";
 import { AuthSchema, ResetSchema } from "@/schema";
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -181,6 +182,7 @@ export const Logout = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("token");
   cookieStore.delete("role");
+  clearFullCache()
 };
 
 export const ForgetPassword = async ({

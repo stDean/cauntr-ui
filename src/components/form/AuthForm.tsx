@@ -104,16 +104,16 @@ export const AuthForm = ({ type }: { type: string }) => {
   const handAuthentication = (values: z.infer<typeof AuthSchema>) => {
     startTransition(async () => {
       if (type === "login") {
-        const { success, error } = await Login({ values });
-        if (error) {
-          toast.error("Error", { description: error });
+        const res = await Login({ values });
+        if (res.error) {
+          toast.error("Error", { description: res.error });
           return;
         }
 
         // set the token into the context.
-        dispatch(SET_TOKEN(success.token));
-        dispatch(SET_LOGGED_IN_USER(success.user))
-        toast.success("Success", { description: success.message });
+        dispatch(SET_TOKEN(res.success.token));
+        dispatch(SET_LOGGED_IN_USER(res.success.user));
+        toast.success("Success", { description: res.success.message });
         router.push("/dashboard");
         return;
       }
@@ -134,16 +134,16 @@ export const AuthForm = ({ type }: { type: string }) => {
 
         return;
       }
-      const { error, success } = await Register({ values });
-      if (error) {
-        if (Array.isArray(error)) {
-          error.forEach((e) => {
+      const res = await Register({ values });
+      if (res.error) {
+        if (Array.isArray(res.error)) {
+          res.error.forEach((e) => {
             if (typeof e === "string") {
               toast.error("Error", { description: e });
             }
           });
         } else {
-          toast.error("Error", { description: error });
+          toast.error("Error", { description: res.error });
         }
 
         form.reset();
@@ -151,7 +151,7 @@ export const AuthForm = ({ type }: { type: string }) => {
       }
 
       dispatch(SET_EMAIL(values.company_email));
-      toast.success("Success", { description: success.message });
+      toast.success("Success", { description: res.success.message });
       router.push("/code");
     });
   };
