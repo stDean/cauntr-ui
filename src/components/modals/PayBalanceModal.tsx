@@ -82,8 +82,6 @@ export const PayBalanceModal = () => {
     }
   }, [bankSearch, banks]);
 
-  console.log({ banks, a: payBalance.item });
-
   const handlePay = () => {
     startTransition(async () => {
       const res = await PayBalance({

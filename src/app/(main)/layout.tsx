@@ -8,6 +8,8 @@ import { ReceiptModal } from "@/components/modals/ReceiptModal";
 import { ReactNode } from "react";
 import { DashboardWrapper } from "./_component/DashboardWrapper";
 import { PayBalanceModal } from "@/components/modals/PayBalanceModal";
+import { InvoiceConfirmationModal } from "@/components/modals/InvoiceConfirmationModal";
+import { RecordPayModal } from "@/components/modals/RecordPayModal";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -21,6 +23,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <ReceiptModal />
         <AddCustomerModal />
         <PayBalanceModal />
+        <InvoiceConfirmationModal />
+        <RecordPayModal />
       </>
 
       <DashboardWrapper>{children}</DashboardWrapper>

@@ -338,6 +338,7 @@ export const SellProduct = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
       revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
     }
 
     return { success: res.data };
@@ -385,6 +386,7 @@ export const SellProducts = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
       revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
     }
 
     return { success: res.data };

@@ -3,16 +3,29 @@
 import { LucideIcon, X } from "lucide-react";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   Icon: LucideIcon;
   subText: string | ReactElement;
-  variant: string;
+  variant:
+    | "link"
+    | "default"
+    | "destructive"
+    | "outline"
+    | "outline_red"
+    | "outline_blue"
+    | "secondary"
+    | "ghost"
+    | "cauntr_blue"
+    | null
+    | undefined;
   secondaryText: string;
   secondaryButtonAction: () => void;
   isPending?: boolean;
+  colored?: boolean;
 }
 
 export const ConfirmationModal = ({
@@ -24,6 +37,7 @@ export const ConfirmationModal = ({
   secondaryText,
   secondaryButtonAction,
   isPending,
+  colored,
 }: ModalProps) => {
   const [showModal, setShowModal] = useState<boolean>(isOpen);
 
@@ -55,8 +69,15 @@ export const ConfirmationModal = ({
             className={`translate h-full lg:h-auto md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none p-6`}
           >
             {/* Header */}
-            <div className="flex items-center justify-center rounded-full p-4">
-              <Icon />
+            <div className="flex items-center justify-center mb-3">
+              <div
+                className={cn(
+                  "w-fit h-fit border-4 p-4 rounded-full bg-[#ccc]",
+                  { "bg-[#EEEDF8]": colored }
+                )}
+              >
+                <Icon className={cn({ "text-[#0C049B]": colored })} />
+              </div>
             </div>
 
             {/* Body */}
@@ -77,7 +98,7 @@ export const ConfirmationModal = ({
               </Button>
               <Button
                 className="col-span-6 cursor-pointer"
-                variant={variant === "destructive" ? "destructive" : "default"}
+                variant={variant}
                 onClick={secondaryButtonAction}
                 disabled={isPending}
                 isLoading={isPending}

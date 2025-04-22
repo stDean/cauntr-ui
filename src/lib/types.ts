@@ -185,3 +185,13 @@ export interface CustomerTable {
 }
 
 export interface DebtorTable {}
+
+export interface InvoiceColumnProps {
+  invoiceNo: string;
+  customerName: string;
+  amount: number;
+  status: string;
+  planId: string;
+  paymentId: string;
+  email: string;
+}
