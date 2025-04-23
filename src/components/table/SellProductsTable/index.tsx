@@ -361,7 +361,6 @@ export function SellProductsTable<TData, TValue>({
       }
     });
   };
-  
 
   const filteredData = table.getRowModel().rows.filter((row) => {
     const uniqueProductTypes = Array.from(new Set(filterCat.productType));
@@ -832,19 +831,23 @@ export function SellProductsTable<TData, TValue>({
                 onChange={(e) => setPay({ ...pay, amountPaid: e.target.value })}
               />
 
-              <div className="mt-1">
-                <p className="text-[#636363] text-xs mb-1 font-semibold">
-                  Balance Owed
-                </p>
+              {tab === "customer" && (
+                <div className="mt-1">
+                  <p className="text-[#636363] text-xs mb-1 font-semibold">
+                    Balance Owed
+                  </p>
 
-                <Input
-                  placeholder="enter balance owed"
-                  disabled={payFull}
-                  name="balance"
-                  value={pay.balance}
-                  onChange={(e) => setPay({ ...pay, balance: e.target.value })}
-                />
-              </div>
+                  <Input
+                    placeholder="enter balance owed"
+                    disabled={payFull}
+                    name="balance"
+                    value={pay.balance}
+                    onChange={(e) =>
+                      setPay({ ...pay, balance: e.target.value })
+                    }
+                  />
+                </div>
+              )}
             </div>
           </div>
 

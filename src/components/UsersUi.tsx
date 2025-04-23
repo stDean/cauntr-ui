@@ -62,12 +62,12 @@ export const UsersUi = ({ type, userData, tableData }: UserUiProps) => {
               {userData.email || "No Email Provided"}
             </p>
           </div>
-          <div className="col-span-6">
+          {/* <div className="col-span-6">
             <p className="text-xs md:text-sm text-[#636363]">
               {type === "supplier" ? "Supply" : "Buy"} Count
             </p>
             <p className="md:text-xl font-semibold text-sm">{userData.count}</p>
-          </div>
+          </div> */}
 
           {userData.address && (
             <div className="col-span-6">

@@ -24,7 +24,7 @@ export default async function CustomerPage({
         address: res.success.data.customerData.address,
         email: res.success.data.customerData.email,
       }}
-      tableData={res.success.data.products}
+      tableData={res.success.data.trans}
     />
   );
 }

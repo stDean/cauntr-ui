@@ -14,9 +14,24 @@ export const PaymentColumn: ColumnDef<PaymentHistoryType>[] = [
   {
     accessorKey: "modeOfPay",
     header: () => <span className="text-xs md:text-sm">Mode of Payment</span>,
+    cell: ({ row }) => (
+      <p>{row.original.modeOfPay === "CASH" ? "Cash" : "Bank Transfer"}</p>
+    ),
   },
   {
     accessorKey: "amount",
     header: () => <span className="text-xs md:text-sm">Amount</span>,
+  },
+  {
+    accessorKey: "amountPaid",
+    header: () => <span className="text-xs md:text-sm">Total Paid</span>,
+  },
+  {
+    accessorKey: "balanceOwed",
+    header: () => <span className="text-xs md:text-sm">Balance Owed</span>,
+  },
+  {
+    accessorKey: "balancePaid",
+    header: () => <span className="text-xs md:text-sm">Balance Paid</span>,
   },
 ];

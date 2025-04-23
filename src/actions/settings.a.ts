@@ -154,6 +154,8 @@ export const UpdateUserProfile = async ({
     if (res.status === 200) {
       revalidateDbCache({ tag: CACHE_TAGS.user });
       revalidateDbCache({ tag: CACHE_TAGS.users });
+      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
     }
 
     return { success: res.data };

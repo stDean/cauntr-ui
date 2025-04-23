@@ -49,6 +49,7 @@ export const ProfileSettingsForm = ({ user }: { user: UserProps }) => {
         token,
         id: loggedInUser!.id,
         values,
+        userId: loggedInUser!.id,
       });
       if (res.error) {
         toast.error("Error", { description: res.error });

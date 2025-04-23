@@ -1,33 +1,17 @@
 import { create } from "zustand";
 
-interface TransItemProps {
-  salesDetails: {
-    customerName: string;
-    salesAmount: string;
-    balanceOwed: string;
-    salesType: string;
-    itemId: string;
-    alreadyPaid: string;
-  };
-  paymentHistory: {
-    paymentDate: Date;
-    amount: string;
-    balancePaid: string;
-  }[];
-}
-
 interface PayBalanceModalProps {
   isOpen: boolean;
-  item: TransItemProps | null;
-  onOpen: (item: TransItemProps) => void;
+  itemId: string | null;
+  onOpen: (itemId: string) => void;
   onClose: () => void;
 }
 
 const usePayBalanceModal = create<PayBalanceModalProps>((set) => ({
   isOpen: false,
-  item: null,
-  onOpen: (item) => set({ isOpen: true, item }),
-  onClose: () => set({ isOpen: false, item: null }),
+  itemId: null,
+  onOpen: (itemId: string) => set({ isOpen: true, itemId }),
+  onClose: () => set({ isOpen: false, itemId: null }),
 }));
 
 export default usePayBalanceModal;

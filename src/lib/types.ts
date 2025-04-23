@@ -73,6 +73,9 @@ export interface PaymentHistoryType {
   date: string;
   amount: number;
   modeOfPay: string;
+  balanceOwed: string;
+  balancePaid: string;
+  amountPaid: string
 }
 
 export interface SellProductProps {
@@ -139,7 +142,13 @@ export interface SingleSalesProps {
   soldBy: { name: string; type: string };
   customer: { name?: string; email?: string; phone?: string };
   salesSummary: { productName: string; qty: number; price: number }[];
-  paymentHistory: { date: Date; amount: string; modeOfPay: string }[];
+  paymentHistory: {
+    date: Date;
+    amount: string;
+    modeOfPay: string;
+    balanceOwed: string;
+    amountPaid: string;
+  }[];
   totalPay: number;
 }
 
@@ -169,19 +178,27 @@ export interface SupplierTable {
   serialNo: string;
 }
 
-export interface CustomerTable {
-  productName: string;
-  serialNo: string;
-  sku: string;
-  quantity: 3;
-  paymentMethod: string;
-  purchaseDate: Date;
-  totalPrice: string;
-  pricePerUnit: string;
-  transactionType: string;
-  paidPrice: string;
-  balanceOwed: string;
-  itemId: string;
+// export interface CustomerTable {
+//   productName: string;
+//   serialNo: string;
+//   sku: string;
+//   quantity: 3;
+//   paymentMethod: string;
+//   purchaseDate: Date;
+//   totalPrice: string;
+//   pricePerUnit: string;
+//   transactionType: string;
+//   paidPrice: string;
+//   balanceOwed: string;
+//   itemId: string;
+// }
+
+export interface CustomerTransactionsProps {
+  transId: string;
+  soldBy: string;
+  itemCount: number;
+  dateSold: Date;
+  id: string;
 }
 
 export interface DebtorTable {}

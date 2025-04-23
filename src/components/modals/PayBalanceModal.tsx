@@ -1,28 +1,28 @@
 "use client";
 
+import { GetBanks } from "@/actions/inventory.a";
+import { PayBalance } from "@/actions/users.a";
+import { useAppDispatch } from "@/app/redux";
+import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import usePayBalanceModal from "@/hooks/usePayBalanceModal";
-import { Modal } from "./Modal";
-import { Input } from "../ui/input";
+import { useReduxState } from "@/hooks/useRedux";
+import { SET_BANK } from "@/state";
+import { Landmark, Plus, X } from "lucide-react";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
+import { Banks } from "../form/AccountSettingsForm";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import {
-  SelectItem,
   Select,
   SelectContent,
   SelectGroup,
+  SelectItem,
   SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useReduxState } from "@/hooks/useRedux";
-import { Landmark, Plus, X } from "lucide-react";
-import { SET_BANK } from "@/state";
-import { useAppDispatch } from "@/app/redux";
-import useAddCustomerModal from "@/hooks/useAddCustomerModal";
-import { Banks } from "../form/AccountSettingsForm";
-import { GetBanks } from "@/actions/inventory.a";
-import { Button } from "../ui/button";
-import { PayBalance } from "@/actions/users.a";
-import { toast } from "sonner";
+import { Modal } from "./Modal";
 
 export const PayBalanceModal = () => {
   const payBalance = usePayBalanceModal();
@@ -88,7 +88,7 @@ export const PayBalanceModal = () => {
         token,
         userId: loggedInUser!.id,
         payData: { amount: Number(pay.amount), method: pay.paymentMethod },
-        itemId: payBalance!.item!.salesDetails!.itemId!,
+        itemId: payBalance!.itemId!,
         acctPaidTo: {
           bankName: bank?.bankName!,
           acctNo: bank?.acctNo!,
@@ -116,84 +116,11 @@ export const PayBalanceModal = () => {
     });
   };
 
-  const headerContent = <h1 className="text-xl">Record Balance</h1>;
+  const headerContent = <h1 className="text-xl">Record Payment</h1>;
 
   const bodyContent = (
     <div className="p-4 space-y-2">
       <div className="space-y-2 pb-2">
-        <p className="font-semibold">Sale Detail</p>
-        <div className="md:grid grid-cols-12 gap-4 space-y-2 md:space-y-0">
-          <div className="w-full md:col-span-6 space-y-1">
-            <p className="text-xs text-[#636363]">Customer Name</p>
-            <Input
-              value={payBalance.item?.salesDetails.customerName}
-              disabled
-            />
-          </div>
-
-          <div className="w-full md:col-span-6 space-y-1">
-            <p className="text-xs text-[#636363]">Sale Type</p>
-            <Input
-              value={
-                payBalance.item?.salesDetails.salesType === "SALE"
-                  ? "Sale"
-                  : "Bulk Sales"
-              }
-              disabled
-            />
-          </div>
-
-          <div className="w-full md:col-span-4 space-y-1">
-            <p className="text-xs text-[#636363]">Sales Amount</p>
-            <Input value={payBalance.item?.salesDetails.salesAmount} disabled />
-          </div>
-
-          <div className="w-full md:col-span-4 space-y-1">
-            <p className="text-xs text-[#636363]">Paid Amount</p>
-            <Input value={payBalance.item?.salesDetails.alreadyPaid} disabled />
-          </div>
-
-          <div className="w-full md:col-span-4 space-y-1">
-            <p className="text-xs text-[#636363]">Amount Owed</p>
-            <Input value={payBalance.item?.salesDetails.balanceOwed} disabled />
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="space-y-2 pb-2">
-        <p className="font-semibold">Payment History</p>
-        <div className="max-h-56 overflow-y-scroll space-y-2">
-          {payBalance.item?.paymentHistory.map((p, i) => {
-            return (
-              <div
-                className="md:grid grid-cols-12 gap-4 space-y-2 md:space-y-0"
-                key={`${p.amount} - ${p.paymentDate} - ${i}`}
-              >
-                <div className="w-full md:col-span-6 space-y-1">
-                  <p className="text-xs text-[#636363]">Payment Date</p>
-                  <Input
-                    value={new Date(p.paymentDate).toLocaleDateString()}
-                    disabled
-                  />
-                </div>
-
-                <div className="w-full md:col-span-6 space-y-1">
-                  <p className="text-xs text-[#636363]">Amount</p>
-                  <Input value={p.balancePaid} disabled />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="space-y-2 pb-2">
-        <p className="font-semibold">Sale Detail</p>
-
         <div className="space-y-1">
           <p className="text-xs text-[#636363]">Payment Details</p>
           <Input
@@ -351,7 +278,6 @@ export const PayBalanceModal = () => {
       }}
       headerContent={headerContent}
       body={bodyContent}
-      addStyle2
     />
   );
 };

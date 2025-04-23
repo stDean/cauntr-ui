@@ -60,11 +60,9 @@ export function CustomerTable<TData, TValue>({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
         <Input
           placeholder="Filter product..."
-          value={
-            (table.getColumn("productName")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("transId")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("productName")?.setFilterValue(event.target.value)
+            table.getColumn("transId")?.setFilterValue(event.target.value)
           }
           className="w-[250px] lg:w-[350px] text-xs md:text-sm"
         />
@@ -128,7 +126,7 @@ export function CustomerTable<TData, TValue>({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="my-4 w-full">
-          <Pagination totalPages={totalPages} currentPage={1} />
+          <Pagination totalPages={totalPages} currentPage={currentPage} />
         </div>
       )}
     </div>
