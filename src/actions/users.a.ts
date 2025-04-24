@@ -459,6 +459,7 @@ export const PayBalance = async ({
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
       revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
       revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
     }

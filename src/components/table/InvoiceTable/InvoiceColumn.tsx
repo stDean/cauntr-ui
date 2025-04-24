@@ -4,11 +4,20 @@ import { InvoiceColumnProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { BellRing, CheckCheck, CreditCard } from "lucide-react";
+import Link from "next/link";
 
 export const InvoiceColumn: ColumnDef<InvoiceColumnProps>[] = [
   {
     accessorKey: "invoiceNo",
     header: () => <span className="text-xs md:text-sm">Invoice Number</span>,
+    cell: ({ row }) => (
+      <Link
+        href={`/invoice/${row.original.invoiceNo}`}
+        className="text-blue-400 hover:text-blue-500 hover:underline hover:underline-offset-4"
+      >
+        {row.original.invoiceNo}
+      </Link>
+    ),
   },
   {
     accessorKey: "customerName",

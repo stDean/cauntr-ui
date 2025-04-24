@@ -52,6 +52,54 @@ const GetInvoicesInternals = async ({
   }
 };
 
+export const GetInvoice = async ({
+  token,
+  userId,
+  invoiceNo,
+}: {
+  token: string;
+  userId: string;
+  invoiceNo: string;
+}) => {
+  const cachedFn = dbCache(GetInvoicesInternal, {
+    tags: [getUserTag(userId, CACHE_TAGS.invoice)],
+  });
+
+  return cachedFn({ token, userId, invoiceNo });
+};
+
+const GetInvoicesInternal = async ({
+  token,
+  userId,
+  invoiceNo,
+}: {
+  token: string;
+  userId: string;
+  invoiceNo: string;
+}) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/invoice/${invoiceNo}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
 export const MarkAsPaid = async ({
   token,
   userId,

@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Empty } from "@/components/Empty";
+import Link from "next/link";
 
 export function InvoiceTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,9 +68,14 @@ export function InvoiceTable<TData, TValue>({ data }: { data: TData[] }) {
           </div>
         </div>
 
-        <Button className="cursor-pointer" size={"sm"} variant={"cauntr_blue"}>
+        <Button
+          className="cursor-pointer"
+          size={"sm"}
+          variant={"cauntr_blue"}
+          asChild
+        >
           <Plus className="size-4 mr-2" />
-          Create Invoice
+          <Link href={"/invoice/create"}>Create Invoice</Link>
         </Button>
       </div>
 

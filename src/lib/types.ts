@@ -75,7 +75,7 @@ export interface PaymentHistoryType {
   modeOfPay: string;
   balanceOwed: string;
   balancePaid: string;
-  amountPaid: string
+  amountPaid: string;
 }
 
 export interface SellProductProps {
@@ -211,4 +211,45 @@ export interface InvoiceColumnProps {
   planId: string;
   paymentId: string;
   email: string;
+}
+
+export interface SingleInvoiceProps {
+  invoiceData: {
+    invoiceNo: string;
+    invoiceDate: Date;
+    paymentDate: Date;
+    status: string;
+  };
+  companyData: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  billTo: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  balanceDue: {
+    amount: string;
+    dueDate: string;
+  };
+  products: {
+    name: string;
+    qty: number;
+    ppu: string;
+    total: number;
+    totalPrice: string;
+  }[];
+  payments: {
+    subTotal: string;
+    totalPaid: string;
+  };
+  bankPaidTo: {
+    bankName: string;
+    acctNo: string;
+    acctName: string;
+  };
 }

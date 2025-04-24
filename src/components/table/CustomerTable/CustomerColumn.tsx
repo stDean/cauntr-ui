@@ -16,7 +16,7 @@ export const CustomerColumn = (
     cell: ({ row }) => (
       <Link
         href={`/users/trans/${row.original.id}`}
-        className="text-blue-400 hover:text-blue-500 hover:underline hover:underline-offset-2"
+        className="text-blue-400 hover:text-blue-500 hover:underline hover:underline-offset-4"
       >
         {row.original.transId}
       </Link>
