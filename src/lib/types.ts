@@ -160,3 +160,17 @@ export interface CartItemProps {
   onDelete: () => void;
   onAdjustQty: (type: "add" | "remove") => void;
 }
+
+export interface OverviewProps {
+     productName: string;
+     qtySold: number;
+     qtyLeft: number;
+     amountSold: number;
+}
+
+
+export interface StockDataProps {
+  productName: string;
+  qtySold: number;
+  runOutDate: string;
+}
