@@ -1,11 +1,11 @@
 "use client";
 
-import useRecieptModal from "@/hooks/useReceiptModal";
-import { Modal } from "./Modal";
-import Image from "next/image";
+import useReceiptModal from "@/hooks/useReceiptModal";
 import { X } from "lucide-react";
-export const RecieptModal = () => {
-  const recieptModal = useRecieptModal();
+import Image from "next/image";
+import { Modal } from "./Modal";
+export const ReceiptModal = () => {
+  const recieptModal = useReceiptModal();
 
   const items = [
     {

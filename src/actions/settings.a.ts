@@ -5,7 +5,7 @@ import {
   CACHE_TAGS,
   dbCache,
   getGlobalTag,
-  revalidateDbCache
+  revalidateDbCache,
 } from "@/lib/cache";
 import { createUserSchema, ProfileSettingSchema } from "@/schema";
 import axios from "axios";
@@ -54,9 +54,11 @@ const getCompanyAccountInternals = async ({ token }: { token: string }) => {
 export const UpdateAccount = async ({
   acctDetails,
   token,
+  userId,
 }: {
   acctDetails: AcctDetailsProps;
   token: string;
+  userId: string;
 }) => {
   try {
     const res = await axios.patch(
@@ -75,6 +77,7 @@ export const UpdateAccount = async ({
 
     if (res.status === 200) {
       revalidateDbCache({ tag: CACHE_TAGS.companyAccount });
+      revalidateDbCache({ tag: CACHE_TAGS.banks, userId });
     }
 
     return { success: res.data };
@@ -128,10 +131,12 @@ export const UpdateUserProfile = async ({
   id,
   token,
   values,
+  userId,
 }: {
   id: string;
   token: string;
   values: z.infer<typeof ProfileSettingSchema>;
+  userId: string;
 }) => {
   const validatedFields = ProfileSettingSchema.safeParse(values);
   if (!validatedFields.success) {
@@ -149,6 +154,8 @@ export const UpdateUserProfile = async ({
     if (res.status === 200) {
       revalidateDbCache({ tag: CACHE_TAGS.user });
       revalidateDbCache({ tag: CACHE_TAGS.users });
+      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
     }
 
     return { success: res.data };

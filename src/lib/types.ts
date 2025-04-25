@@ -73,6 +73,9 @@ export interface PaymentHistoryType {
   date: string;
   amount: number;
   modeOfPay: string;
+  balanceOwed: string;
+  balancePaid: string;
+  amountPaid: string;
 }
 
 export interface SellProductProps {
@@ -139,7 +142,13 @@ export interface SingleSalesProps {
   soldBy: { name: string; type: string };
   customer: { name?: string; email?: string; phone?: string };
   salesSummary: { productName: string; qty: number; price: number }[];
-  paymentHistory: { date: Date; amount: string; modeOfPay: string }[];
+  paymentHistory: {
+    date: Date;
+    amount: string;
+    modeOfPay: string;
+    balanceOwed: string;
+    amountPaid: string;
+  }[];
   totalPay: number;
 }
 
@@ -161,6 +170,7 @@ export interface CartItemProps {
   onAdjustQty: (type: "add" | "remove") => void;
 }
 
+
 export interface OverviewProps {
      productName: string;
      qtySold: number;
@@ -168,9 +178,93 @@ export interface OverviewProps {
      amountSold: number;
 }
 
-
 export interface StockDataProps {
   productName: string;
   qtySold: number;
   runOutDate: string;
 }
+
+export interface SupplierTable {
+  productName: string;
+  createdAt: Date;
+  pricePerUnit: string;
+  status: string;
+  serialNo: string;
+}
+
+// export interface CustomerTable {
+//   productName: string;
+//   serialNo: string;
+//   sku: string;
+//   quantity: 3;
+//   paymentMethod: string;
+//   purchaseDate: Date;
+//   totalPrice: string;
+//   pricePerUnit: string;
+//   transactionType: string;
+//   paidPrice: string;
+//   balanceOwed: string;
+//   itemId: string;
+// }
+
+export interface CustomerTransactionsProps {
+  transId: string;
+  soldBy: string;
+  itemCount: number;
+  dateSold: Date;
+  id: string;
+}
+
+export interface DebtorTable {}
+
+export interface InvoiceColumnProps {
+  invoiceNo: string;
+  customerName: string;
+  amount: number;
+  status: string;
+  planId: string;
+  paymentId: string;
+  email: string;
+}
+
+export interface SingleInvoiceProps {
+  invoiceData: {
+    invoiceNo: string;
+    invoiceDate: Date;
+    paymentDate: Date;
+    status: string;
+  };
+  companyData: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  billTo: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  balanceDue: {
+    amount: string;
+    dueDate: string;
+  };
+  products: {
+    name: string;
+    qty: number;
+    ppu: string;
+    total: number;
+    totalPrice: string;
+  }[];
+  payments: {
+    subTotal: string;
+    totalPaid: string;
+  };
+  bankPaidTo: {
+    bankName: string;
+    acctNo: string;
+    acctName: string;
+  };
+}
+

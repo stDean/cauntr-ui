@@ -11,7 +11,7 @@ export const DebtorsColumn: ColumnDef<DebtorsProps>[] = [
       return (
         <div className="space-y-1">
           <Link
-            href={`/users/${encodeURIComponent(id)}`}
+            href={`/users/debtors/${encodeURIComponent(id)}?name=Debtor`}
             className="text-blue-500 hover:underline hover:text-blue-400 md:text-sm!"
           >
             {name}

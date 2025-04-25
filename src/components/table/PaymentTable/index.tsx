@@ -38,7 +38,7 @@ export function PaymentTable<TData, TValue>({ data }: { data: TData[] }) {
   });
 
   const searchParams = useSearchParams();
-  const rowsPerPage = 4;
+  const rowsPerPage = 5;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -106,7 +106,7 @@ export function PaymentTable<TData, TValue>({ data }: { data: TData[] }) {
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="text-xs">
+                        <TableCell key={cell.id} className="text-xs py-3">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

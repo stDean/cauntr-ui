@@ -55,9 +55,9 @@ export default async function SalesHistoryPage() {
   const cardDetails = cardData({
     title1: "Total Sales",
     title2: "Total Stock Sold",
-    text1: `${transactionSummary?.totalSales || "NIL"}`,
-    text2: `${transactionSummary?.totalStockSold || "NIL"}`,
-    text3: `${transactionSummary?.categories || "NIL"}`,
+    text1: `${transactionSummary?.totalSales || "0"}`,
+    text2: `${transactionSummary?.totalStockSold || "0"}`,
+    text3: `${transactionSummary?.categories || "0"}`,
     text4: `${transactionSummary?.topSellingProduct.name || "NIL"}`,
   });
 

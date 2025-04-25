@@ -39,7 +39,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
   });
 
   const searchParams = useSearchParams();
-  const addSupplier = useAddCustomerModal()
+  const addSupplier = useAddCustomerModal();
   const rowsPerPage = 10;
   const filteredRows = table.getRowModel().rows;
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
@@ -53,7 +53,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
   // const emptyData = [];
 
   return data?.length > 0 ? (
-    <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
+    <div className="my-4 border rounded-lg px-4 py-3 space-y-4">
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div className="flex justify-between md:items-center gap-3 flex-col md:flex-row  w-full">
           <Input
@@ -68,6 +68,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer"
+            onClick={() => addSupplier.onOpen({ type: "supplier" })}
           >
             <Plus size={15} className="mr-2" /> Add Supplier
           </Button>
@@ -139,7 +140,7 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
       text="Oops seems like you currently don’t have any suppliers"
       color
       handleClick={() => {
-        addSupplier.onOpen({type : 'supplier'});
+        addSupplier.onOpen({ type: "supplier" });
       }}
       buttonText="Add Supplier"
     />

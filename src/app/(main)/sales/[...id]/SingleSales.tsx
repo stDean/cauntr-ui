@@ -35,7 +35,7 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
           className="cursor-pointer flex items-center"
           onClick={() => router.push("/sales")}
         >
-          <ChevronLeft className="size-4 text-[#0C049B]" />
+          <ChevronLeft className="size-4 text-[#0C049B] mr-2" />
           Go Back
         </Button>
         <div className="flex gap-2">

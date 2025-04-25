@@ -19,7 +19,7 @@ export const NavBar = ({ title }: { title?: string }) => {
     <div className="flex justify-between items-center w-full mb-2 border-b p-4 bg-white">
       {/* LEFT SIDE */}
       <h1
-        className={`text-sm lg:text-xl font-semibold ${
+        className={`text-sm lg:text-base font-semibold ${
           getName && "font-normal! flex! gap-1 items-center "
         }`}
       >
@@ -27,14 +27,14 @@ export const NavBar = ({ title }: { title?: string }) => {
         {/* {a}{" "} */}
         {getName && (
           <span className="font-semibold inline-flex items-center">
-            <ChevronRight className="size-4 md:size-6" /> <span>{getName}</span>
+            <ChevronRight className="size-4" /> <span>{getName}</span>
           </span>
         )}
       </h1>
 
       {/* RIGHT SIDE */}
       <div className="flex justify-between items-center gap-5">
-        <div className="flex justify-between items-center gap-5">
+        <div className="flex justify-between items-center gap-3">
           <Link href="/settings">
             <Settings className="size-5 lg:size-6" />
           </Link>

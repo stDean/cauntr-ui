@@ -1,12 +1,15 @@
-import { ReactNode } from "react";
-import { DashboardWrapper } from "./_component/DashboardWrapper";
 import { AddBankModal } from "@/components/modals/AddBankModal";
+import { AddCustomerModal } from "@/components/modals/AddCustomerModal";
+import { AddProductModal } from "@/components/modals/AddProductModal";
+import { ChangePasswordModal } from "@/components/modals/ChangePasswordModal";
 import { CreateUserModal } from "@/components/modals/CreateUserModal";
 import { DeleteUserModal } from "@/components/modals/DeleteUserModal";
-import { ChangePasswordModal } from "@/components/modals/ChangePasswordModal";
-import { AddProductModal } from "@/components/modals/AddProductModal";
-import { RecieptModal } from "@/components/modals/RecieptModal";
-import { AddCustomerModal } from "@/components/modals/AddCustomerModal";
+import { ReceiptModal } from "@/components/modals/ReceiptModal";
+import { ReactNode } from "react";
+import { DashboardWrapper } from "./_component/DashboardWrapper";
+import { PayBalanceModal } from "@/components/modals/PayBalanceModal";
+import { InvoiceConfirmationModal } from "@/components/modals/InvoiceConfirmationModal";
+import { RecordPayModal } from "@/components/modals/RecordPayModal";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,8 +20,11 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <DeleteUserModal />
         <ChangePasswordModal />
         <AddProductModal />
-         <RecieptModal /> 
-         <AddCustomerModal />
+        <ReceiptModal />
+        <AddCustomerModal />
+        <PayBalanceModal />
+        <InvoiceConfirmationModal />
+        <RecordPayModal />
       </>
 
       <DashboardWrapper>{children}</DashboardWrapper>

@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateCustomer } from "@/actions/users.a";
+import { CreateCustomer, CreateSupplier } from "@/actions/users.a";
 import useAddCustomerModal from "@/hooks/useAddCustomerModal";
 import { useReduxState } from "@/hooks/useRedux";
 import {
@@ -69,7 +69,7 @@ export const AddCustomerModal = () => {
       firstName: "",
       lastName: "",
       phone: "",
-      amountOwed: 0,
+      amountOwed: "0",
     },
   });
 
@@ -84,11 +84,13 @@ export const AddCustomerModal = () => {
       if (res.error) {
         toast.error("Error", { description: res.error });
         addCustomer.onClose();
+        customerForm.reset();
         return;
       }
 
       toast.success("Success", { description: res.success.msg });
       addCustomer.onClose();
+      customerForm.reset();
     });
   };
 
@@ -107,11 +109,40 @@ export const AddCustomerModal = () => {
       if (res.error) {
         toast.error("Error", { description: res.error });
         addCustomer.onClose();
+        setBank({ acctNo: "", bankName: "", acctName: "" });
         return;
       }
 
       toast.success("Success", { description: res.success.msg });
       addCustomer.onClose();
+      setBank({ acctNo: "", bankName: "", acctName: "" });
+    });
+  };
+
+  const createSupplier = (values: z.infer<typeof AddSupplierSchema>) => {
+    startTransition(async () => {
+      const res = await CreateSupplier({
+        token,
+        userId: loggedInUser!.id!,
+        userData: values,
+      });
+
+      if (res.error) {
+        toast.error("Error", { description: res.error });
+        addCustomer.onClose();
+        supplierForm.reset();
+        return;
+      }
+
+      toast.success("Success", { description: res.success.msg });
+      addCustomer.onClose();
+      supplierForm.reset();
+    });
+  };
+
+  const CreateDebtor = (values: z.infer<typeof AddDebtorSchema>) => {
+    startTransition(async () => {
+      console.log({ values });
     });
   };
 
@@ -180,11 +211,7 @@ export const AddCustomerModal = () => {
       </Form>
     ) : addCustomer.type === "supplier" ? (
       <Form {...supplierForm}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
+        <form onSubmit={supplierForm.handleSubmit(createSupplier)}>
           <div className="p-4 space-y-4">
             <CustomInput
               control={supplierForm.control}
@@ -231,11 +258,7 @@ export const AddCustomerModal = () => {
       </Form>
     ) : addCustomer.type === "debtor" ? (
       <Form {...debtorForm}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
+        <form onSubmit={debtorForm.handleSubmit(CreateDebtor)}>
           <div className="p-4 space-y-4">
             <CustomInput
               control={debtorForm.control}

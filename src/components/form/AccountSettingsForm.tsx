@@ -31,7 +31,7 @@ export const AccountSettingsForm = ({
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const addBankModal = useAddBankModal();
-  const { token } = useReduxState();
+  const { token, loggedInUser } = useReduxState();
 
   const form = useForm<z.infer<typeof AccountSettingsSchema>>({
     resolver: zodResolver(AccountSettingsSchema),
@@ -97,6 +97,7 @@ export const AccountSettingsForm = ({
       const res = await UpdateAccount({
         acctDetails: allData,
         token,
+        userId: loggedInUser!.id,
       });
       if (res.error) {
         toast.error("Error", { description: res.error });
