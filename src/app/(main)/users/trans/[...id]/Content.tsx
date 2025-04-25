@@ -34,7 +34,7 @@ export const Content = ({
           <ChevronLeft className="size-4 text-[#0C049B]" />
           Go Back
         </Button>
-        {paymentHistory[0].balanceOwed && (
+        {paymentHistory[0].balanceOwed !== "0" && (
           <div className="">
             <Button
               variant={"cauntr_blue"}

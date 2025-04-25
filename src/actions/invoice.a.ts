@@ -243,3 +243,51 @@ export const ResendInvoice = async ({
     return { error: "Something went wrong." };
   }
 };
+
+export const CreateInvoice = async ({
+  token,
+  userId,
+  data,
+}: {
+  token: string;
+  userId: string;
+  data: any;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/invoice/create`,
+      data,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.status === 200) {
+      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.categories, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
+      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
+      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
+    }
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};

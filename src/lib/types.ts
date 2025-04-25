@@ -96,6 +96,7 @@ export interface CustomerProps {
   email: string;
   phone: string;
   transactionCount: number;
+  address?: string
 }
 
 export interface GroupedCategory {

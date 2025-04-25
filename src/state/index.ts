@@ -16,7 +16,12 @@ export interface InitialStateTypes {
   email: "";
   loggedInUser: UserProps | null;
   previewProducts: any[];
-  buyer: { name: string; email?: string; phone: string } | null;
+  buyer: {
+    name: string;
+    email?: string;
+    phone: string;
+    address?: string;
+  } | null;
   bank: {
     id: string;
     bankName: string;

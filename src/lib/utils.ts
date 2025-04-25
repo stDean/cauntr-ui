@@ -90,3 +90,12 @@ export const calculateTotals = (
     taxAmount: taxAmount.toFixed(2),
   };
 };
+
+export const formatNaira = (value: number) => {
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value).replace('NGN', '₦');
+};
