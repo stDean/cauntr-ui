@@ -1,11 +1,17 @@
 "use client";
 
+import { format } from "date-fns";
 import { CreateInvoice } from "@/actions/invoice.a";
 import { AcctDetailsProps } from "@/actions/settings.a";
 import { useAppDispatch } from "@/app/redux";
 import { Banks } from "@/components/form/AccountSettingsForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -17,9 +23,10 @@ import {
 } from "@/components/ui/select";
 import { useReduxState } from "@/hooks/useRedux";
 import { CustomerProps } from "@/lib/types";
-import { formatNaira } from "@/lib/utils";
+import { cn, formatNaira } from "@/lib/utils";
 import { SET_BANK, SET_BUYER } from "@/state";
 import {
+  CalendarIcon,
   ChevronLeft,
   ChevronRight,
   Landmark,
@@ -29,6 +36,8 @@ import {
 } from "lucide-react";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
+import { useRouter } from "next/navigation";
 
 enum Steps {
   BUSNDCUS = 0,
@@ -53,6 +62,7 @@ export const CreateInvoiceContent = ({
   banks: Banks[];
 }) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState(Steps.BUSNDCUS);
   const [customerSearch, setCustomerSearch] = useState("");
@@ -66,6 +76,7 @@ export const CreateInvoiceContent = ({
   const [showBanks, setShowBanks] = useState(false);
   const [bankSearch, setBankSearch] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("CASH");
+  const [date, setDate] = useState<Date>();
   const [addedProducts, setAddedProducts] = useState<
     {
       name: string;
@@ -214,7 +225,7 @@ export const CreateInvoiceContent = ({
         payment: {
           method: paymentMethod,
           totalAmount: Number(total),
-          paymentDate: "2025-04-23",
+          paymentDate: date && date!.toISOString(),
           vat: Number(taxAmount),
         },
         productDetails: products,
@@ -254,6 +265,8 @@ export const CreateInvoiceContent = ({
       setPaymentMethod("CASH");
       dispatch(SET_BANK(null));
       dispatch(SET_BUYER(null));
+
+      router.push("/invoice");
     });
   };
 
@@ -301,7 +314,7 @@ export const CreateInvoiceContent = ({
 
           <div className="font-semibold">
             {formatNaira(Number(total))} due on{" "}
-            {new Date().toLocaleDateString()}
+            {date ? date!.toLocaleDateString()! : ""}
           </div>
 
           <hr />
@@ -777,7 +790,28 @@ export const CreateInvoiceContent = ({
                 <div className="space-y-1 flex-1">
                   <p className="text-xs text-[#636363]">Payment Date</p>
                   {/* TODO:CHange this to a date picker */}
-                  <Input />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div className="space-y-1 flex-1">

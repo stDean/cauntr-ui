@@ -133,6 +133,7 @@ export const MarkAsPaid = async ({
       revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
     }
 
     return { success: res.data };
@@ -194,6 +195,7 @@ export const RecordPayment = async ({
       revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
     }
 
     return { success: res.data };
@@ -260,7 +262,7 @@ export const CreateInvoice = async ({
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    if (res.status === 200) {
+    if (res.status === 201) {
       revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
       revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });

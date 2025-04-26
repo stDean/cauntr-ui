@@ -1,12 +1,13 @@
 import {
   GetInventoryItemsByType,
-  GetInventoryStats
+  GetInventoryStats,
 } from "@/actions/inventory.a";
 import { GetSuppliers } from "@/actions/users.a";
 import { Card } from "@/components/MiniCard";
 import { InventoryTable } from "@/components/table/InventoryTable";
 import { cookies } from "next/headers";
 import { cardData } from "../sales/page";
+import { formatNaira } from "@/lib/utils";
 
 export default async function InventoryPage() {
   const cookieStore = await cookies();
@@ -20,7 +21,7 @@ export default async function InventoryPage() {
   const cardDetails = cardData({
     title1: "Inventory Value",
     title2: "Total Stock Count",
-    text1: statsRes.success.data.totalSellingPrice,
+    text1: formatNaira(Number(statsRes.success.data.totalSellingPrice)),
     text2: statsRes.success.data.totalStockQuantity,
     text3: statsRes.success.data.categories,
   });
