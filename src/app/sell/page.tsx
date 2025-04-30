@@ -24,10 +24,10 @@ export default async function SellPage() {
       <NavBar title="Sell Products" />
 
       <SellProductsTable
-        data={products.success.data}
-        customers={customers.success.data.customer}
-        categories={categories.success.data}
-        banks={bankRes.success.data.banks}
+        data={products.success?.data || []}
+        customers={customers.success?.data?.customer || []}
+        categories={categories.success?.data || []}
+        banks={bankRes.success?.data?.banks || []}
       />
     </div>
   );

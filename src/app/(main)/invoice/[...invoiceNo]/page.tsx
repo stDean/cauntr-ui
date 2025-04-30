@@ -22,13 +22,13 @@ export default async function SingleInvoicePage({
 
   return (
     <InvoiceContent
-      invoiceData={invoice.success.data.invoiceData}
-      companyData={invoice.success.data.companyData}
-      billTo={invoice.success.data.billTo}
-      balanceDue={invoice.success.data.balanceDue}
-      products={invoice.success.data.products}
-      payments={invoice.success.data.payments}
-      bankPaidTo={invoice.success.data.bankPaidTo}
+      invoiceData={invoice.success?.data.invoiceData || null}
+      companyData={invoice.success?.data.companyData || null}
+      billTo={invoice.success?.data.billTo || null}
+      balanceDue={invoice.success?.data.balanceDue || 0}
+      products={invoice.success?.data.products || []}
+      payments={invoice.success?.data.payments || null}
+      bankPaidTo={invoice.success?.data.bankPaidTo || null}
     />
   );
 }

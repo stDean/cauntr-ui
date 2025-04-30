@@ -48,7 +48,7 @@ export const RecordPayModal = () => {
         userId: loggedInUser ? loggedInUser!.id : "",
       });
 
-      if (res) setBanks(res.success.data.banks);
+      if (res) setBanks(res.success?.data?.banks);
     };
 
     fetchBanks();

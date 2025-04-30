@@ -15,10 +15,10 @@ export default async function InvoiceCreatePage() {
 
   return (
     <CreateInvoiceContent
-      companyAcct={companyAcct.success.data}
-      customers={customers.success.data.customer}
-      data={products.success.data}
-      banks={bankRes.success.data.banks}
+      companyAcct={companyAcct.success?.data || null}
+      customers={customers.success?.data.customer || []}
+      data={products.success?.data || []}
+      banks={bankRes.success?.data.banks || []}
     />
   );
 }

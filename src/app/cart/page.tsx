@@ -16,8 +16,8 @@ export default async function CartPage() {
       <NavBar title="Cart" />
 
       <CartContent
-        customers={customers.success.data.customer}
-        banks={bankRes.success.data.banks}
+        customers={customers.success?.data.customer || []}
+        banks={bankRes.success?.data.banks || []}
       />
     </div>
   );

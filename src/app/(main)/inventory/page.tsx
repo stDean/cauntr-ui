@@ -21,10 +21,10 @@ export default async function InventoryPage() {
   const cardDetails = cardData({
     title1: "Inventory Value",
     title2: "Total Stock Count",
-    text1: formatNaira(Number(statsRes.success.data.totalSellingPrice)),
-    text2: statsRes.success.data.totalStockQuantity,
-    text3: statsRes.success.data.categories,
-    text4: `${statsRes.success.data?.topSellingProduct.name || "NIL"}`,
+    text1: formatNaira(Number(statsRes.success?.data?.totalSellingPrice ?? 0)),
+    text2: statsRes.success?.data?.totalStockQuantity ?? 0,
+    text3: statsRes.success?.data?.categories ?? 0,
+    text4: `${statsRes.success?.data?.topSellingProduct.name || "NIL"}`,
   });
 
   return (
@@ -32,8 +32,8 @@ export default async function InventoryPage() {
       <Card cardData={cardDetails} />
 
       <InventoryTable
-        data={res.success.data}
-        suppliers={suppliersRes.success.data}
+        data={res.success?.data || []}
+        suppliers={suppliersRes.success?.data || []}
       />
     </div>
   );

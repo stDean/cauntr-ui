@@ -20,15 +20,19 @@ export const ProductsPage = ({ data }: { data: ProductProps }) => {
     <div className="px-4 flex flex-col lg:flex-row gap-4">
       <div className="space-y-6 flex-1">
         <div className="rounded-lg border">
-          <RevenueChart data={data.topRevenue} />
+          <RevenueChart data={data ? data.topRevenue : []} />
         </div>
 
         <div className="rounded-lg border">
           <RevenueChart
-            data={data.topProfit.map((p) => ({
-              product: p.product,
-              revenue: p.profit,
-            }))}
+            data={
+              data
+                ? data.topProfit.map((p) => ({
+                    product: p.product,
+                    revenue: p.profit,
+                  }))
+                : []
+            }
           />
         </div>
       </div>

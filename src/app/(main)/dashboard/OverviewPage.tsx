@@ -5,7 +5,6 @@ import SalesPerformanceChart from "@/components/charts/SalesPerformanceChart";
 import { Card } from "@/components/MiniCard";
 import { OverviewTable } from "@/components/table/OverviewTable";
 import { StockDataTable } from "@/components/table/StockDataTable";
-import { useReduxState } from "@/hooks/useRedux";
 import { cn, formatNaira } from "@/lib/utils";
 
 export const cardData = ({
@@ -74,15 +73,17 @@ interface OverviewProps {
 
 export default function OverviewPage({ data }: { data: OverviewProps }) {
   const currentMonth = new Date().toLocaleString("default", { month: "short" });
-  const cardMonthData = data.cardData.find((i) => i.month === currentMonth);
+  const cardMonthData = data
+    ? data.cardData.find((i) => i.month === currentMonth)
+    : null;
 
   const cardDetails = cardData({
     title1: "Total Sales Amount",
     title2: "Total Purchase Amount",
-    text1: formatNaira(cardMonthData?.salesAmount || 0),
-    text2: formatNaira(cardMonthData?.purchaseAmount || 0),
-    text3: formatNaira(cardMonthData?.profit || 0),
-    text4: formatNaira(cardMonthData?.inventoryValue || 0),
+    text1: formatNaira(cardMonthData ? cardMonthData?.salesAmount : 0),
+    text2: formatNaira(cardMonthData ? cardMonthData?.purchaseAmount : 0),
+    text3: formatNaira(cardMonthData ? cardMonthData?.profit : 0),
+    text4: formatNaira(cardMonthData ? cardMonthData?.inventoryValue : 0),
   });
 
   return (
@@ -91,10 +92,10 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
         <Card cardData={cardDetails} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-7 grid-auto-rows-auto md:grid-rows-[repeat(11,auto)] gap-2.5 px-4 w-full h-fit mt-3">
+      <div className="grid grid-cols-1 md:grid-cols-7 grid-auto-rows-auto md:grid-rows-[repeat(11,auto)] gap-3 px-4 w-full h-fit mt-3">
         {/* Bar */}
-        <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-4 bg-blue-200 p-4 rounded-lg ">
-          <SalesPerformanceChart data={data.data} />
+        <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-4 p-4 border rounded-lg ">
+          <SalesPerformanceChart data={data ? data.data : []} />
         </div>
 
         {/* Table1 */}
@@ -104,16 +105,18 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
           )}
         >
           <StockDataTable
-            data={data.lowStockProducts}
-            name={`Low Stock (${data.lowStockProducts.length})`}
+            data={data ? data.lowStockProducts : []}
+            name={`Low Stock (${data ? data.lowStockProducts.length : "0"})`}
             secondColumn="Quantity"
-            secondData={data.lowStockProducts.map((data) => data.quantity || 0)}
+            secondData={
+              data ? data.lowStockProducts.map((data) => data.quantity || 0) : 0
+            }
           />
         </div>
 
         {/* Bar1 */}
         <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-7 rounded-lg">
-          <OverviewTable data={data.topSellingProduct} />
+          <OverviewTable data={data ? data.topSellingProduct : []} />
         </div>
 
         {/* Table2 */}
@@ -123,12 +126,16 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
           )}
         >
           <StockDataTable
-            data={data.outOfStock}
-            name={`Out of Stock (${data.outOfStock.length})`}
+            data={data ? data.outOfStock : []}
+            name={`Out of Stock (${data ? data.outOfStock.length : "0"})`}
             secondColumn="Run Out Date"
-            secondData={data.outOfStock.map((data) =>
-              new Date(data.updatedAt).toLocaleDateString()
-            )}
+            secondData={
+              data
+                ? data.outOfStock.map((data) =>
+                    new Date(data.updatedAt).toLocaleDateString()
+                  )
+                : ""
+            }
           />
         </div>
       </div>

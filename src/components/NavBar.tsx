@@ -11,7 +11,7 @@ export const NavBar = ({ title }: { title?: string }) => {
   const searchParams = useSearchParams();
   const path = usePathname();
   const { loggedInUser: user, cartItems } = useReduxState();
-  const a = path.split("/")[1].toUpperCase();
+  const a = path.split("/")[1];
 
   const getName = searchParams.has("name") && searchParams.get("name");
 
@@ -19,7 +19,7 @@ export const NavBar = ({ title }: { title?: string }) => {
     <div className="flex justify-between items-center w-full mb-2 border-b p-4 bg-white">
       {/* LEFT SIDE */}
       <h1
-        className={`text-sm lg:text-base font-semibold ${
+        className={`text-base lg:text-lg font-semibold capitalize ${
           getName && "font-normal! flex! gap-1 items-center "
         }`}
       >

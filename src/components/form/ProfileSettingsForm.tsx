@@ -28,10 +28,10 @@ export const ProfileSettingsForm = ({ user }: { user: UserProps }) => {
   const form = useForm<z.infer<typeof ProfileSettingSchema>>({
     resolver: zodResolver(ProfileSettingSchema),
     defaultValues: {
-      firstName: user!.firstName! || "",
-      lastName: user!.lastName! || "",
-      email: user!.email,
-      role: user.role,
+      firstName: user?.firstName! || "",
+      lastName: user?.lastName! || "",
+      email: user?.email,
+      role: user?.role,
       password: "",
     },
   });

@@ -44,17 +44,17 @@ export default async function InvoicePage() {
   const summary = await GetInvoiceSummary({ token, userId });
 
   const cardDetails = cardData({
-    text1: String(summary.success.returnedData.clientServed),
-    text2: String(summary.success.returnedData.invoiceGenerated),
-    text3: formatNaira(summary.success.returnedData.invoiceAmount),
-    text4: formatNaira(summary.success.returnedData.invoicePaid),
+    text1: String(summary.success?.returnedData.clientServed || 0),
+    text2: String(summary.success?.returnedData.invoiceGenerated || 0),
+    text3: formatNaira(summary.success?.returnedData.invoiceAmount || 0),
+    text4: formatNaira(summary.success?.returnedData.invoicePaid || 0),
   });
 
   return (
     <div className="px-4 mb-18 lg:mb-2 space-y-4">
       <Card cardData={cardDetails} />
 
-      <InvoiceTable data={invoicesRes.success.data} />
+      <InvoiceTable data={invoicesRes.success?.data || []} />
     </div>
   );
 }

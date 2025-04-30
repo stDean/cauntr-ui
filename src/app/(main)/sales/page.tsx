@@ -50,7 +50,7 @@ export default async function SalesHistoryPage() {
   const userId = cookieStore.get("userId")?.value as string;
   const transactions = await GetTransactions({ token, userId });
   const transactionSummary: TransactionSummaryProps | null =
-    transactions.success.transactionSummary;
+    transactions.success?.transactionSummary || null;
 
   const cardDetails = cardData({
     title1: "Total Sales",
@@ -64,7 +64,7 @@ export default async function SalesHistoryPage() {
   return (
     <div className="px-4 mb-18 lg:mb-2">
       <Card cardData={cardDetails} />
-      <SalesTable data={transactions.success.data} />
+      <SalesTable data={transactions.success?.data || []} />
     </div>
   );
 }

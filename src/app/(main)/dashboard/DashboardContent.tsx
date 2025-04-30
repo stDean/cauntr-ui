@@ -12,8 +12,8 @@ const DashboardContent = async ({ tab }: { tab: string }) => {
   const dashSummary = await GetDashSummary({ token, userId });
 
   const tabs = [
-    { label: "overview", query: "overview" },
-    { label: "products", query: "products" },
+    { label: "Overview", query: "overview" },
+    { label: "Products", query: "products" },
     // { label: "sales", query: "sales" },
   ];
 
