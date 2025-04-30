@@ -23,11 +23,11 @@ const DashboardContent = async ({ tab }: { tab: string }) => {
 
       <div className="mt-4 mb-18 lg:my-4">
         {tab === "overview" && (
-          <OverviewPage data={dashSummary.success.data.overview} />
+          <OverviewPage data={dashSummary.success?.data?.overview} />
         )}
 
         {tab === "products" && (
-          <ProductsPage data={dashSummary.success.data.products} />
+          <ProductsPage data={dashSummary.success?.data?.products} />
         )}
         {/* {tab === "sales" && <SalesPage />} */}
       </div>

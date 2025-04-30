@@ -75,8 +75,6 @@ interface OverviewProps {
 export default function OverviewPage({ data }: { data: OverviewProps }) {
   const currentMonth = new Date().toLocaleString("default", { month: "short" });
   const cardMonthData = data.cardData.find((i) => i.month === currentMonth);
-  const { loggedInUser } = useReduxState();
-  console.log(loggedInUser);
 
   const cardDetails = cardData({
     title1: "Total Sales Amount",
