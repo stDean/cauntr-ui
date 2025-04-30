@@ -117,6 +117,7 @@ export const CreateProduct = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
       revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data };
@@ -161,6 +162,7 @@ export const CreateProducts = async ({
       revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
       revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
       revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -340,6 +342,8 @@ export const SellProduct = async ({
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data };
@@ -389,6 +393,8 @@ export const SellProducts = async ({
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data };
@@ -472,6 +478,50 @@ export const CreateBank = async ({
       revalidateDbCache({ tag: CACHE_TAGS.companyAccount });
       revalidateDbCache({ tag: CACHE_TAGS.banks, userId });
     }
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const GetDashSummary = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  const cachedFn = dbCache(GetDashSummaryIntervals, {
+    tags: [getUserTag(userId, CACHE_TAGS.dashSummary)],
+  });
+
+  return cachedFn({ token, userId });
+};
+
+const GetDashSummaryIntervals = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/dashboard`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
     return { success: res.data };
   } catch (e: any) {

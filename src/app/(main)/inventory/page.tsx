@@ -24,6 +24,7 @@ export default async function InventoryPage() {
     text1: formatNaira(Number(statsRes.success.data.totalSellingPrice)),
     text2: statsRes.success.data.totalStockQuantity,
     text3: statsRes.success.data.categories,
+    text4: `${statsRes.success.data?.topSellingProduct.name || "NIL"}`,
   });
 
   return (

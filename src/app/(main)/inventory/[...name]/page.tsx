@@ -1,10 +1,9 @@
-import React from "react";
-import { SingleProductsByName } from "./SingleProductsByName";
-import { cookies } from "next/headers";
 import { GetProductByName } from "@/actions/inventory.a";
+import { cookies } from "next/headers";
+import { SingleProductsByName } from "./SingleProductsByName";
 
 interface ProductsProps {
-  params: { name: string[] };
+  params: Promise<{ name: string[] }>;
 }
 
 export default async function page({ params }: ProductsProps) {

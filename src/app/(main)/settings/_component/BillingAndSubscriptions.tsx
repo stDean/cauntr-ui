@@ -5,16 +5,18 @@ import {
   CreateSubscription,
   ManageSubscription,
 } from "@/actions/settings.a";
+import { useAppDispatch } from "@/app/redux";
 import { Empty } from "@/components/Empty";
 import { BillingTable } from "@/components/table/BillingTable";
 import { Button } from "@/components/ui/button";
 import { useReduxState } from "@/hooks/useRedux";
 import { BillingHistoryProps, CardDetailsProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { SET_LOGGED_IN_USER } from "@/state";
 import { CircleCheck, TriangleAlert } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 const BillingCard = ({
@@ -118,6 +120,17 @@ export const BillingAndSubscriptions = ({
   const expiry =
     cardDetails &&
     `${cardDetails.exp_month}/${String(cardDetails.exp_year).slice(2)}`;
+  const query = useSearchParams();
+  const success = !!query.get("success");
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (success) {
+      dispatch(
+        SET_LOGGED_IN_USER({ ...loggedInUser, companyStatus: "ACTIVE" })
+      );
+    }
+  }, [success]);
 
   const manageSubscription = () => {
     startTransition(async () => {
@@ -162,7 +175,8 @@ export const BillingAndSubscriptions = ({
   };
 
   const companyStatus =
-    cardDetails && cardDetails.company.subscriptionStatus !== "ACTIVE";
+    (cardDetails && cardDetails.company.subscriptionStatus !== "ACTIVE") ||
+    false;
   const currentPlan =
     billingHistory &&
     billingHistory.length > 0 &&
@@ -255,7 +269,7 @@ export const BillingAndSubscriptions = ({
             daysLeft={
               billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
             }
-            status={loggedInUser!.companyStatus}
+            status={loggedInUser ? loggedInUser!.companyStatus : ""}
           />
           <BillingCard
             planName="Team Plan"
@@ -278,7 +292,7 @@ export const BillingAndSubscriptions = ({
             daysLeft={
               billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
             }
-            status={loggedInUser!.companyStatus}
+            status={loggedInUser ? loggedInUser!.companyStatus : ""}
           />
           <BillingCard
             planName="Enterprise Plan"
@@ -303,7 +317,7 @@ export const BillingAndSubscriptions = ({
             daysLeft={
               billingHistory ? getDateDifference(billingHistory[0].endDate) : 0
             }
-            status={loggedInUser!.companyStatus}
+            status={loggedInUser ? loggedInUser!.companyStatus : ""}
           />
         </div>
       </div>

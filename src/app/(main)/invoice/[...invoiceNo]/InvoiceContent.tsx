@@ -47,8 +47,6 @@ export const InvoiceContent = ({
     });
   };
 
-  console.log({ bankPaidTo });
-
   return (
     <div className="px-4 mb-18 space-y-4">
       <div className="flex justify-between items-center">
@@ -131,7 +129,6 @@ export const InvoiceContent = ({
               <p>{billTo.phone}</p>
               <p>{billTo.email}</p>
             </div>
-            <div></div>
           </div>
 
           {balanceDue.amount && (

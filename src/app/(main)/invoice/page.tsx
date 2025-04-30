@@ -1,6 +1,7 @@
-import { GetInvoices } from "@/actions/invoice.a";
+import { GetInvoices, GetInvoiceSummary } from "@/actions/invoice.a";
 import { Card } from "@/components/MiniCard";
 import { InvoiceTable } from "@/components/table/InvoiceTable";
+import { formatNaira } from "@/lib/utils";
 import { cookies } from "next/headers";
 
 const cardData = ({
@@ -40,12 +41,13 @@ export default async function InvoicePage() {
   const userId = cookieStore.get("userId")?.value as string;
 
   const invoicesRes = await GetInvoices({ token, userId });
+  const summary = await GetInvoiceSummary({ token, userId });
 
   const cardDetails = cardData({
-    text1: "0",
-    text2: "0",
-    text3: "0",
-    text4: "NIL",
+    text1: String(summary.success.returnedData.clientServed),
+    text2: String(summary.success.returnedData.invoiceGenerated),
+    text3: formatNaira(summary.success.returnedData.invoiceAmount),
+    text4: formatNaira(summary.success.returnedData.invoicePaid),
   });
 
   return (

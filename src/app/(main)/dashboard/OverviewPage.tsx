@@ -1,17 +1,12 @@
 "use client";
 
-import { OverviewData, StockData } from "./data";
-import { SET_EMAIL, SET_LOGGED_IN_USER, SET_TOKEN } from "@/state";
-
-import { Button } from "@/components/ui/button";
+// import { OverviewData, StockData } from "./data";
+import SalesPerformanceChart from "@/components/charts/SalesPerformanceChart";
 import { Card } from "@/components/MiniCard";
-import { Logout } from "@/actions/auth.a";
 import { OverviewTable } from "@/components/table/OverviewTable";
-import SalesPerformanceChart from "@/app/charts/SalesPerformanceChart";
-import { StockDataProps } from "@/lib/types";
 import { StockDataTable } from "@/components/table/StockDataTable";
-import { useAppDispatch } from "@/app/redux";
-import { useRouter } from "next/navigation";
+import { useReduxState } from "@/hooks/useRedux";
+import { cn, formatNaira } from "@/lib/utils";
 
 export const cardData = ({
   text1,
@@ -35,12 +30,7 @@ export const cardData = ({
     },
     {
       title: title2,
-      subText: (
-        <p className="text-xl mt-3 md:mt-5 font-semibold">
-          {text2}
-          <span className="font-normal! text-base! ml-1">items</span>
-        </p>
-      ),
+      subText: <p className="text-xl mt-3 md:mt-5 font-semibold">{text2}</p>,
     },
     {
       title: "Total Profit Amount",
@@ -48,30 +38,53 @@ export const cardData = ({
     },
     {
       title: "Total Inventory Value",
-      subText: `${text4 || "NIL"}`,
+      subText: `${text4}`,
     },
   ];
 };
 
-export default function OverviewPage() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+interface OverviewProps {
+  cardData: {
+    month: string;
+    salesAmount: number;
+    purchaseAmount: number;
+    profit: number;
+    inventoryValue: number;
+  }[];
+  lowStockProducts: {
+    productName: string;
+    quantity: number;
+  }[];
+  outOfStock: {
+    productName: string;
+    updatedAt: Date;
+  }[];
+  topSellingProduct: {
+    productName: string;
+    soldQty: string;
+    remainingQty: string;
+    soldAmount: string;
+  }[];
+  data: {
+    month: string;
+    sales: number;
+    purchases: number;
+  }[];
+}
 
-  const logOut = async () => {
-    await Logout();
-    router.push("/");
-
-    dispatch(SET_LOGGED_IN_USER(null));
-    dispatch(SET_EMAIL(""));
-    dispatch(SET_TOKEN(""));
-  };
+export default function OverviewPage({ data }: { data: OverviewProps }) {
+  const currentMonth = new Date().toLocaleString("default", { month: "short" });
+  const cardMonthData = data.cardData.find((i) => i.month === currentMonth);
+  const { loggedInUser } = useReduxState();
+  console.log(loggedInUser);
 
   const cardDetails = cardData({
     title1: "Total Sales Amount",
-    title2: "Total Stock Count",
-    text1: "#2,800,000",
-    text2: "#2,800,000",
-    text3: "#2,800,000",
+    title2: "Total Purchase Amount",
+    text1: formatNaira(cardMonthData?.salesAmount || 0),
+    text2: formatNaira(cardMonthData?.purchaseAmount || 0),
+    text3: formatNaira(cardMonthData?.profit || 0),
+    text4: formatNaira(cardMonthData?.inventoryValue || 0),
   });
 
   return (
@@ -80,61 +93,47 @@ export default function OverviewPage() {
         <Card cardData={cardDetails} />
       </div>
 
-      <div
-        className="grid grid-cols-1 md:grid-cols-7 
-            grid-auto-rows-auto md:grid-rows-[repeat(11,auto)] 
-            gap-2.5 px-4 w-full h-fit mt-3"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-7 grid-auto-rows-auto md:grid-rows-[repeat(11,auto)] gap-2.5 px-4 w-full h-fit mt-3">
         {/* Bar */}
-        <div
-          className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 
-                row-auto md:row-span-4
-                bg-blue-200 p-4 rounded-lg min-w-0"
-        >
-          <SalesPerformanceChart />
+        <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-4 bg-blue-200 p-4 rounded-lg ">
+          <SalesPerformanceChart data={data.data} />
         </div>
 
         {/* Table1 */}
         <div
-          className="col-start-1 col-end-2 md:col-start-6 md:col-end-8 
-                row-auto md:row-span-6
-               rounded-lg min-w-0"
+          className={cn(
+            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-6 rounded-lg border border-[#EEEEEE]"
+          )}
         >
           <StockDataTable
-            data={StockData}
-            name="Low Stock (235)"
-            secondColumn="Quantity Sold"
-            secondData={StockData.map((data) => data.qtySold || "N/A")}
+            data={data.lowStockProducts}
+            name={`Low Stock (${data.lowStockProducts.length})`}
+            secondColumn="Quantity"
+            secondData={data.lowStockProducts.map((data) => data.quantity || 0)}
           />
         </div>
 
         {/* Bar1 */}
-        <div
-          className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 
-                row-auto md:row-span-7
-                 p-4 rounded-lg min-w-0 h-fit"
-        >
-          <OverviewTable data={OverviewData} />
+        <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-7 rounded-lg">
+          <OverviewTable data={data.topSellingProduct} />
         </div>
 
         {/* Table2 */}
         <div
-          className="col-start-1 col-end-2 md:col-start-6 md:col-end-8 
-                row-auto md:row-span-5
-                 rounded-lg min-w-0"
+          className={cn(
+            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-5 rounded-lg border border-[#EEEEEE]"
+          )}
         >
           <StockDataTable
-            data={StockData}
-            name="Out of Stock (235)"
+            data={data.outOfStock}
+            name={`Out of Stock (${data.outOfStock.length})`}
             secondColumn="Run Out Date"
-            secondData={StockData.map((data) => data.runOutDate)}
+            secondData={data.outOfStock.map((data) =>
+              new Date(data.updatedAt).toLocaleDateString()
+            )}
           />
         </div>
       </div>
-
-      <Button className="cursor-pointer" onClick={logOut}>
-        Logout
-      </Button>
     </>
   );
 }

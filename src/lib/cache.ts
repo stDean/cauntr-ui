@@ -29,6 +29,8 @@ export const CACHE_TAGS = {
   item: "item",
   invoices: "invoices",
   invoice: "invoice",
+  invoiceSummary: "invoiceSummary",
+  dashSummary: "dashSummary",
 } as const;
 
 /**

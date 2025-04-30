@@ -1,9 +1,5 @@
-import React, { Fragment } from "react";
-
-import OrdersChart from "@/app/charts/OrdersChart";
-import RevenueProfitChart from "@/app/charts/RevenueProfitChart";
-import { StockData } from "./data";
-import { StockDataTable } from "@/components/table/StockDataTable";
+import OrdersChart from "@/components/charts/OrdersChart";
+import RevenueProfitChart from "@/components/charts/RevenueProfitChart";
 
 export const SalesPage = () => {
   return (
@@ -13,14 +9,14 @@ export const SalesPage = () => {
         <OrdersChart />
       </div>
 
-      <div className="min-w-[350px]">
+      {/* <div className="min-w-[350px]">
         <StockDataTable
           data={StockData}
           name="Top Selling Products"
           secondColumn="Quantity Sold"
           secondData={StockData.map((data) => data.qtySold)}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

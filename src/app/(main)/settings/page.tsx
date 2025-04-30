@@ -1,10 +1,14 @@
 import { SettingsContent } from "./SettingsContent";
 
+interface SettingsProps {
+  params: Promise<{}>; // always a promise
+  searchParams: Promise<{ q?: string }>;
+}
+
 export default async function SettingsPage({
+  params,
   searchParams,
-}: {
-  searchParams: { q?: string };
-}) {
-  const search = await searchParams;
-  return <SettingsContent tab={search.q || "account"} />;
+}: SettingsProps) {
+  const { q } = await searchParams;
+  return <SettingsContent tab={q || "account"} />;
 }

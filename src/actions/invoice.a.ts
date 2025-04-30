@@ -134,6 +134,8 @@ export const MarkAsPaid = async ({
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data };
@@ -196,6 +198,8 @@ export const RecordPayment = async ({
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
 
     return { success: res.data };
@@ -275,7 +279,54 @@ export const CreateInvoice = async ({
       revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
       revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
       revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
+      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
     }
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const GetInvoiceSummary = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  const cachedFn = dbCache(GetInvoiceSummaryInternals, {
+    tags: [getUserTag(userId, CACHE_TAGS.invoiceSummary)],
+  });
+
+  return cachedFn({ token, userId });
+};
+
+const GetInvoiceSummaryInternals = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/invoice/summary`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
     return { success: res.data };
   } catch (e: any) {

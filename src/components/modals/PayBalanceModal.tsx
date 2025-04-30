@@ -47,8 +47,12 @@ export const PayBalanceModal = () => {
 
   useEffect(() => {
     const fetchBanks = async () => {
-      const res = await GetBanks({ token, userId: loggedInUser!.id });
-      setBanks(res.success.data.banks);
+      const res = await GetBanks({
+        token,
+        userId: loggedInUser ? loggedInUser!.id : "",
+      });
+
+      if (res) setBanks(res.success.data.banks);
     };
 
     fetchBanks();

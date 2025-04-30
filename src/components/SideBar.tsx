@@ -1,9 +1,13 @@
 "use client";
 
+import { Logout } from "@/actions/auth.a";
+import { useAppDispatch } from "@/app/redux";
+import { SET_EMAIL, SET_LOGGED_IN_USER, SET_TOKEN } from "@/state";
 import {
   Archive,
   FileText,
   LayoutDashboard,
+  LogOut,
   LucideIcon,
   PanelRight,
   Settings,
@@ -11,15 +15,18 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { useReduxState } from "@/hooks/useRedux";
 
 interface SidebarLinkProps {
   href: string;
   icon: LucideIcon;
   label: string;
+  active?: boolean;
 }
 
-const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
+const SidebarLink = ({ href, icon: Icon, label, active }: SidebarLinkProps) => {
   const pathname = usePathname();
   const isActive =
     pathname === href ||
@@ -27,11 +34,11 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
     pathname.includes(href);
 
   return (
-    <Link href={href}>
+    <Link href={active ? href : "#"}>
       <div
         className={`cursor-pointer flex items-center justify-between  px-8 py-3 gap-3 transition-colors ${
           isActive ? "bg-[#FEEDCD] text-white" : "hover:bg-[#f3f1eb]"
-        }
+        } ${!active && "opacity-25 cursor-not-allowed"}
       }`}
       >
         <span className={` font-medium text-xs lg:text-sm text-gray-700`}>
@@ -45,6 +52,19 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
 };
 
 export const SideBar = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { loggedInUser } = useReduxState();
+
+  const logOut = async () => {
+    await Logout();
+    router.push("/");
+
+    dispatch(SET_LOGGED_IN_USER(null));
+    dispatch(SET_EMAIL(""));
+    dispatch(SET_TOKEN(""));
+  };
+
   return (
     <div className="lg:flex flex-col w-64 bg-white overflow-hidden max-h-screen shadow-md z-40 hidden border-r">
       {/* TOP LOGO */}
@@ -61,22 +81,54 @@ export const SideBar = () => {
             href="/dashboard"
             icon={LayoutDashboard}
             label="Dashboard"
+            active={loggedInUser?.companyStatus === "ACTIVE"}
           />
         )}
 
-        <SidebarLink href="/inventory" icon={Archive} label="Inventory" />
+        <SidebarLink
+          href="/inventory"
+          icon={Archive}
+          label="Inventory"
+          active={loggedInUser?.companyStatus === "ACTIVE"}
+        />
 
         {"ADMIN" === "ADMIN" && (
           <>
-            <SidebarLink href="/sales" icon={Truck} label="Sales History" />
+            <SidebarLink
+              href="/sales"
+              icon={Truck}
+              label="Sales History"
+              active={loggedInUser?.companyStatus === "ACTIVE"}
+            />
 
-            <SidebarLink href="/users" icon={Users} label="Users" />
+            <SidebarLink
+              href="/users"
+              icon={Users}
+              label="Users"
+              active={loggedInUser?.companyStatus === "ACTIVE"}
+            />
           </>
         )}
 
-        <SidebarLink href="/invoice" icon={FileText} label="Invoice" />
+        <SidebarLink
+          href="/invoice"
+          icon={FileText}
+          label="Invoice"
+          active={loggedInUser?.companyStatus === "ACTIVE"}
+        />
 
-        <SidebarLink href="/settings" icon={Settings} label="Settings" />
+        <SidebarLink href="/settings" icon={Settings} label="Settings" active />
+      </div>
+
+      <div className="mb-10 flex items-center justify-center">
+        <Button
+          className="cursor-pointer text-red-400 hover-text-red-700"
+          onClick={logOut}
+          variant={"outline_red"}
+          size={"sm"}
+        >
+          Logout <LogOut className="size-5 ml-3" />
+        </Button>
       </div>
     </div>
   );

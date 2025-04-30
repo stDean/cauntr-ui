@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import { SingleSales } from "./SingleSales";
 import { GetSingleTransaction } from "@/actions/sales-history.a";
 
-export default async function SalesPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface SalesProps {
+  params: Promise<{ id: string }>; // always a promise
+}
+
+export default async function SalesPage({ params }: SalesProps) {
   const awaitedParams = await params;
   const cookieStore = await cookies();
   const token = JSON.parse(cookieStore.get("token")?.value as string);

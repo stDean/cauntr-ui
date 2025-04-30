@@ -114,7 +114,11 @@ export const AuthForm = ({ type }: { type: string }) => {
         dispatch(SET_TOKEN(res.success.token));
         dispatch(SET_LOGGED_IN_USER(res.success.user));
         toast.success("Success", { description: res.success.message });
-        router.push("/dashboard");
+        if (res.success.user.companyStatus === "ACTIVE") {
+          router.push("/dashboard");
+        } else {
+          router.push("/settings");
+        }
         return;
       }
 

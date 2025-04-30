@@ -1,7 +1,8 @@
 import UsersContent from "./UsersContent";
 
 interface SearchProps {
-  searchParams: { q?: string };
+  params: Promise<{}>; // always a promise
+  searchParams: Promise<{ q?: string }>;
 }
 
 export default async function SettingsPage({ searchParams }: SearchProps) {

@@ -1,15 +1,6 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from "react";
-import {
   Table,
   TableBody,
   TableCell,
@@ -17,12 +8,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { OverviewColumn } from "./OverviewColumn";
 import { Pagination } from "@/components/Pagination";
+import { Input } from "@/components/ui/input";
 import { useSearchParams } from "next/navigation";
+import { OverviewColumn } from "./OverviewColumn";
 
 export function OverviewTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -49,14 +48,15 @@ export function OverviewTable<TData, TValue>({ data }: { data: TData[] }) {
 
   return (
     <div className="my-4 border rounded-lg px-4 py-2 space-y-4">
-
-        <div className="flex md:justify-between md:items-center gap-5 flex-col md:flex-row">
-         <div>
-            <h1 className="font-bold text-xl">Top selling product</h1>
-            <p className="text-sm">view a list of all your top selling products </p>
-         </div>
-         <div className="flex gap-2">
-         <Input
+      <div className="flex md:justify-between md:items-center gap-5 flex-col md:flex-row">
+        <div>
+          <h1 className="font-bold text-xl">Top selling product</h1>
+          <p className="text-sm">
+            view a list of all your top selling products{" "}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Input
             placeholder="search Product Name..."
             value={
               (table.getColumn("productName")?.getFilterValue() as string) ?? ""
@@ -66,9 +66,8 @@ export function OverviewTable<TData, TValue>({ data }: { data: TData[] }) {
             }
             className="w-full lg:w-[300px] text-xs md:text-sm"
           />
-         <Button>Search </Button>
-         </div>
         </div>
+      </div>
       <div className="border rounded-lg!">
         <Table>
           <TableHeader>

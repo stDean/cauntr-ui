@@ -12,23 +12,13 @@ import {
 
 import React from "react";
 
-const RevenueChart = () => {
-  // Chart data
-  const data = [
-    { product: "iPhone 16", revenue: 900000 },
-    { product: "iPhone 16", revenue: 800000 },
-    { product: "iPhone 12", revenue: 700000 },
-    { product: "iPhone 13 Pro Max", revenue: 600000 },
-    { product: "PlayStation 5", revenue: 500000 },
-    { product: "Tesla Model 3", revenue: 400000 },
-    { product: "Nintendo Switch", revenue: 300000 },
-    { product: "Samsung Galaxy S21 Ultra", revenue: 200000 },
-    { product: "Dyson Airwrap", revenue: 100000 },
-    { product: 'MacBook Pro 16"', revenue: 0 }, // "NO" entry
-  ];
-
+const RevenueChart = ({
+  data,
+}: {
+  data: { product: string; revenue: number }[];
+}) => {
   // Custom format for revenue values
-  const formatRevenue = (value: any) => `N${value / 10000}k`;
+  const formatRevenue = (value: number) => `N${(value / 1000).toFixed(1)}k`;
 
   return (
     <div style={{ width: "100%", height: 400 }}>
@@ -47,7 +37,7 @@ const RevenueChart = () => {
           <XAxis
             type="number"
             tickFormatter={formatRevenue}
-            domain={[0, 1000000]}
+            domain={[0, Math.max(...data.map((item) => item.revenue))]}
             tick={{ fontSize: 13 }}
           />
           <YAxis
@@ -57,7 +47,7 @@ const RevenueChart = () => {
             tick={{ fontSize: 12 }}
           />
           <Tooltip
-            formatter={(value) => [formatRevenue(value), "Revenue"]}
+            formatter={(value) => [formatRevenue(value as number), "Revenue"]}
             labelStyle={{ fontWeight: "bold" }}
           />
           <Bar

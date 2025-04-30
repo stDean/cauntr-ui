@@ -1,8 +1,10 @@
 "use client";
 
+import { GetInvoice, ResendInvoice } from "@/actions/invoice.a";
 import { PaymentTable } from "@/components/table/PaymentTable";
 import { Button } from "@/components/ui/button";
 import useReceiptModal from "@/hooks/useReceiptModal";
+import { useReduxState } from "@/hooks/useRedux";
 import { SingleSalesProps } from "@/lib/types";
 import {
   ChevronDown,
@@ -13,12 +15,52 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
-  const { customer, paymentHistory, salesSummary, soldBy, totalPay } = saleData;
+  const {
+    customer,
+    paymentHistory,
+    salesSummary,
+    soldBy,
+    totalPay,
+    invoiceNo,
+  } = saleData;
   const [actions, setActions] = useState(false);
   const router = useRouter();
+  const [receipt, setReceipt] = useState(null);
+  const { token, loggedInUser } = useReduxState();
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const fetchReceipt = async () => {
+      const res = await GetInvoice({
+        token,
+        userId: loggedInUser!.id,
+        invoiceNo,
+      });
+
+      if (res.success) {
+        setReceipt(res.success.data);
+      }
+    };
+
+    fetchReceipt();
+  }, [invoiceNo, loggedInUser, token]);
+
+  const handleResend = () => {
+    startTransition(async () => {
+      const res = await ResendInvoice({ token, invoiceNo });
+
+      if (res.error) {
+        toast.error("Error", { description: res.error });
+        return;
+      }
+
+      toast.success("Success", { description: res.success.msg });
+    });
+  };
 
   const receiptModal = useReceiptModal();
 
@@ -43,7 +85,7 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
             variant={"outline_blue"}
             size={"sm"}
             className="cursor-pointer  items-center space-x-2 hidden md:flex"
-            onClick={receiptModal.onOpen}
+            onClick={() => receiptModal.onOpen(receipt)}
           >
             <Eye className="size-4 mr-2" />
             View Receipts
@@ -52,6 +94,8 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
             variant={"cauntr_blue"}
             size={"sm"}
             className="cursor-pointer items-center hidden md:flex space-x-2"
+            onClick={handleResend}
+            disabled={isPending}
           >
             <ShoppingCart className="size-4 mr-2" />
             Re-send Receipts
@@ -83,7 +127,7 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
               <div
                 className="flex gap-3 cursor-pointer items-center hover:bg-gray-50 rounded p-1"
                 onClick={() => {
-                  receiptModal.onOpen();
+                  receiptModal.onOpen(receipt);
                   setActions(false);
                 }}
               >
@@ -94,13 +138,19 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
               </div>
               <div className="flex gap-3 cursor-pointer items-center hover:bg-gray-50 rounded p-1">
                 <p className="text-[#3F3B3B] font-medium text-sm">
-                  Download Recipts
+                  Download Receipt
                 </p>
                 <Download size={15} />
               </div>
-              <div className="flex gap-3 cursor-pointer items-center hover:bg-gray-50 rounded p-1">
+              <div
+                className="flex gap-3 cursor-pointer items-center hover:bg-gray-50 rounded p-1"
+                onClick={() => {
+                  handleResend();
+                  setActions(false);
+                }}
+              >
                 <p className="text-[#3F3B3B] font-medium text-sm">
-                  Re-send Recipts
+                  Re-send Receipt
                 </p>
                 <SendHorizontal size={15} />
               </div>

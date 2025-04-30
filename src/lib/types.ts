@@ -1,5 +1,3 @@
-import { number } from "zod";
-
 export interface UserProps {
   id: string;
   email: string;
@@ -96,7 +94,7 @@ export interface CustomerProps {
   email: string;
   phone: string;
   transactionCount: number;
-  address?: string
+  address?: string;
 }
 
 export interface GroupedCategory {
@@ -151,6 +149,7 @@ export interface SingleSalesProps {
     amountPaid: string;
   }[];
   totalPay: number;
+  invoiceNo: string;
 }
 
 export interface SearchableDropdownProps<T> {
@@ -171,18 +170,11 @@ export interface CartItemProps {
   onAdjustQty: (type: "add" | "remove") => void;
 }
 
-
 export interface OverviewProps {
-     productName: string;
-     qtySold: number;
-     qtyLeft: number;
-     amountSold: number;
-}
-
-export interface StockDataProps {
   productName: string;
-  qtySold: number;
-  runOutDate: string;
+  soldQty: string;
+  remainingQty: string;
+  soldAmount: string;
 }
 
 export interface SupplierTable {
@@ -268,4 +260,3 @@ export interface SingleInvoiceProps {
     acctName: string;
   };
 }
-

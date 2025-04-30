@@ -1,13 +1,12 @@
 import { GetDebtor } from "@/actions/users.a";
 import { UsersUi } from "@/components/UsersUi";
 import { cookies } from "next/headers";
-import React from "react";
 
-export default async function DebtorPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface DebtorProps {
+  params: Promise<{ id: string }>; // always a promise
+}
+
+export default async function DebtorPage({ params }: DebtorProps) {
   const awaitedParams = await params;
   const cookieStore = await cookies();
   const token = JSON.parse(cookieStore.get("token")?.value as string);

@@ -2,11 +2,13 @@ import { GetInvoice } from "@/actions/invoice.a";
 import { cookies } from "next/headers";
 import { InvoiceContent } from "./InvoiceContent";
 
-export default async function page({
+interface SingleInvoiceProps {
+  params: Promise<{ invoiceNo: string }>; // always a promise
+}
+
+export default async function SingleInvoicePage({
   params,
-}: {
-  params: { invoiceNo: string };
-}) {
+}: SingleInvoiceProps) {
   const awaitedParams = await params;
   const cookieStore = await cookies();
   const token = JSON.parse(cookieStore.get("token")?.value as string);
