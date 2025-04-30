@@ -63,14 +63,6 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
             }
             className="w-full lg:w-[500px] text-xs md:text-sm"
           />
-          <Button
-            variant={"cauntr_blue"}
-            size={"sm"}
-            className="cursor-pointer"
-            onClick={() => addDebtor.onOpen({ type: "debtor" })}
-          >
-            <Plus size={15} className="mr-2" /> Add Debtors
-          </Button>
         </div>
       </div>
 
@@ -138,10 +130,6 @@ export function DebtorsTable<TData, TValue>({ data }: { data: TData[] }) {
     <Empty
       text="Oops seems like you currently don’t have any customer, add some customers now."
       customer
-      handleClick={() => {
-        addDebtor.onOpen({ type: "debtor" });
-      }}
-      buttonText="Add Debtors"
     />
   );
 }

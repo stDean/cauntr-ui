@@ -7,7 +7,7 @@ import { SET_PREVIEW_DATA } from "@/state";
 import { Download, File, FileText, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { parse } from "papaparse";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { FileRejection } from "react-dropzone";
 import { toast } from "sonner";
 import * as xlsx from "xlsx";
@@ -31,6 +31,7 @@ export const AddProductModal = () => {
   const [options, setOptions] = useState<{
     add_products: (typeof AddProductsType.options)[number];
   }>({ add_products: AddProductsType.options[0] });
+  const [isPending, startTransition] = useTransition();
 
   const [step, setStep] = useState(STEPS.ADD);
   const [data, setData] = useState<Array<any>>([]);
@@ -154,13 +155,41 @@ export const AddProductModal = () => {
     }
   }, [data, onNext]);
 
-  const downloadTemplate = () => {
-    const aTag = document.createElement("a");
-    aTag.href = `${process.env.NEXT_PUBLIC_API_BASE_URL2}/temp.xlsx`;
-    aTag.setAttribute("download", "temp.xlsx");
-    document.body.appendChild(aTag);
-    aTag.click();
-    aTag.remove();
+  const downloadTemplate = async () => {
+    startTransition(async () => {
+      if (!process.env.NEXT_PUBLIC_API_BASE_URL2) {
+        toast.error("Configuration Error", {
+          description: "Server URL not configured",
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL2}/temp1.xlsx`
+        );
+
+        if (!response.ok) throw new Error("Failed to download template");
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const aTag = document.createElement("a");
+
+        aTag.href = url;
+        aTag.download = "product_template.xlsx";
+        document.body.appendChild(aTag);
+        aTag.click();
+
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        aTag.parentNode?.removeChild(aTag);
+      } catch (error) {
+        toast.error("Download Failed", {
+          description: "Could not download template file",
+        });
+        addProductModal.onClose();
+      }
+    });
   };
 
   const handleUpload = useCallback(() => {
@@ -234,6 +263,10 @@ export const AddProductModal = () => {
             variant={"outline"}
             className="cursor-pointer text-sm"
             onClick={downloadTemplate}
+            size={"sm"}
+            disabled={isPending}
+            loadingText="Downloading..."
+            isLoading={isPending}
           >
             Download Template <Download className="size-4 ml-2" />
           </Button>

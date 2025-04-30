@@ -95,7 +95,20 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
       <div className="grid grid-cols-1 md:grid-cols-7 grid-auto-rows-auto md:grid-rows-[repeat(11,auto)] gap-3 px-4 w-full h-fit mt-3">
         {/* Bar */}
         <div className="col-start-1 col-end-2 md:col-start-1 md:col-end-6 row-auto md:row-span-4 p-4 border rounded-lg ">
+          <p className="md:text-xl">Sales Performance</p>
           <SalesPerformanceChart data={data ? data.data : []} />
+
+          <div className="w-full flex justify-center items-center gap-4">
+            <div className="flex items-center gap-2">
+              <p className="h-2 w-2 rounded-full bg-[#766FFB]" />
+              <p className="text-xs">Sales</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <p className="h-2 w-2 rounded-full bg-[#FDD487]" />
+              <p className="text-xs">Purchases</p>
+            </div>
+          </div>
         </div>
 
         {/* Table1 */}

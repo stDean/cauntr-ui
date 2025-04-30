@@ -67,7 +67,7 @@ export function InventoryTable<TData, TValue>({
           </p>
         </div>
 
-        <div className="flex md:items-center gap-3 flex-col md:flex-row">
+        <div className="flex md:items-center gap-3 flex-col md:flex-row md:justify-center">
           <Input
             placeholder="search brand..."
             value={(table.getColumn("brand")?.getFilterValue() as string) ?? ""}
@@ -77,12 +77,13 @@ export function InventoryTable<TData, TValue>({
             className="w-full lg:w-[350px] text-xs md:text-sm"
           />
 
-          <div className="space-x-3 space-y-3">
+          <div className="space-y-3 md:space-y-0 md:space-x-3">
             <Button
               variant={"outline_blue"}
               className="text-sm cursor-pointer"
               size={"sm"}
               onClick={() => router.push("/sell")}
+              disabled={data.length === 0}
             >
               Sell Product(s)
             </Button>

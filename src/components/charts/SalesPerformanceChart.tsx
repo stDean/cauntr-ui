@@ -45,15 +45,19 @@ const SalesPerformanceChart = ({
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+          <XAxis
+            dataKey="month"
+            tick={{ fontSize: 12, fontFamily: "sans", color: "#A3A3A3" }}
+          />
           <YAxis
             tickFormatter={formatCurrency}
             domain={[
               0,
               Math.max(
-          ...data.map((item) => Math.max(item.sales, item.purchases))
+                ...data.map((item) => Math.max(item.sales, item.purchases))
               ),
             ]}
+            tick={{ fontSize: 12, fontFamily: "sans", color: "#A3A3A3" }}
           />
           <Tooltip
             formatter={(value) => formatNaira(Number(value))}

@@ -44,7 +44,7 @@ export const SingleProductsByName = ({
         <div className="flex justify-between items-center">
           <p className="text-xl">
             {name}
-            <span className="text-[#636363] text-sm">
+            <span className="text-[#636363] text-sm ml-1">
               {products.length === 1 && products[0].sku}
             </span>
           </p>

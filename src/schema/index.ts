@@ -37,9 +37,7 @@ export const ProfileSettingSchema = z.object({
   firstName: z.optional(z.string()),
   lastName: z.optional(z.string()),
   email: z.string().email(),
-  role: z.enum(["EMPLOYEE", "ADMIN"], {
-    errorMap: () => ({ message: "Role is required" }),
-  }),
+  role: z.string(),
   password: z.optional(z.string()),
 });
 

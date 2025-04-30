@@ -19,11 +19,13 @@ export const ProductsPage = ({ data }: { data: ProductProps }) => {
   return (
     <div className="px-4 flex flex-col lg:flex-row gap-4">
       <div className="space-y-6 flex-1">
-        <div className="rounded-lg border">
+        <div className="rounded-lg border px-4 pt-6">
+          <p className="md:text-xl pb-1">Top 10 Products By Revenue</p>
           <RevenueChart data={data ? data.topRevenue : []} />
         </div>
 
-        <div className="rounded-lg border">
+        <div className="rounded-lg border px-4 pt-6">
+          <p className="md:text-xl pb-1">Top 10 Products By Profit</p>
           <RevenueChart
             data={
               data

@@ -16,6 +16,15 @@ const useChangePasswordModal = create<ChangePasswordModalProps>((set) => ({
   password: "",
   error: "",
   onClose: (data: { password: string; cfPassword: string }) => {
+    if (!data.password || !data.cfPassword) {
+      set({
+        isOpen: false,
+        password: "",
+        error: "",
+      });
+      return;
+    }
+
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*])[A-Za-z\d!@#$%&*]{8,}$/;
     const isValidPassword = passwordRegex.test(data.password);

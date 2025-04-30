@@ -65,6 +65,7 @@ export interface SalesType {
   salesType: string;
   transactionDate: Date;
   transactionId: string;
+  shortId: string;
 }
 
 export interface PaymentHistoryType {

@@ -5,30 +5,29 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { Modal } from "./Modal";
 import { Fragment } from "react";
+
 export const ReceiptModal = () => {
   const receiptModal = useReceiptModal();
 
-  console.log("Receipt", receiptModal.receipt);
+  // const items = [
+  //   {
+  //     name: "Apple iPhone 15",
+  //     quantity: 1,
+  //     price: 399.99,
+  //     total: 399.99,
+  //   },
+  //   {
+  //     name: "Airpods Max 2024",
+  //     quantity: 1,
+  //     price: 499.99,
+  //     total: 499.99,
+  //   },
+  // ];
 
-  const items = [
-    {
-      name: "Apple iPhone 15",
-      quantity: 1,
-      price: 399.99,
-      total: 399.99,
-    },
-    {
-      name: "Airpods Max 2024",
-      quantity: 1,
-      price: 499.99,
-      total: 499.99,
-    },
-  ];
-
-  const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-  const totalDue = subtotal;
-  const amountPaid = 699.98;
-  const balance = totalDue - amountPaid;
+  // const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+  // const totalDue = subtotal;
+  // const amountPaid = 699.98;
+  // const balance = totalDue - amountPaid;
 
   const bodyContent = (
     <div className="flex flex-col gap-5 p-4 w-full ">
@@ -133,8 +132,6 @@ export const ReceiptModal = () => {
       )}
     </div>
   );
-
-  // TODO:Check how we can add a bank acct to transfer to!!
 
   return (
     <Modal

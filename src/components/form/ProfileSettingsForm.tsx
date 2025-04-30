@@ -31,14 +31,14 @@ export const ProfileSettingsForm = ({ user }: { user: UserProps }) => {
       firstName: user?.firstName! || "",
       lastName: user?.lastName! || "",
       email: user?.email,
-      role: user?.role,
+      role: user?.role === "ADMIN" ? "Admin" : "Employee",
       password: "",
     },
   });
 
   const onSubmit = (data: z.infer<typeof ProfileSettingSchema>) => {
     startTransition(async () => {
-      if (changePasswordModal.error) {
+      if (changePasswordModal.error.trim() !== "") {
         toast.error("Error", { description: changePasswordModal.error });
         return;
       }
@@ -56,7 +56,7 @@ export const ProfileSettingsForm = ({ user }: { user: UserProps }) => {
         return;
       }
 
-      dispatch(SET_LOGGED_IN_USER(res.success.data));
+      dispatch(SET_LOGGED_IN_USER({ ...loggedInUser, ...res.success.data }));
       toast.success("Success", { description: res.success.msg });
       setCanEdit(false);
     });

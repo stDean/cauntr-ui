@@ -39,7 +39,11 @@ export const cardData = ({
     },
     {
       title: "Top Selling Product",
-      subText: `${text4 || "NIL"}`,
+      subText: (
+        <p className="truncate text-xl mt-3 md:mt-5 font-semibold">
+          {text4 || "NIL"}
+        </p>
+      ),
     },
   ];
 };
