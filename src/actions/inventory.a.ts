@@ -4,26 +4,33 @@ import { BankProps } from "@/hooks/useAddBankModal";
 import {
   CACHE_TAGS,
   dbCache,
-  getGlobalTag,
   getUserTag,
-  revalidateDbCache,
+  revalidateDbCache
 } from "@/lib/cache";
 import { AddProductSchema } from "@/schema";
 import axios from "axios";
 import { z } from "zod";
 
-export const GetInventoryItemsByType = async ({ token }: { token: string }) => {
+export const GetInventoryItemsByType = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
   const cachedFn = dbCache(GetInventoryItemsByTypeInternals, {
-    tags: [getGlobalTag(CACHE_TAGS.inventoryProducts)],
+    tags: [getUserTag(userId, CACHE_TAGS.inventoryProducts)],
   });
 
-  return cachedFn({ token });
+  return cachedFn({ token, userId });
 };
 
 const GetInventoryItemsByTypeInternals = async ({
   token,
+  userId,
 }: {
   token: string;
+  userId: string;
 }) => {
   try {
     const res = await axios.get(
@@ -48,15 +55,27 @@ const GetInventoryItemsByTypeInternals = async ({
   }
 };
 
-export const GetInventoryStats = async ({ token }: { token: string }) => {
+export const GetInventoryStats = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
   const cachedFn = dbCache(GetInventoryStatsInternals, {
-    tags: [getGlobalTag(CACHE_TAGS.inventoryStats)],
+    tags: [getUserTag(userId, CACHE_TAGS.inventoryStats)],
   });
 
-  return cachedFn({ token });
+  return cachedFn({ token, userId });
 };
 
-const GetInventoryStatsInternals = async ({ token }: { token: string }) => {
+const GetInventoryStatsInternals = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
   try {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/summary`,
@@ -113,11 +132,15 @@ export const CreateProduct = async ({
     );
 
     if (res.status === 201) {
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
-      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryStats, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.supplier, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.categories, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId }),
+      ]);
     }
 
     return { success: res.data };
@@ -158,11 +181,15 @@ export const CreateProducts = async ({
     );
 
     if (res.status === 201) {
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
-      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.supplier, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryStats, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.supplier, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.categories, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId }),
+      ]);
     }
 
     return { success: res.data.data.length > 0, error: res.data.errors };
@@ -329,21 +356,24 @@ export const SellProduct = async ({
     );
 
     if (res.status === 200) {
-      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.categories, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
-      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryStats, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.categories, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customer, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtors, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtor, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.supplier, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.transaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoices, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoice, userId }),
+      ]);
     }
 
     return { success: res.data };
@@ -380,21 +410,24 @@ export const SellProducts = async ({
     );
 
     if (res.status === 200) {
-      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.categories, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryStats });
-      revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts });
-      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.inventoryStats, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.allProducts, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.categories, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customer, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtors, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtor, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.suppliers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.supplier, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.transaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoices, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoice, userId }),
+      ]);
     }
 
     return { success: res.data };
@@ -475,8 +508,10 @@ export const CreateBank = async ({
     );
 
     if (res.status === 201) {
-      revalidateDbCache({ tag: CACHE_TAGS.companyAccount });
-      revalidateDbCache({ tag: CACHE_TAGS.banks, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.companyAccount }),
+        revalidateDbCache({ tag: CACHE_TAGS.banks, userId }),
+      ]);
     }
 
     return { success: res.data };

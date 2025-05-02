@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import usePayBalanceModal from "@/hooks/usePayBalanceModal";
 import { SingleSalesProps } from "@/lib/types";
+import { formatNaira } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
@@ -28,7 +29,7 @@ export const Content = ({
         <Button
           variant={"outline_blue"}
           size={"sm"}
-          className="cursor-pointer flex items-center"
+          className="cursor-pointer flex items-center text-xs"
           onClick={() => router.back()}
         >
           <ChevronLeft className="size-4 text-[#0C049B]" />
@@ -39,7 +40,7 @@ export const Content = ({
             <Button
               variant={"cauntr_blue"}
               size={"sm"}
-              className="cursor-pointer  items-center"
+              className="cursor-pointer items-center text-xs"
               onClick={() => payBalance.onOpen(itemId)}
             >
               Pay Balance
@@ -50,7 +51,7 @@ export const Content = ({
 
       <div className="rounded-lg p-5 border  border-[#EEEEEE] space-y-3">
         <div className="flex justify-between items-center">
-          <div>
+          <div className="space-y-1">
             <p className="font-medium text-sm">
               Sold By: <span className="font-bold">{soldBy.name}</span>
             </p>
@@ -59,17 +60,17 @@ export const Content = ({
             </p>
           </div>
 
-          <div>
+          <div className="space-y-1">
             <p className="font-medium text-sm">
               Amount Paid:{" "}
               <span className="font-bold text-base">
-                ₦{paymentHistory[0].amountPaid}
+                {formatNaira(Number(paymentHistory[0].amountPaid))}
               </span>
             </p>
             <p className="font-medium text-sm">
               Balance Owed:{" "}
               <span className="font-bold text-base">
-                ₦{paymentHistory[0].balanceOwed}
+                {formatNaira(Number(paymentHistory[0].balanceOwed))}
               </span>
             </p>
           </div>
@@ -110,7 +111,9 @@ export const Content = ({
               </p>
               <div className="flex justify-between col-span-4">
                 <p className="font-medium md:text-sm text-xs">x{sales.qty}</p>
-                <p className="font-medium md:text-sm text-xs">₦{sales.price}</p>
+                <p className="font-medium md:text-sm text-xs">
+                  {formatNaira(sales.price)}
+                </p>
               </div>
             </div>
 
@@ -120,7 +123,7 @@ export const Content = ({
 
         <div className="text-[#121212] font-semibold text-xl flex items-center justify-between">
           <p>Total</p>
-          <p>₦{totalPay}</p>
+          <p>{formatNaira(totalPay)}</p>
         </div>
       </div>
     </div>

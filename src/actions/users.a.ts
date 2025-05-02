@@ -8,7 +8,7 @@ import {
 } from "@/lib/cache";
 import { AddCustomerSchema, AddSupplierSchema } from "@/schema";
 import axios from "axios";
-import { z } from "zod";
+import { promise, z } from "zod";
 
 export const GetSuppliers = async ({
   token,
@@ -453,19 +453,18 @@ export const PayBalance = async ({
     );
 
     if (res.status === 200) {
-      revalidateDbCache({ tag: CACHE_TAGS.item, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.customer, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.customers, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtor, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.debtors, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.transaction, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoices, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoice, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId });
-      revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId });
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customers, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.customer, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtors, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.debtor, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.transaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.singleTransaction, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoiceSummary, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoices, userId }),
+        revalidateDbCache({ tag: CACHE_TAGS.invoice, userId }),
+      ]);
     }
 
     return { success: res.data };

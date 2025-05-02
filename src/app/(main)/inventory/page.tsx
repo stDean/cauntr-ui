@@ -14,8 +14,8 @@ export default async function InventoryPage() {
   const token = JSON.parse(cookieStore.get("token")?.value as string);
   const userId = cookieStore.get("userId")?.value as string;
 
-  const res = await GetInventoryItemsByType({ token });
-  const statsRes = await GetInventoryStats({ token });
+  const res = await GetInventoryItemsByType({ token, userId });
+  const statsRes = await GetInventoryStats({ token, userId });
   const suppliersRes = await GetSuppliers({ token, userId });
 
   const cardDetails = cardData({

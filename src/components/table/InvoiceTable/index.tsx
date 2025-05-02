@@ -69,12 +69,12 @@ export function InvoiceTable<TData, TValue>({ data }: { data: TData[] }) {
         </div>
 
         <Button
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
           size={"sm"}
           variant={"cauntr_blue"}
           asChild
         >
-          <Plus className="size-4 mr-2" />
+          <Plus className="size-4" />
           <Link href={"/invoice/create"}>Create Invoice</Link>
         </Button>
       </div>

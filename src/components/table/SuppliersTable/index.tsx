@@ -67,10 +67,10 @@ export function SuppliersTable<TData, TValue>({ data }: { data: TData[] }) {
           <Button
             variant={"cauntr_blue"}
             size={"sm"}
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
             onClick={() => addSupplier.onOpen({ type: "supplier" })}
           >
-            <Plus size={15} className="mr-2" /> Add Supplier
+            <Plus className="mr-1" /> Add Supplier
           </Button>
         </div>
       </div>

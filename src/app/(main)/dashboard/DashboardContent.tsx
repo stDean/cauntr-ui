@@ -17,6 +17,12 @@ const DashboardContent = async ({ tab }: { tab: string }) => {
     // { label: "sales", query: "sales" },
   ];
 
+  console.log({ a: dashSummary.success });
+
+  if (dashSummary.error) {
+    console.log({ description: dashSummary.error });
+  }
+
   return (
     <div className="mb-18 lg:mb-2 space-y-4">
       <TabNavigation activeTab={tab} basePath="/dashboard" tabs={tabs} />

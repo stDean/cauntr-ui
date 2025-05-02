@@ -5,37 +5,40 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { Modal } from "./Modal";
 import { Fragment } from "react";
+import { cn } from "@/lib/utils";
 
 export const ReceiptModal = () => {
   const receiptModal = useReceiptModal();
 
-  // const items = [
-  //   {
-  //     name: "Apple iPhone 15",
-  //     quantity: 1,
-  //     price: 399.99,
-  //     total: 399.99,
-  //   },
-  //   {
-  //     name: "Airpods Max 2024",
-  //     quantity: 1,
-  //     price: 499.99,
-  //     total: 499.99,
-  //   },
-  // ];
-
-  // const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-  // const totalDue = subtotal;
-  // const amountPaid = 699.98;
-  // const balance = totalDue - amountPaid;
+  const status =
+    receiptModal.receipt?.invoiceData.status === "PART_PAID"
+      ? "Part Payment"
+      : receiptModal.receipt?.invoiceData.status === "OVERDUE"
+      ? "Overdue"
+      : receiptModal.receipt?.invoiceData.status === "DRAFT"
+      ? "Pending"
+      : "Paid";
 
   const bodyContent = (
     <div className="flex flex-col gap-5 p-4 w-full ">
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-md md:text-xl font-semibold">Reciept 2020</p>
-          <p className="md:p-2 p-0.5  bg-[#FEFCEC] text-[#5F5609] rounded-lg text-center  text-xs md:text-sm">
-            pending
+          <p className="text-md md:text-xl font-semibold">
+            Receipt {receiptModal.receipt?.invoiceData.invoiceNo}
+          </p>
+
+          <p
+            className={cn(
+              "text-[#5f5609] bg-[#FEFCEC] !text-xs py-2 px-3 rounded-full border border-[#5f5609] w-fit",
+              {
+                "!text-[#034A12] !bg-[#ECFEF0] !py-1 !border-[#034A12]":
+                  receiptModal.receipt?.invoiceData.status === "PAID",
+                "!text-[#A00F0F] !bg-[#FEECEC] !py-1 !border-[#A00F0F]":
+                  receiptModal.receipt?.invoiceData.status === "OVERDUE",
+              }
+            )}
+          >
+            {status}
           </p>
         </div>
 

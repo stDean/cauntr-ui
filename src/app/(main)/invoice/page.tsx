@@ -18,19 +18,29 @@ const cardData = ({
   return [
     {
       title: "Clients Served",
-      subText: `${text1}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text1}</p>
+      ),
     },
     {
       title: "Invoices Generated",
-      subText: <p className="text-xl mt-3 md:mt-5 font-semibold">{text2}</p>,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text2}</p>
+      ),
     },
     {
       title: "Invoiced Amount",
-      subText: `${text3}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text3}</p>
+      ),
     },
     {
       title: "Paid",
-      subText: `${text4 || "NIL"}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">
+          {text4 || "NIL"}
+        </p>
+      ),
     },
   ];
 };

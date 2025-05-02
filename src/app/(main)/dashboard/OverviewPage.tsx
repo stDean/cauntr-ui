@@ -25,19 +25,27 @@ export const cardData = ({
   return [
     {
       title: title1,
-      subText: `${text1}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text1}</p>
+      ),
     },
     {
       title: title2,
-      subText: <p className="text-xl mt-3 md:mt-5 font-semibold">{text2}</p>,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text2}</p>
+      ),
     },
     {
       title: "Total Profit Amount",
-      subText: `${text3}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text3}</p>
+      ),
     },
     {
       title: "Total Inventory Value",
-      subText: `${text4}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text4}</p>
+      ),
     },
   ];
 };

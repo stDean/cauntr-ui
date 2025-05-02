@@ -96,8 +96,10 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
             className="cursor-pointer items-center hidden md:flex space-x-2"
             onClick={handleResend}
             disabled={isPending}
+            isLoading={isPending}
+            loadingText="Sending"
           >
-            <ShoppingCart className="size-4 mr-2" />
+            {!isPending && <ShoppingCart className="size-4 mr-2" />}
             Re-send Receipts
           </Button>
           {/*Mobile Button */}

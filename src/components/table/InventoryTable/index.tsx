@@ -62,25 +62,25 @@ export function InventoryTable<TData, TValue>({
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div>
           <p className="text-xl">Inventory</p>
-          <p className="text-sm text-[#636363]">
+          <p className="text-xs text-[#636363]">
             Monitor, review and manage stock levels
           </p>
         </div>
 
-        <div className="flex md:items-center gap-3 flex-col md:flex-row md:justify-center">
+        <div className="flex md:items-center gap-3 flex-col md:flex-row md:justify-center max-w-[650px]">
           <Input
             placeholder="search brand..."
             value={(table.getColumn("brand")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("brand")?.setFilterValue(event.target.value)
             }
-            className="w-full lg:w-[350px] text-xs md:text-sm"
+            className="w-full md:w-[260px] lg:w-[320px] text-xs md:text-sm"
           />
 
-          <div className="space-y-3 md:space-y-0 md:space-x-3">
+          <div className="flex gap-2">
             <Button
               variant={"outline_blue"}
-              className="text-sm cursor-pointer"
+              className="text-xs cursor-pointer"
               size={"sm"}
               onClick={() => router.push("/sell")}
               disabled={data.length === 0}
@@ -89,7 +89,7 @@ export function InventoryTable<TData, TValue>({
             </Button>
             <Button
               variant={"cauntr_blue"}
-              className="text-sm cursor-pointer"
+              className="text-xs cursor-pointer"
               size={"sm"}
               onClick={() => addProductModal.onOpen("click", suppliers)}
             >

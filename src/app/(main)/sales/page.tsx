@@ -2,6 +2,7 @@ import { GetTransactions } from "@/actions/sales-history.a";
 import { Card } from "@/components/MiniCard";
 import { SalesTable } from "@/components/table/SalesTable";
 import { TransactionSummaryProps } from "@/lib/types";
+import { formatNaira } from "@/lib/utils";
 import { cookies } from "next/headers";
 
 export const cardData = ({
@@ -22,12 +23,14 @@ export const cardData = ({
   return [
     {
       title: title1,
-      subText: `${text1}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text1}</p>
+      ),
     },
     {
       title: title2,
       subText: (
-        <p className="text-xl mt-3 md:mt-5 font-semibold">
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">
           {text2}
           <span className="font-normal! text-base! ml-1">items</span>
         </p>
@@ -35,7 +38,9 @@ export const cardData = ({
     },
     {
       title: "Categories",
-      subText: `${text3}`,
+      subText: (
+        <p className="text-xl mt-3 md:mt-5 font-semibold truncate">{text3}</p>
+      ),
     },
     {
       title: "Top Selling Product",
@@ -59,7 +64,7 @@ export default async function SalesHistoryPage() {
   const cardDetails = cardData({
     title1: "Total Sales",
     title2: "Total Stock Sold",
-    text1: `${transactionSummary?.totalSales || "0"}`,
+    text1: `${formatNaira(Number(transactionSummary?.totalSales) || 0)}`,
     text2: `${transactionSummary?.totalStockSold || "0"}`,
     text3: `${transactionSummary?.categories || "0"}`,
     text4: `${transactionSummary?.topSellingProduct.name || "NIL"}`,

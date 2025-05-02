@@ -71,7 +71,7 @@ export const InvoiceColumn: ColumnDef<InvoiceColumnProps>[] = [
       const recordPay = useRecordPayModal();
 
       return (
-        <div className="flex justify-around">
+        <div className="flex justify-around gap-2 md:gap-0">
           <BellRing
             className={cn("size-4 cursor-pointer hover:text-black/50", {
               "cursor-not-allowed": row.original.status === "PAID",

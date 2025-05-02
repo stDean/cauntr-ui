@@ -27,7 +27,7 @@ export const UsersUi = ({ type, userData, tableData }: UserUiProps) => {
         variant={"outline_blue"}
         size={"sm"}
         onClick={() => router.back()}
-        className="cursor-pointer"
+        className="cursor-pointer text-xs"
       >
         Go Back
       </Button>

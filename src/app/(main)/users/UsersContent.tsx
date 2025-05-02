@@ -29,13 +29,15 @@ const UsersContent = async ({ tab }: { tab: string }) => {
 
       <div className="mt-4 px-4 mb-18 lg:my-4">
         {tab === "suppliers" && (
-          <SuppliersTable data={supplierRes.success.data} />
+          <SuppliersTable data={supplierRes.success?.data || []} />
         )}
 
         {tab === "customers" && (
-          <CustomersTable data={customerRes.success.data.customer} />
+          <CustomersTable data={customerRes.success.data?.customer || []} />
         )}
-        {tab === "debtors" && <DebtorsTable data={debtorsRes.success.data} />}
+        {tab === "debtors" && (
+          <DebtorsTable data={debtorsRes.success?.data || []} />
+        )}
       </div>
     </div>
   );
