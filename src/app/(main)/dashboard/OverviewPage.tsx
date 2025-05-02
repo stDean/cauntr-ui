@@ -122,7 +122,7 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
         {/* Table1 */}
         <div
           className={cn(
-            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-6 rounded-lg border border-[#EEEEEE]"
+            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-6 rounded-lg border border-[#EEEEEE] overflow-y-scroll"
           )}
         >
           <StockDataTable
@@ -143,7 +143,7 @@ export default function OverviewPage({ data }: { data: OverviewProps }) {
         {/* Table2 */}
         <div
           className={cn(
-            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-5 rounded-lg border border-[#EEEEEE]"
+            "col-start-1 col-end-2 md:col-start-6 md:col-end-8 row-auto md:row-span-5 rounded-lg border border-[#EEEEEE] overflow-y-scroll"
           )}
         >
           <StockDataTable

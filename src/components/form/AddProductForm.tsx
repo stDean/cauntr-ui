@@ -164,7 +164,7 @@ export const AddSingleProduct = () => {
                   control={form.control}
                   label="Quantity"
                   name="quantity"
-                  disabled={isPending}
+                  disabled={isPending || form.watch("serial_no") !== ""}
                 />
               </div>
 

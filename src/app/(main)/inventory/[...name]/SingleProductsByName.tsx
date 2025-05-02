@@ -2,6 +2,7 @@
 
 import { ProductTable } from "@/components/table/ProductTable";
 import { Button } from "@/components/ui/button";
+import useManageRestockLevelModal from "@/hooks/useManageRestockLevel";
 import { ProductType } from "@/lib/types";
 import { ChevronLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,6 +18,7 @@ export const SingleProductsByName = ({
 }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const restockLevel = useManageRestockLevelModal();
 
   const name = searchParams.get("name");
   const qty = products.reduce((accu, p) => {
@@ -29,13 +31,18 @@ export const SingleProductsByName = ({
         <Button
           variant={"outline_blue"}
           size={"sm"}
-          className="cursor-pointer flex items-center"
+          className="cursor-pointer flex items-center text-xs"
           onClick={() => router.push("/inventory")}
         >
           <ChevronLeft className="size-4 text-[#0C049B]" />
           Go Back
         </Button>
-        <Button variant={"cauntr_blue"} size={"sm"} className="cursor-pointer">
+        <Button
+          variant={"cauntr_blue"}
+          size={"sm"}
+          className="cursor-pointer text-xs"
+          onClick={() => restockLevel.onOpen(name!)}
+        >
           Manage Restock Level
         </Button>
       </div>
@@ -52,7 +59,7 @@ export const SingleProductsByName = ({
           <Button
             variant={"outline_blue"}
             size={"sm"}
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
             onClick={() => router.push("/sell")}
           >
             Sell Product

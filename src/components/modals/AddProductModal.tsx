@@ -192,12 +192,28 @@ export const AddProductModal = () => {
     });
   };
 
+  useEffect(() => {
+    setData([]);
+    setOptions({ add_products: AddProductsType.options[0] });
+    setUploadedFile({ name: "", size: 0 });
+    setProgress({ percentage: 0, show: false });
+  }, [addProductModal.isOpen]);
+
   const handleUpload = useCallback(() => {
     setProgress({ percentage: 0, show: true });
     const products = data.filter((product) => product["Item Type"] !== "");
     dispatch(SET_PREVIEW_DATA(products));
+    let progressValue = 0;
+    const interval = setInterval(() => {
+      progressValue += 10;
+      setProgress({ percentage: progressValue, show: true });
+
+      if (progressValue >= 100) {
+        clearInterval(interval);
+      }
+    }, 50);
+
     setTimeout(() => {
-      setProgress({ percentage: 100, show: true });
       router.push("/inventory/preview");
       addProductModal.onClose();
       setStep(STEPS.ADD);
@@ -226,7 +242,7 @@ export const AddProductModal = () => {
         <div className="flex justify-end px-6 pb-4">
           <Button
             variant={"cauntr_blue"}
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
             onClick={
               options.add_products.title === "Add an Item"
                 ? () =>
@@ -261,7 +277,7 @@ export const AddProductModal = () => {
 
           <Button
             variant={"outline"}
-            className="cursor-pointer text-sm"
+            className="cursor-pointer text-xs"
             onClick={downloadTemplate}
             size={"sm"}
             disabled={isPending}
@@ -327,7 +343,11 @@ export const AddProductModal = () => {
         </div>
 
         <div className="px-4 pb-4 flex justify-end">
-          <Button size={"sm"} onClick={handleUpload} className="cursor-pointer">
+          <Button
+            size={"sm"}
+            onClick={handleUpload}
+            className="cursor-pointer text-xs"
+          >
             Upload Products
           </Button>
         </div>

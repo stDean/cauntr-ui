@@ -5,7 +5,7 @@ import {
   CACHE_TAGS,
   dbCache,
   getUserTag,
-  revalidateDbCache
+  revalidateDbCache,
 } from "@/lib/cache";
 import { AddProductSchema } from "@/schema";
 import axios from "axios";
@@ -557,6 +557,47 @@ const GetDashSummaryIntervals = async ({
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/dashboard`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
+    return { success: res.data };
+  } catch (e: any) {
+    // Check if error response exists and handle different status codes
+    if (e.response) {
+      const status = e.response.status;
+      const message = e.response.data?.message || "An error occurred";
+
+      if (status === 400 || status === 429 || status === 500) {
+        return { error: message };
+      }
+    }
+
+    // Handle any other errors
+    return { error: "Something went wrong." };
+  }
+};
+
+export const ManageRestockLevel = async ({
+  token,
+  userId,
+  restock,
+  productName,
+}: {
+  token: string;
+  userId: string;
+  restock: { min: string; max: string };
+  productName: string;
+}) => {
+  try {
+    const res = await axios.patch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/manageStock`,
+      { restock, productName },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.status === 200) {
+      await Promise.all([
+        revalidateDbCache({ tag: CACHE_TAGS.dashSummary, userId }),
+      ]);
+    }
 
     return { success: res.data };
   } catch (e: any) {

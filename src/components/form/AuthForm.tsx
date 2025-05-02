@@ -150,7 +150,6 @@ export const AuthForm = ({ type }: { type: string }) => {
           toast.error("Error", { description: res.error });
         }
 
-        form.reset();
         return;
       }
 

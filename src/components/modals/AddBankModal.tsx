@@ -83,7 +83,7 @@ export const AddBankModal = () => {
 
       <div className="pt-2 flex justify-end gap-4">
         <Button
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
           onClick={() => {
             addBankModal.addBank(bank!);
             setBank({ bankName: "", acctNo: "", acctName: "" });

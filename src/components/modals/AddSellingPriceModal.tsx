@@ -60,7 +60,7 @@ export const AddSellingPriceModal = () => {
             addSellingPrice.onClose();
             setSellingPrice("");
           }}
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer text-xs"
           disabled={sellingPrice.trim() === ""}
         >
           Add Item

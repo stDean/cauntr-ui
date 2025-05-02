@@ -263,11 +263,11 @@ export function SellProductsTable<TData, TValue>({
 
           setTaxFee("");
           setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+          setPayFull(false);
+          setPayTax(false);
           dispatch(CLEAR_CART());
           dispatch(SET_BUYER(null));
           dispatch(SET_BANK(null));
-          setPayFull(false);
-          setPayTax(false);
           return;
         }
 
@@ -275,11 +275,11 @@ export function SellProductsTable<TData, TValue>({
 
         setTaxFee("");
         setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+        setPayFull(false);
+        setPayTax(false);
         dispatch(CLEAR_CART());
         dispatch(SET_BUYER(null));
         dispatch(SET_BANK(null));
-        setPayFull(false);
-        setPayTax(false);
       } else {
         let products: {
           transactions: {
@@ -341,11 +341,11 @@ export function SellProductsTable<TData, TValue>({
 
           setTaxFee("");
           setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+          setPayFull(false);
+          setPayTax(false);
           dispatch(CLEAR_CART());
           dispatch(SET_BUYER(null));
           dispatch(SET_BANK(null));
-          setPayFull(false);
-          setPayTax(false);
           return;
         }
 
@@ -353,14 +353,16 @@ export function SellProductsTable<TData, TValue>({
 
         setTaxFee("");
         setPay({ amountPaid: "", balance: "", paymentMethod: "CASH" });
+        setPayFull(false);
+        setPayTax(false);
         dispatch(CLEAR_CART());
         dispatch(SET_BUYER(null));
         dispatch(SET_BANK(null));
-        setPayFull(false);
-        setPayTax(false);
       }
     });
   };
+
+  console.log({ payFull });
 
   const filteredData = table.getRowModel().rows.filter((row) => {
     const uniqueProductTypes = Array.from(new Set(filterCat.productType));
@@ -808,6 +810,7 @@ export function SellProductsTable<TData, TValue>({
                     Paid Full Amount
                   </Label>
                   <Switch
+                    checked={payFull}
                     id="payFull"
                     className="!h-[1rem] !w-6"
                     small
@@ -865,6 +868,7 @@ export function SellProductsTable<TData, TValue>({
               <p className="text-sm text-[#808080]">Tax</p>
               <div className="flex items-center space-x-2">
                 <Switch
+                  checked={payTax}
                   id="payTax"
                   onClick={() => {
                     setPayTax((prev) => !prev);

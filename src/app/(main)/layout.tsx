@@ -10,6 +10,7 @@ import { DashboardWrapper } from "./_component/DashboardWrapper";
 import { PayBalanceModal } from "@/components/modals/PayBalanceModal";
 import { InvoiceConfirmationModal } from "@/components/modals/InvoiceConfirmationModal";
 import { RecordPayModal } from "@/components/modals/RecordPayModal";
+import { ManageRestockModal } from "@/components/modals/ManageRestockModal";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -25,6 +26,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <PayBalanceModal />
         <InvoiceConfirmationModal />
         <RecordPayModal />
+        <ManageRestockModal />
       </>
 
       <DashboardWrapper>{children}</DashboardWrapper>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import useReceiptModal from "@/hooks/useReceiptModal";
 import { useReduxState } from "@/hooks/useRedux";
 import { SingleSalesProps } from "@/lib/types";
+import { formatNaira } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronLeft,
@@ -204,7 +205,9 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
               </p>
               <div className="flex justify-between col-span-4">
                 <p className="font-medium md:text-sm text-xs">x{sales.qty}</p>
-                <p className="font-medium md:text-sm text-xs">₦{sales.price}</p>
+                <p className="font-medium md:text-sm text-xs">
+                  {formatNaira(Number(sales.price))}
+                </p>
               </div>
             </div>
 
@@ -214,7 +217,7 @@ export const SingleSales = ({ saleData }: { saleData: SingleSalesProps }) => {
 
         <div className="text-[#121212] font-semibold text-xl flex items-center justify-between">
           <p>Total</p>
-          <p>₦{totalPay}</p>
+          <p>{formatNaira(Number(totalPay))}</p>
         </div>
       </div>
 

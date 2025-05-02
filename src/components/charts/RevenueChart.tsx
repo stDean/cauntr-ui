@@ -18,7 +18,14 @@ const RevenueChart = ({
   data: { product: string; revenue: number }[];
 }) => {
   // Custom format for revenue values
-  const formatRevenue = (value: number) => `N${(value / 1000).toFixed(1)}k`;
+  const formatRevenue = (value: number) => {
+    if (value >= 1000000) {
+      return `N${(value / 1000000).toFixed(1)}M`; // Format as millions
+    } else if (value >= 1000) {
+      return `N${(value / 1000).toFixed(1)}k`; // Format as thousands
+    }
+    return `N${value}`; // Format as is for smaller values
+  };
 
   return (
     <div style={{ width: "100%", height: 400 }}>

@@ -169,7 +169,7 @@ export const CreateUserModal = () => {
 
           <div className="flex justify-end">
             <Button
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
               type="submit"
               isLoading={isPending}
               loadingText="creating"

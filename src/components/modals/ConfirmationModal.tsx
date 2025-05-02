@@ -91,13 +91,13 @@ export const ConfirmationModal = ({
               <Button
                 onClick={handleClose}
                 variant={"outline"}
-                className="col-span-6 cursor-pointer"
+                className="col-span-6 cursor-pointer text-xs"
                 disabled={isPending}
               >
                 Cancel
               </Button>
               <Button
-                className="col-span-6 cursor-pointer"
+                className="col-span-6 cursor-pointer text-xs"
                 variant={variant}
                 onClick={secondaryButtonAction}
                 disabled={isPending}

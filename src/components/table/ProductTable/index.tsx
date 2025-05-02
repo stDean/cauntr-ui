@@ -1,19 +1,7 @@
 "use client";
 
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from "react";
-import { ProductColumn } from "./ProductColumn";
 import { Pagination } from "@/components/Pagination";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,6 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { ProductColumn } from "./ProductColumn";
 
 export function ProductTable<TData, TValue>({ data }: { data: TData[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -51,12 +50,10 @@ export function ProductTable<TData, TValue>({ data }: { data: TData[] }) {
       <div className="flex justify-between md:items-center flex-col md:flex-row space-y-3">
         <div className="flex md:items-center gap-3 flex-col md:flex-row">
           <Input
-            placeholder="search serial number..."
-            value={
-              (table.getColumn("serialNo")?.getFilterValue() as string) ?? ""
-            }
+            placeholder="search sku..."
+            value={(table.getColumn("sku")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("serialNo")?.setFilterValue(event.target.value)
+              table.getColumn("sku")?.setFilterValue(event.target.value)
             }
             className="w-full lg:w-[450px] text-xs md:text-sm"
           />

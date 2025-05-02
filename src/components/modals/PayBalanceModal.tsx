@@ -264,7 +264,7 @@ export const PayBalanceModal = () => {
           disabled={isPending}
           isLoading={isPending}
           loadingText="paying"
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
         >
           Pay
         </Button>

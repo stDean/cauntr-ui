@@ -105,7 +105,7 @@ export const ChangePasswordModal = () => {
 
       <div className="flex justify-end">
         <Button
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
           onClick={() => {
             changePasswordModal.onClose(data);
             setData({ password: "", cfPassword: "" });

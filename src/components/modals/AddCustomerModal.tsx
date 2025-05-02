@@ -199,7 +199,7 @@ export const AddCustomerModal = () => {
             <Button
               variant={"cauntr_blue"}
               size={"sm"}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
               disabled={isPending}
               loadingText="creating"
               isLoading={isPending}
@@ -246,7 +246,7 @@ export const AddCustomerModal = () => {
             <Button
               variant={"cauntr_blue"}
               size={"sm"}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
               disabled={isPending}
               loadingText="creating"
               isLoading={isPending}
@@ -297,7 +297,7 @@ export const AddCustomerModal = () => {
             <Button
               variant={"cauntr_blue"}
               size={"sm"}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
               disabled={isPending}
               loadingText="creating"
               isLoading={isPending}
@@ -333,7 +333,7 @@ export const AddCustomerModal = () => {
 
         <div className="pt-2 flex justify-end gap-4">
           <Button
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
             onClick={createBank}
             variant={"cauntr_blue"}
             size={"sm"}

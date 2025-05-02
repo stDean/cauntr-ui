@@ -576,6 +576,7 @@ export const CartContent = ({
                 </Label>
                 <Switch
                   id="payFull"
+                  checked={payFull}
                   className="!h-[1rem] !w-6"
                   small
                   onClick={() => {
@@ -620,6 +621,7 @@ export const CartContent = ({
             <div className="flex items-center space-x-2">
               <Switch
                 id="payTax"
+                checked={payTax}
                 onClick={() => {
                   setPayTax((prev) => !prev);
                   setTaxFee("");

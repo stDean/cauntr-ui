@@ -266,11 +266,11 @@ export const RecordPayModal = () => {
         <Button
           variant={"cauntr_blue"}
           size={"sm"}
-          className="cursor-pointer"
+          className="cursor-pointer text-xs"
           onClick={handlePayment}
           disabled={isPending}
           isLoading={isPending}
-          loadingText="please wair"
+          loadingText="please wait"
         >
           Record Payment
         </Button>
