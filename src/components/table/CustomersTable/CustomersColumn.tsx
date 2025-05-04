@@ -25,10 +25,6 @@ export const CustomersColumn: ColumnDef<CustomersProps>[] = [
     },
   },
   {
-    accessorKey: "email",
-    header: () => <span className="text-xs md:text-sm">Email</span>,
-  },
-  {
     accessorKey: "phone",
     header: () => <span className="text-xs md:text-sm">Phone Number</span>,
   },

@@ -30,7 +30,7 @@ export const CodeContent = () => {
         dispatch(SET_TOKEN(success.token));
         dispatch(SET_LOGGED_IN_USER(success.user));
 
-        router.push("/settings");
+        router.push("/settings?q=billing");
         toast.success("Success", {
           description: "OTP verified successfully",
         });

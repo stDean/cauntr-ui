@@ -1,3 +1,4 @@
+import { GetAllProducts } from "@/actions/inventory.a";
 import { GetInvoices, GetInvoiceSummary } from "@/actions/invoice.a";
 import { Card } from "@/components/MiniCard";
 import { InvoiceTable } from "@/components/table/InvoiceTable";
@@ -52,6 +53,7 @@ export default async function InvoicePage() {
 
   const invoicesRes = await GetInvoices({ token, userId });
   const summary = await GetInvoiceSummary({ token, userId });
+  const products = await GetAllProducts({ token, userId });
 
   const cardDetails = cardData({
     text1: String(summary.success?.returnedData.clientServed || 0),
@@ -64,7 +66,10 @@ export default async function InvoicePage() {
     <div className="px-4 mb-18 lg:mb-2 space-y-4">
       <Card cardData={cardDetails} />
 
-      <InvoiceTable data={invoicesRes.success?.data || []} />
+      <InvoiceTable
+        data={invoicesRes.success?.data || []}
+        products={products.success?.data || []}
+      />
     </div>
   );
 }

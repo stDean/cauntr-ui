@@ -252,6 +252,7 @@ export const AddProductModal = () => {
                     setStep(STEPS.UPLOAD);
                   }
             }
+            disabled={options.add_products === AddProductsType.options[0]}
           >
             Continue
           </Button>

@@ -117,7 +117,7 @@ export const AuthForm = ({ type }: { type: string }) => {
         if (res.success.user.companyStatus === "ACTIVE") {
           router.push("/dashboard");
         } else {
-          router.push("/settings");
+          router.push("/settings?q=billing");
         }
         return;
       }

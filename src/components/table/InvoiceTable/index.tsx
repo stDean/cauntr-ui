@@ -26,7 +26,13 @@ import {
 import { Empty } from "@/components/Empty";
 import Link from "next/link";
 
-export function InvoiceTable<TData, TValue>({ data }: { data: TData[] }) {
+export function InvoiceTable<TData, TValue>({
+  data,
+  products,
+}: {
+  data: TData[];
+  products: any[];
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const columns = InvoiceColumn as ColumnDef<TData, TValue>[];
   const table = useReactTable({
@@ -73,6 +79,7 @@ export function InvoiceTable<TData, TValue>({ data }: { data: TData[] }) {
           size={"sm"}
           variant={"cauntr_blue"}
           asChild
+          disabled={products.length === 0}
         >
           <Plus className="size-4" />
           <Link href={"/invoice/create"}>Create Invoice</Link>

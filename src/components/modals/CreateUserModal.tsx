@@ -147,8 +147,12 @@ export const CreateUserModal = () => {
             placeholder={
               createUserModal.user ? "**********" : "enter user password"
             }
-            show={show.password}
-            handleShow={() => setShow({ password: !show.password })}
+            show={!createUserModal.user ? show.password : false}
+            handleShow={
+              !createUserModal.user
+                ? () => setShow({ password: !show.password })
+                : undefined
+            }
             disabled={!!createUserModal.user}
           />
 

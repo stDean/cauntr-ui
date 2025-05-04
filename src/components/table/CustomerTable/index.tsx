@@ -21,7 +21,6 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CustomerColumn } from "./CustomerColumn";
-import { useReduxState } from "@/hooks/useRedux";
 
 export function CustomerTable<TData, TValue>({
   data,

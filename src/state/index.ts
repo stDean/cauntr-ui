@@ -115,6 +115,15 @@ export const globalSlice = createSlice({
     CLEAR_CART: (state) => {
       state.cartItems = [];
     },
+    CLEAR_STATE: (state) => {
+      state.token = "";
+      state.email = "";
+      state.loggedInUser = null;
+      state.previewProducts = [];
+      state.buyer = null;
+      state.bank = null;
+      state.cartItems = [];
+    }
   },
 });
 
